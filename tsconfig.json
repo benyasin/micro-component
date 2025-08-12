@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "react": ["./stub/types__react"]
+    },
+    "strict": false,
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["./**/*"],
+  "exclude": ["dist", "build", "node_modules", "**/*.stories.ts"],
+  "ts-node": {
+    "experimentalSpecifierResolution": "node"
+  }
+}

@@ -1,0 +1,224 @@
+:root {
+  /* 大改版颜色 */
+  --color-primary: #03aac7;
+  --color-buy: #1da2b4;
+  --color-sell: #f1493f;
+  --color-green: #1da2b4;
+  --color-red: #f1493f;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html.black,
+html.dark,
+body.black,
+body.dark {
+  /* 大改版 V3 --- start --- */
+  --content-primary: #ffffff;
+  --content-secondary: #ebebeb;
+  --content-tertiary: #d4d4d4;
+  --content-disabled: #b8b8b8;
+  --content-link-default: #03aac7;
+  --content-link-hover: #05b4cc;
+  --content-always-black: #1f1f1f;
+  --content-always-white: #ffffff;
+  --content-success: #26ab78;
+  --content-error: #d54941;
+  --content-warning: #ff9142;
+  --content-trade-buy: #26ab78;
+  --content-trade-sell: #f1493f;
+  --content-trade-buy-text: #079663;
+  --content-trade-sell-text: #f1493f;
+  --content-inverse-primary: #1f1f1f;
+  --content-inverse-secondary: #565656;
+  --content-inverse-tertiary: #898989;
+  --content-highlight-blue-text-on-info: #027a95;
+  --border-strength-100: #424242;
+  --border-strength-200: #565656;
+  --border-strength-800: #ffffff;
+  --border-blue: #53d2dd;
+  --border-orange: #ff9142;
+  --border-grey: #ebebeb;
+  --border-yellow: #ffcc32;
+  --border-red: #ff9285;
+  --background-primary: #1f1f1f;
+  --background-secondary: #424242;
+  --background-tertiary: #565656;
+  --background-disabled: #565656;
+  --background-always-black: #000000;
+  --background-blue-soft: #127b82;
+  --background-blue-sharp: #85f8ff;
+  --background-purple-soft: #4c2e91;
+  --background-purple-sharp: #c5ace6;
+  --background-orange-soft: #c55300;
+  --background-orange-sharp: #ffab6f;
+  --background-inverse-primary: #ffffff;
+  --background-inverse-secondary: #ebebeb;
+  --background-inverse-tertiary: #d4d4d4;
+  --background-popup: #565656;
+  --background-mask: rgba(0, 0, 0, 0.7);
+  /* 大改版 V3 --- end --- */
+
+  background-color: #0d0e0e;
+  /* 大改版颜色 */
+  /* --color-buy: #079663;
+    --color-sell: #F1493F; */
+  --color-buy: #1da2b4;
+  --color-sell: #f1493f;
+  --color-error: #d54941;
+  --color-success: #23d696;
+  --color-warning: #ff9142;
+  --color-green: #1da2b4;
+  --color-red: #f1493f;
+  /* 字体 */
+  --color-primary-text: var(--content-primary);
+  --color-secondary-text: var(--content-secondary);
+  --color-third-text: var(--content-tertiary);
+  --color-disabled-text: var(--content-disabled);
+  --color-placeholder-text: var(--content-disabled);
+  --color-white-text: var(--content-always-white);
+  --color-warning-text: var(--content-warning);
+  --color-black-text: var(--content-always-black);
+  --color-text-btn: var(--content-link-default);
+  --color-unhover-text: #656e6f;
+  /* 线条 */
+  --color-line: var(--border-strength-100);
+  --color-input-border: var(--border-strength-100);
+  /* 背景 */
+  --color-bg: var(--background-primary);
+  --color-error-bg: rgba(231, 73, 65, 0.14);
+  --color-success-bg: rgba(7, 150, 99, 0.14);
+  --color-warning-bg: rgba(255, 145, 66, 0.14);
+  --color-green-bg: #10292c;
+  --color-card-bg: #191a1a;
+  --color-special-bg: #00171a;
+  --color-secondary-btn-bg: #222525;
+  --color-popup-bg: #656e6f;
+  --color-popup-bg-opa: rgba(101, 110, 111, 0.5);
+  --color-primary-btn-bg: #03aac7;
+  --color-primary-pressed-bg: #027a95;
+  --color-primary-hover-bg: #05b4cc;
+  --color-dialog-bg: #191d1d;
+  --color-modal-bg: rgba(31, 31, 31, 0.5);
+  --color-input-bg: #242424;
+  /* 阴影 */
+  --shoadow-sl1: 0px 1px 7px rgba(0, 0, 0, 0.3);
+  --shoadow-sl2: 0px 6px 18px rgba(0, 0, 0, 0.4);
+  --shoadow-sl3: 0px 10px 32px rgba(0, 0, 0, 0.5);
+  --shoadow-sl4: 0px 12px 42px rgba(0, 0, 0, 0.7);
+
+  /* 二期大改版账户 */
+  --color-bg-card: linear-gradient(
+    180deg,
+    #191a1a 0%,
+    rgba(25, 26, 26, 0.5) 100%
+  );
+}
+
+html.white,
+html.light,
+body.white,
+body.light {
+  /* 大改版 V3 --- start --- */
+  --content-primary: #1f1f1f;
+  --content-secondary: #565656;
+  --content-tertiary: #898989;
+  --content-disabled: #b8b8b8;
+  --content-link-default: #03aac7;
+  --content-link-hover: #05b4cc;
+  --content-always-black: #1f1f1f;
+  --content-always-white: #ffffff;
+  --content-success: #26ab78;
+  --content-error: #d54941;
+  --content-warning: #ff6b00;
+  --content-trade-buy-text: #079663;
+  --content-trade-sell-text: #f1493f;
+  --content-trade-buy: #26ab78;
+  --content-trade-sell: #f1493f;
+  --content-inverse-primary: #ffffff;
+  --content-inverse-secondary: #ebebeb;
+  --content-inverse-tertiary: #d4d4d4;
+  --content-highlight-blue: #03aac7;
+  --border-strength-100: #ebebeb;
+  --border-strength-200: #d4d4d4;
+  --border-strength-800: #1f1f1f;
+  --border-blue: #03aac7;
+  --border-orange: #ff6b00;
+  --border-grey: #424242;
+  --border-yellow: #ffcc32;
+  --border-red: #d54941;
+  --background-primary: #ffffff;
+  --background-secondary: #f6f6f6;
+  --background-tertiary: #ebebeb;
+  --background-disabled: #ebebeb;
+  --background-always-black: #000000;
+  --background-blue-soft: #c6fcff;
+  --background-blue-sharp: #00f0ff;
+  --background-purple-soft: #d5bfef;
+  --background-purple-sharp: #c5ace6;
+  --background-orange-soft: #ffd4b4;
+  --background-orange-sharp: #ffab6f;
+  --background-inverse-primary: #1f1f1f;
+  --background-inverse-secondary: #424242;
+  --background-inverse-tertiary: #565656;
+  --background-popup: #565656;
+  --background-mask: rgba(0, 0, 0, 0.7);
+  /* 大改版 V3 --- end --- */
+
+  background-color: #fff;
+  /* 大改版颜色 */
+  /* --color-buy: #26ab78;
+    --color-sell: #F1493F; */
+  --color-buy: #1da2b4;
+  --color-sell: #f1493f;
+  --color-error: #d54941;
+  --color-success: #23d696;
+  --color-warning: #ff6b00;
+  --color-green: #1da2b4;
+  --color-red: #f1493f;
+  /* 字体 */
+  --color-primary-text: var(--content-primary);
+  --color-secondary-text: var(--content-secondary);
+  --color-third-text: var(--content-tertiary);
+  --color-disabled-text: var(--content-disabled);
+  --color-placeholder-text: var(--content-disabled);
+  --color-white-text: var(--content-always-white);
+  --color-warning-text: var(--content-warning);
+  --color-black-text: var(--content-always-black);
+  --color-text-btn: var(--content-link-default);
+  /* 线条 */
+  --color-line: var(--border-strength-100);
+  --color-input-border: var(--border-strength-100);
+  /* 背景 */
+  --color-bg: #ffffff;
+  --color-error-bg: rgba(231, 73, 65, 0.14);
+  --color-success-bg: rgba(38, 171, 120, 0.14);
+  --color-warning-bg: rgba(255, 107, 0, 0.14);
+  --color-green-bg: #dff2f4;
+  --color-card-bg: #f9fbfb;
+  --color-special-bg: #f1fcfd;
+  --color-secondary-btn-bg: #eff1f1;
+  --color-popup-bg: #656e6f;
+  --color-popup-bg-opa: rgba(101, 110, 111, 0.5);
+  --color-primary-btn-bg: #03aac7;
+  --color-primary-pressed-bg: #027a95;
+  --color-primary-hover-bg: #05b4cc;
+  --color-dialog-bg: #fff;
+  --color-modal-bg: rgba(31, 31, 31, 0.5);
+  --color-input-bg: #f5f5f6;
+  /* 阴影 */
+  --shoadow-sl1: 0px 1px 5px rgba(146, 160, 171, 0.1);
+  --shoadow-sl2: 0px 6px 18px rgba(146, 160, 171, 0.14);
+  --shoadow-sl3: 0px 10px 32px rgba(146, 160, 171, 0.18);
+  --shoadow-sl4: 0px 12px 40px rgba(146, 160, 171, 0.36);
+  /* 二期大改版账户 */
+  --color-bg-card: linear-gradient(
+    180deg,
+    #f9fbfb 0%,
+    rgba(249, 251, 251, 0.5) 100%
+  );
+}

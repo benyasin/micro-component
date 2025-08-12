@@ -1,0 +1,5 @@
+# Ignore artifacts:
+.nuxt/*
+.next/*
+dist/*
+node_modules/*

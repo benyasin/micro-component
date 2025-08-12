@@ -1,0 +1,379 @@
+@mainGreen: var(--ds-color-function-brand);
+@mainChildGreen: var(--ds-color-brand-6);
+@mainRed: var(--ds-color-red-6);
+@mainBlack: var(--ds-color-neutral-9);
+@mainGray: var(--ds-color-neutral-4);
+@mainLightGray: var(--ds-color-neutral-2);
+
+.bg-dialog,
+.global-theme {
+  --main-color: @mainGreen;
+  --color-primary: @mainGreen;
+  --main-child-color: @mainChildGreen;
+  --main-golden: var(--ds-color-yellow-4);
+  --main-disable: var(--ds-color-function-brand-disabled);
+  --main-black: @mainBlack;
+  --main-gray: @mainGray;
+  --main-light-gray: @mainLightGray;
+  --main-text-color: var(--ds-color-text-tertiary);
+  --main-text-hover-color: var(--main-golden);
+  --main-warning-color: var(--ds-color-function-warning);
+  --main-orange: var(--ds-color-orange-6);
+  --main-btn-text: @mainBlack;
+  --main-btn-bgc: var(--main-color);
+  --main-btn-disabled-bgc: var(--ds-color-function-brand-disabled);
+  --main-btn-loading-bgc: var(--ds-color-function-brand-disabled);
+  --main-plain-btn-border: var(--ds-color-border-black);
+  --subnav-link-color: var(--ds-color-text-tertiary); // 二级菜单文案颜色
+  --main-bright-text: var(--ds-color-text-inverse-primary);
+  // 默认颜色 不区分主题情况下一律采用默认颜色（上个版本颜色）
+  --color-rule-title: var(--ds-color-neutral-8); // 主站下默认标题 正文颜色，Grey 800
+  --color-rule-des: var(--ds-color-text-secondary); // 主站下默认描述、提示文字颜色，Grey 700
+  --color-rule-hint: var(
+    --ds-color-text-tertiary
+  ); // 提示 主站下默认输入框提示文字、输入框占位符颜色，Grey 500
+  --color-rule-outline: var(--ds-color-border-subtle); // 边框 主站下默认输入框边框颜色，Grey 200
+  --color-rule-disable: var(--ds-color-neutral-4); // 禁用 主站下默认局部背景色 按钮禁用，Grey 400
+  --color-rule-frontground: var(--ds-color-background-primary); // 主站默认整体前景色
+  --color-rule-background: var(--ds-color-background-secondary); // 主站默认整体背景色，Grey 100
+  --color-rule-fundTitle: var(--ds-color-text-secondary); //待定
+  --color-rule-special: var(--ds-color-brand-1); //待定
+  --color-rule-thirdText: var(--ds-color-text-tertiary); // Grey 600
+  --color-rule-background: var(--ds-color-background-secondary); // 主站默认整体背景色
+  --color-rule-fundTitle: var(--ds-color-text-secondary);
+  --color-rule-special: var(--ds-color-brand-1);
+  --color-rule-thirdText: var(--ds-color-text-tertiary);
+  --box-shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  --content-link-transparency: var(--ds-color-brand-1);
+
+  &.black {
+    /** v3 DS Dark start*/
+    --content-primary: var(--ds-color-text-primary);
+    --content-secondary: var(--ds-color-text-secondary);
+    --content-tertiary: var(--ds-color-text-tertiary);
+    --content-disabled: var(--ds-color-text-disabled);
+    --content-link-default: var(--ds-color-link-default);
+    --content-link-hover: var(--ds-color-link-hover);
+    --content-always-black: var(--ds-color-always-black);
+    --content-always-white: var(--ds-color-always-white);
+    --content-success: var(--ds-color-text-success);
+    --content-error: var(--ds-color-text-error);
+    --content-warning: var(--ds-color-text-warning);
+    --content-trade-buy: var(--ds-color-function-trade-buy);
+    --content-trade-sell: var(--ds-color-function-trade-sell);
+    --content-trade-buy-text: var(--ds-color-function-trade-buy);
+    --content-trade-sell-text: var(--ds-color-function-trade-sell);
+    --content-inverse-primary: var(--ds-color-text-inverse-primary);
+    --content-inverse-secondary: var(--ds-color-text-inverse-secondary);
+    --content-inverse-tertiary: var(--ds-color-text-inverse-tertiary);
+    --content-blue-text-on-blue-sharp-bg: var(--ds-color-brand-3);
+    --content-blue-text-on-blue-soft-bg: var(--ds-color-brand-4);
+    --border-strength-100: var(--ds-color-border-subtle);
+    --border-strength-200: var(--ds-color-border-strong);
+    --border-strength-800: var(--ds-color-border-black);
+    --border-blue: var(--ds-color-brand-4);
+    --border-orange: var(--ds-color-orange-4);
+    --border-grey: var(--ds-color-neutral-2);
+    --border-yellow: var(--ds-color-yellow-4);
+    --border-red: var(--ds-color-rose-4);
+    --background-primary: var(--ds-color-background-primary);
+    --background-secondary: var(--ds-color-background-secondary);
+    --background-tertiary: var(--ds-color-background-tertiary);
+    --background-disabled: var(--ds-color-background-disabled);
+    --background-always-black: var(--ds-color-always-black);
+    --background-blue-soft: var(--ds-color-function-brand-soft);
+    --background-blue-sharp: var(--ds-color-function-brand);
+    --background-purple-soft: var(--ds-color-purple-8);
+    --background-purple-sharp: var(--ds-color-purple-3);
+    --background-orange-soft: var(--ds-color-orange-7);
+    --background-orange-sharp: var(--ds-color-orange-3);
+    --background-inverse-primary: var(--ds-color-background-inverse-primary);
+    --background-inverse-secondary: var(--ds-color-background-inverse-secondary);
+    --background-inverse-tertiary: var(--ds-color-background-inverse-tertiary);
+    --background-floating-secondary: var(--ds-color-layer-2);
+    --background-popup: var(--ds-color-background-tooltip);
+    --background-mask: var(--ds-color-background-mask);
+    --border-primary: var(--ds-color-border-subtle);
+    --color-text-placeholder: var(--ds-color-background-tertiary);
+    /** v3 DS Dark 截止*/
+    --main-trend: var(--ds-color-background-secondary);
+    --main-bgc: var(--ds-color-background-primary);
+    background-color: var(--color-bg);
+    --subnav-bgc: var(--ds-color-background-secondary); // 二级菜单背景色
+    --subnav-hover-bgc: var(--ds-color-background-tertiary); // 二级菜单 hover 的背景色
+    --subnav-text-color: var(--ds-color-text-primary); // 二级菜单文字颜色
+    --subnav-shadow-color: var(--ds-color-neutral-9); // 二级菜单阴影颜色
+    --subnav-desc-color: var(--ds-color-text-tertiary);
+    --bit-info-popover: var(--ds-color-background-tooltip);
+    --block-main-bg: var(--ds-color-background-primary);
+    --bit-dialog-input: var(--ds-color-background-tertiary);
+    --gray-iconfont-color: var(--ds-color-text-secondary);
+    --condition-wrapper: var(--ds-color-background-tertiary);
+    --strategy-account-bgc: var(--ds-color-background-tertiary);
+    --block-strategy-bg: var(--ds-color-background-primary); // 现货子账户不支持弹窗 背景用
+    --vice-deep-blue: var(--ds-color-background-tertiary);
+
+    /* v2 DS 大改版颜色 */
+    // --color-buy: #079663;
+    // --color-sell: #f1493f;
+    --color-buy: var(--ds-color-function-trade-buy); // 先使用老颜色
+    --color-sell: var(--ds-color-function-trade-sell); // 先使用老颜色
+    --color-error: var(--ds-color-function-error);
+    --color-success: var(--ds-color-function-success);
+    --color-warning: var(--ds-color-function-warning);
+    --color-green: var(--ds-color-green-6);
+    --color-red: var(--ds-color-red-6);
+    /* 字体 */
+    --color-primary-text: var(--content-primary);
+    --color-secondary-text: var(--content-secondary);
+    --color-third-text: var(--content-tertiary);
+    --color-disabled-text: var(--content-disabled);
+    --color-placeholder-text: var(--content-disabled);
+    --color-white-text: var(--ds-color-always-white);
+    --color-warning-text: var(--content-warning);
+    --color-black-text: var(--ds-color-always-black);
+    --color-text-btn: var(--content-link-default);
+    --color-unhover-text: var(--ds-color-text-tertiary);
+    /* 线条 */
+    --color-line: var(--border-strength-100);
+    --color-input-border: var(--border-strength-100);
+    /* 背景 */
+    --color-bg: var(--ds-color-background-primary);
+    --color-error-bg: var(--ds-color-function-error-soft);
+    --color-success-bg: var(--ds-color-function-success-soft);
+    --color-warning-bg: var(--ds-color-function-warning-soft);
+    --color-green-bg: var(--ds-color-brand-9);
+    --color-card-bg: var(--ds-color-layer-1);
+    --color-special-bg: var(--ds-color-brand-10);
+    --color-secondary-btn-bg: var(--ds-color-background-tertiary);
+    --color-popup-bg: var(--ds-color-background-tooltip);
+    --color-popup-bg-opa: var(--ds-color-background-tooltip);
+    --color-primary-btn-bg: @mainGreen;
+    --color-primary-pressed-bg: var(--ds-color-function-brand-active);
+    --color-primary-hover-bg: var(--ds-color-function-brand-hover);
+    --color-dialog-bg: var(--ds-color-layer-0);
+    --color-modal-bg: var(--ds-color-layer-0);
+    --color-input-bg: var(--ds-color-background-input);
+    /* 阴影 */
+    --shoadow-sl1: 0px 1px 7px rgba(0, 0, 0, 0.3);
+    --shoadow-sl2: 0px 6px 18px rgba(0, 0, 0, 0.4);
+    --shoadow-sl3: 0px 10px 32px rgba(0, 0, 0, 0.5);
+    --shoadow-sl4: 0px 12px 42px rgba(0, 0, 0, 0.7);
+
+    // 二期大改版账户
+    --color-bg-card: linear-gradient(180deg, #191a1a 0%, rgba(25, 26, 26, 0.5) 100%);
+    --three-hover-color: var(--ds-color-black-alpha-80);
+
+    // v3版本开始区分黑白版
+    --main-kline-green: var(--color-green);
+    --main-kline-red: var(--color-red);
+    --main-error: var(--color-error);
+
+    --background-dialog: var(--ds-color-layer-0);
+  }
+
+  &.white {
+    /** v3 DS light start*/
+    --content-primary: var(--ds-color-text-primary);
+    --content-secondary: var(--ds-color-text-secondary);
+    --content-tertiary: var(--ds-color-text-tertiary);
+    --content-disabled: var(--ds-color-text-disabled);
+    --content-link-default: var(--ds-color-link-default);
+    --content-link-hover: var(--ds-color-link-hover);
+    --content-always-black: var(--ds-color-always-black);
+    --content-always-white: var(--ds-color-always-white);
+    --content-success: var(--ds-color-text-success);
+    --content-error: var(--ds-color-text-error);
+    --content-warning: var(--ds-color-text-warning);
+    --content-trade-buy-text: var(--ds-color-function-trade-buy);
+    --content-trade-sell-text: var(--ds-color-function-trade-sell);
+    --content-trade-buy: var(--ds-color-function-trade-buy);
+    --content-trade-sell: var(--ds-color-function-trade-sell);
+    --content-inverse-primary: var(--ds-color-text-inverse-primary);
+    --content-inverse-secondary: var(--ds-color-text-inverse-secondary);
+    --content-inverse-tertiary: var(--ds-color-text-inverse-tertiary);
+    --content-blue-text-on-blue-sharp-bg: var(--ds-color-brand-8); //@TODO
+    --content-blue-text-on-blue-soft-bg: var(--ds-color-brand-4); //@TODO
+    --content-highlight-blue: var(--ds-color-brand-5);
+    --border-strength-100: var(--ds-color-border-subtle);
+    --border-strength-200: var(--ds-color-border-strong);
+    --border-strength-800: var(--ds-color-border-black);
+    --border-blue: var(--ds-color-brand-6);
+    --border-orange: var(--ds-color-orange-6);
+    --border-grey: var(--ds-color-neutral-7);
+    --border-yellow: var(--ds-color-yellow-6);
+    --border-red: var(--ds-color-rose-6);
+    --background-primary: var(--ds-color-background-primary);
+    --background-secondary: var(--ds-color-background-secondary);
+    --background-tertiary: var(--ds-color-background-tertiary);
+    --background-disabled: var(--ds-color-background-disabled);
+    --background-always-black: var(--ds-color-always-black);
+    --background-blue-soft: var(--ds-color-function-brand-soft);
+    --background-blue-sharp: var(--ds-color-function-brand);
+    --background-purple-soft: var(--ds-color-purple-3);
+    --background-purple-sharp: var(--ds-color-purple-6);
+    --background-orange-soft: var(--ds-color-orange-2);
+    --background-orange-sharp: var(--ds-color-orange-6);
+    --background-inverse-primary: var(--ds-color-background-inverse-primary);
+    --background-inverse-secondary: var(--ds-color-background-inverse-secondary);
+    --background-inverse-tertiary: var(--ds-color-background-inverse-tertiary);
+    --background-floating-secondary: var(--ds-color-layer-0); //@TODO
+    --background-popup: var(--ds-color-background-tooltip);
+    --background-mask: var(--ds-color-background-mask);
+    --border-primary: var(--ds-color-border-subtle);
+    --color-text-placeholder: var(--ds-color-text-tertiary);
+    /** v3 DS light 截止*/
+
+    --main-trend: var(--ds-color-background-secondary);
+    --main-bgc: var(--ds-color-background-primary);
+    background-color: var(--color-bg);
+    --main-bright-text: var(--ds-color-text-primary);
+    --subnav-bgc: var(--ds-color-background-secondary); // 二级菜单背景色
+    --subnav-hover-bgc: var(--ds-color-background-tertiary); // 二级菜单 hover 的背景色
+    --subnav-text-color: var(--ds-color-text-tertiary); // 二级菜单文字颜色
+    --subnav-shadow-color: var(--ds-color-neutral-2); // 二级菜单阴影颜色
+    --subnav-desc-color: var(--ds-color-text-tertiary);
+    --bit-info-popover: var(--ds-color-background-tooltip);
+    --block-main-bg: var(--ds-color-background-primary);
+    --bit-dialog-input: var(--ds-color-background-tertiary);
+    --gray-iconfont-color: var(--ds-color-text-primary);
+    --condition-wrapper: var(--ds-color-background-tertiary);
+    --strategy-account-bgc: var(--ds-color-background-tertiary);
+    --block-strategy-bg: var(--ds-color-background-tertiary); // 现货子账户不支持弹窗 背景用
+    --vice-deep-blue: var(--ds-color-background-tertiary);
+
+    /* v2 DS 大改版颜色 */
+    // --color-buy: #26ab78;
+    // --color-sell: #f1493f;
+    --color-buy: var(--ds-color-function-trade-buy); // 先使用老颜色
+    --color-sell: var(--ds-color-function-trade-sell); //先使用老颜色
+
+    --color-error: var(--ds-color-function-error);
+    --color-success: var(--ds-color-function-success);
+    --color-warning: var(--ds-color-function-warning);
+    --color-green: var(--ds-color-green-6);
+    --color-red: var(--ds-color-rose-6);
+    /* 字体 */
+    --color-primary-text: var(--content-primary);
+    --color-secondary-text: var(--content-secondary);
+    --color-third-text: var(--content-tertiary);
+    --color-disabled-text: var(--content-disabled);
+    --color-placeholder-text: var(--content-disabled);
+    --color-white-text: var(--ds-color-always-white);
+    --color-warning-text: var(--content-warning);
+    --color-black-text: var(--ds-color-always-black);
+    --color-text-btn: var(--content-link-default);
+    /* 线条 */
+    --color-line: var(--border-strength-100);
+    --color-input-border: var(--border-strength-100);
+    /* 背景 */
+    --color-bg: var(--ds-color-background-primary);
+    --color-error-bg: var(--ds-color-function-error-soft);
+    --color-success-bg: var(--ds-color-function-success-soft);
+    --color-warning-bg: var(--ds-color-function-warning-soft);
+    --color-green-bg: var(--ds-color-function-brand-soft);
+    --color-card-bg: var(--ds-color-layer-1);
+    --color-special-bg: var(--ds-color-brand-1);
+    --color-secondary-btn-bg: var(--ds-color-background-tertiary);
+    --color-popup-bg: var(--ds-color-background-tooltip);
+    --color-popup-bg-opa: var(--ds-color-background-tooltip);
+    --color-primary-btn-bg: @mainGreen;
+    --color-primary-pressed-bg: var(--ds-color-function-brand-active);
+    --color-primary-hover-bg: var(--ds-color-function-brand-hover);
+    --color-dialog-bg: var(--ds-color-layer-0);
+    --color-modal-bg: var(--ds-color-background-inverse-tertiary);
+    --color-input-bg: var(--ds-color-background-input);
+    /* 阴影 */
+    --shoadow-sl1: 0px 1px 7px rgba(0, 0, 0, 0.3);
+    --shoadow-sl2: 0px 6px 18px rgba(0, 0, 0, 0.4);
+    --shoadow-sl3: 0px 10px 32px rgba(0, 0, 0, 0.5);
+    --shoadow-sl4: 0px 12px 42px rgba(0, 0, 0, 0.7);
+
+    // 二期大改版账户
+    --color-bg-card: linear-gradient(180deg, #f9fbfb 0%, rgba(249, 251, 251, 0.5) 100%);
+    --three-hover-color: var(--ds-color-neutral-2);
+
+    // v3版本开始区分黑白版
+    --main-kline-green: var(--color-green);
+    --main-kline-red: var(--color-red);
+    --main-error: var(--color-error);
+
+    --background-dialog: var(--ds-color-layer-0);
+  }
+
+  .trade-wrap {
+    --color-primary: @mainGreen;
+    --color-sell: var(--ds-color-function-trade-sell);
+    --main-blue: var(--main-color);
+
+    --color-sell-alpha: var(--ds-color-red-2);
+    --color-buy-alpha: var(--ds-color-green-2);
+    --color-primary-alpha: var(--ds-color-brand-2);
+
+    &.black {
+      --main-bg: var(--ds-color-background-primary);
+      --main-text: var(--ds-color-text-primary);
+      --main-bright-text: var(--ds-color-text-primary);
+      --minor-grey-text: var(--ds-color-text-tertiary);
+      --block-title-bg: var(--ds-color-text-inverse-primary);
+      --block-title-text: var(--ds-color-text-inverse-tertiary);
+      --block-title-active-text: var(--ds-color-text-primary);
+      --block-thin-gray-border: var(--ds-color-border-subtle);
+      --interval-color: var(--ds-color-text-tertiary);
+      --interval-selected-bg: var(--ds-color-background-tertiary);
+      --interval-selected-color: @mainGreen;
+      --vice-deep-blue: var(--ds-color-background-tertiary);
+      --vice-selected-bg: var(--ds-color-background-secondary);
+      --vice-hover-bg: var(--ds-color-background-secondary);
+      --iconfont-thin-gray-color: var(--ds-color-text-inverse-tertiary);
+      --dropdown-bottom-bg: var(--ds-color-background-tertiary);
+      --dropdown-bottom-color: var(--ds-color-text-tertiary);
+      --dropdown-border: var(--ds-color-border-subtle);
+      --dropdown-bg: var(--ds-color-layer-2);
+      --switch-bg: var(--ds-color-neutral-6);
+      --vice-split-line: var(--ds-color-border-subtle);
+      --vice-disabled-text: var(--ds-color-text-disabled);
+      --subnav-box-bgc: var(--ds-color-background-tertiary);
+      --entrust-type-tab-background: var(--ds-color-neutral-9);
+      --entrust-type-tab-border: var(--ds-color-neutral-9);
+      --percent-span-text: var(--ds-color-text-tertiary);
+      --tab-default-bg: var(--ds-color-neutral-8);
+      --bit-info-popover: var(--ds-color-background-tooltip);
+      --bit-drop-down: var(--ds-color-background-tertiary);
+      --block-strategy-bg: var(--ds-color-background-secondary);
+    }
+
+    &.white {
+      --main-bg: var(--ds-color-background-tertiary);
+      --main-text: var(--ds-color-text-primary);
+      --main-bright-text: var(--ds-color-text-primary);
+      --minor-grey-text: var(--ds-color-text-tertiary);
+      --block-title-bg: var(--ds-color-text-inverse-primary);
+      --block-title-text: var(--ds-color-text-inverse-tertiary);
+      --block-title-active-text: var(--ds-color-text-primary);
+      --block-thin-gray-border: var(--ds-color-border-subtle);
+      --interval-color: var(--ds-color-text-tertiary);
+      --interval-selected-bg: var(--ds-color-background-tertiary);
+      --interval-selected-color: @mainGreen;
+      --vice-deep-blue: var(--ds-color-background-tertiary);
+      --vice-selected-bg: var(--ds-color-background-secondary);
+      --vice-hover-bg: var(--ds-color-background-secondary);
+      --iconfont-thin-gray-color: var(--ds-color-text-inverse-tertiary);
+      --dropdown-bottom-bg: var(--ds-color-background-tertiary);
+      --dropdown-bottom-color: var(--ds-color-text-tertiary);
+      --dropdown-border: var(--ds-color-border-subtle);
+      --dropdown-bg: var(--ds-color-layer-2);
+      --switch-bg: var(--ds-color-neutral-3);
+      --vice-split-line: var(--ds-color-border-subtle);
+      --vice-disabled-text: var(--ds-color-text-disabled);
+      --subnav-box-bgc: var(--ds-color-background-tertiary);
+      --entrust-type-tab-background: var(--ds-color-neutral-white);
+      --entrust-type-tab-border: var(--ds-color-neutral-2);
+      --percent-span-text: var(--ds-color-text-tertiary);
+      --tab-default-bg: var(--ds-color-neutral-2);
+      --bit-info-popover: var(--ds-color-background-tooltip);
+      --bit-drop-down: var(--ds-color-background-tertiary);
+      --block-strategy-bg: var(--ds-color-background-secondary);
+    }
+  }
+}

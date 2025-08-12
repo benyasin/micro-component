@@ -1,0 +1,8 @@
+{
+  "explorer.sortOrderLexicographicOptions": "upper",
+  "editor.tabSize": 2,
+  "i18n-ally.localesPaths": [
+    "locales"
+  ],
+  "vue-i18n.i18nPaths": "locales"
+}
