@@ -21,7 +21,7 @@ export default defineConfig({
     'process.client': 'true'
   },
   server: {
-    open: 'http://localhost:5174/micro/playground/index.html#/header'
+    open: 'http://localhost:5173/micro/playground/index.html#/footer'
   },
   build: {
     emptyOutDir: true

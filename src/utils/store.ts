@@ -45,7 +45,7 @@ export function defineStore<T extends (...args) => unknown>(
 
     if (!root) {
       throw new Error(
-        `you must call createStore() in the root component (such as Header.vue, Footer.vue)`
+        `you must call createStore() in the root component (such as Footer.vue)`
       )
     }
 

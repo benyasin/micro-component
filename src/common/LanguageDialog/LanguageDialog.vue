@@ -48,7 +48,7 @@ import { ref, watchEffect } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import { Modal, Tabs, TabPane } from 'ant-design-vue'
 
-import { setLanguage } from '@/services/header'
+// 移除Header服务引用
 import LocalCookie, { CookieKey } from '@/utils/request/localCookie.js'
 import { useCurrency } from '@/compositions/useCurrency'
 import { useI18n } from '@/compositions/useI18n'
@@ -95,7 +95,8 @@ function changeLanguage(language: Language) {
 
   // 登录状态请求修改语言接口
   if (props.userInfo) {
-    setLanguage({ languageType: language.languageType })
+    // 移除Header服务调用，使用模拟实现
+    console.log('Language changed:', language.languageType)
   }
 
   // cookie、localstorage

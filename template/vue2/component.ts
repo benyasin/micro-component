@@ -1,7 +1,7 @@
 import './server-app/{{type}}/style.css'
 
 const isClient = process.client
-const isDebug = isClient && Boolean(localStorage?.getItem('MICRO_HEADER:DEBUG'))
+const isDebug = isClient && Boolean(localStorage?.getItem('MICRO_COMPONENT:DEBUG'))
 const type = '{{type}}'
 
 async function getMicroRutime() {

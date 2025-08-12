@@ -1,19 +1,57 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useProps } from '@/compositions/useProps'
-import { getConfig } from './config'
 import { Props, Config } from './types'
 import { useI18n } from '@/compositions/useI18n'
 import { useSize } from '@/compositions/useSize'
-import { useSocialMedia } from './useSocialMedia'
 import { useEvent } from '@/compositions/useEvent'
-import { Events } from '@/components/Header/types'
+import { Events } from './types'
 import { defineStore } from '@/utils/store'
-import { pushQueue } from '@/utils/queue'
 import { debounce } from 'lodash-es'
-import IconMediaMoreLight from '@/assets/footer/icon-media-more-light.png'
-import IconMediaMoreLightHover from '@/assets/footer/icon-media-more-light-hover.png'
-import IconMediaMoreDark from '@/assets/footer/icon-media-more-dark.png'
-import IconMediaMoreDarkHover from '@/assets/footer/icon-media-more-dark-hover.png'
+
+// 默认配置
+const getDefaultConfig = (locale: string): Config => {
+  return {
+    brandName: 'MicroApp',
+    slogan: 'Simple & Powerful',
+    copyright: `© ${new Date().getFullYear()} MicroApp. All rights reserved.`,
+    rtlSupport: false,
+    currencyVisible: true,
+    // 默认启用多语言支持
+    i18nEnabled: true,
+    
+    // 默认产品链接
+    productLinks: [
+      { title: 'Features', url: '/features', target: '_self' },
+      { title: 'Pricing', url: '/pricing', target: '_self' },
+      { title: 'API', url: '/api', target: '_blank' },
+      { title: 'Documentation', url: '/docs', target: '_blank' }
+    ],
+    
+    // 默认支持链接
+    supportLinks: [
+      { title: 'Help Center', url: '/help', target: '_self' },
+      { title: 'Contact Us', url: '/contact', target: '_self' },
+      { title: 'Status', url: '/status', target: '_blank' },
+      { title: 'Privacy Policy', url: '/privacy', target: '_self' },
+      { title: 'Terms of Service', url: '/terms', target: '_self' }
+    ],
+    
+    // 默认社交媒体链接
+    socialLinks: [
+      { name: 'twitter', title: 'Follow us on Twitter', url: 'https://twitter.com/microapp', icon: '🐦' },
+      { name: 'github', title: 'View on GitHub', url: 'https://github.com/microapp', icon: '📚' },
+      { name: 'discord', title: 'Join our Discord', url: 'https://discord.gg/microapp', icon: '💬' }
+    ],
+    
+    // 默认语言列表 - 只保留中英文
+    languages: [
+      { locale: 'en', languageKey: 'en_US', languageType: 0, languageName: 'English' },
+      { locale: 'zh-CN', languageKey: 'zh_CN', languageType: 1, languageName: '简体中文' }
+    ],
+    
+
+  }
+}
 
 export const useFooter = defineStore((defaultProps?: Props) => {
   const { props: footerProps, updateProps } = useProps(defaultProps)
@@ -21,104 +59,49 @@ export const useFooter = defineStore((defaultProps?: Props) => {
   const { formatLocalPath, t, locale } = useI18n()
   const { winWidth } = useSize()
   const config = ref<Config>()
-  const { footerApiRes } = useSocialMedia()
 
   const mergeConfig = (source: Partial<Config>, target: Partial<Config>) => {
+    const defaultConfig = getDefaultConfig(locale.value)
+    
     config.value = {
-      describe: target.describe || source.describe,
-      copyright: target.copyright || source.copyright,
-      rtlSupport: target.rtlSupport ?? source.rtlSupport ?? false,
-      list: target.list || source.list,
-      community: target.community || source.community
+      ...defaultConfig,
+      ...source,
+      ...target,
+      // 合并数组配置
+      productLinks: target.productLinks || source.productLinks || defaultConfig.productLinks,
+      supportLinks: target.supportLinks || source.supportLinks || defaultConfig.supportLinks,
+      socialLinks: target.socialLinks || source.socialLinks || defaultConfig.socialLinks,
+      languages: target.languages || source.languages || defaultConfig.languages
     }
   }
 
   const initConfig = () => {
-    const defaultConfig = getConfig(locale.value, formatLocalPath, footerProps.value.builderAds)
-    mergeConfig(defaultProps, defaultConfig)
+    mergeConfig(defaultProps, footerProps.value)
   }
 
-  const fetchFooterInfo = async () => {
-    let { contacts = [], community = [] } = footerApiRes.value?.data || {}
-
-    if (footerApiRes.value?.code === '00000') {
-      if (!footerProps.value.community?.list) {
-        config.value.community.list = contacts.map((item) => ({
-          title: item?.mainKeyName,
-          contact: item?.viceKeyName,
-          link: item?.link
-        }))
-      }
-
-      if (!footerProps.value.community?.iconLinkList) {
-        const isSpecialLang = ['de', 'nl', 'pl', 'sv'].includes(footerProps.value.locale)
-        // 以下语言下把 Telegram 放第一位 Telegram 需要单独换行
-        if (isSpecialLang) {
-          const index = community.findIndex((item) => item.mainKeyName === 'Telegram')
-          if (index > -1) {
-            const telegram = community[index]
-            community.splice(index, 1)
-            community.unshift(telegram)
-          }
-        }
-
-        const telegramList = (community || []).filter(
-          (item) => item?.mainKeyName.startsWith('Telegram') && item?.mainKeyName !== 'Telegram'
-        )
-        config.value.community.iconLinkList = (community || [])
-          .filter(
-            (item) =>
-              !(item?.mainKeyName.startsWith('Telegram') && item?.mainKeyName !== 'Telegram')
-          )
-          .map((item) => {
-            const iconItem = {
-              name: item?.mainKeyName,
-              title: t('common_footer.follow_us', [item?.mainKeyName]),
-              url: item?.link,
-              img: item?.icon,
-              lightIcon: item?.whiteIcon,
-              darkIcon: item?.blackIcon,
-              lightHoverIcon: item?.whiteHoverIcon,
-              darkHoverIcon: item?.blackHoverIcon,
-              telegramList: null
-            }
-            if (iconItem.name === 'Telegram' && telegramList.length > 0) {
-              iconItem.telegramList = telegramList.concat([item])
-            }
-            return iconItem
-          }).concat([{
-            name: 'more',
-            title: t('common_global_dialog.more'),
-            url: formatLocalPath('/bitget-community'),
-            img: IconMediaMoreLight,
-            lightIcon: IconMediaMoreLight,
-            darkIcon: IconMediaMoreDark,
-            lightHoverIcon: IconMediaMoreLightHover,
-            darkHoverIcon: IconMediaMoreDarkHover,
-            telegramList: null
-          }])
-      }
-    }
-  }
-
+  // 监听props变化
   watch(
-    [() => footerApiRes.value?.data],
+    [() => footerProps.value],
     () => {
       if (typeof window !== 'undefined') {
         initConfig()
-        pushQueue(() => {
-          fetchFooterInfo()
-        }, 2000)
       }
     },
-    { immediate: true }
+    { immediate: true, deep: true }
+  )
+
+  // 监听语言变化
+  watch(
+    [() => locale.value],
+    () => {
+      initConfig()
+    }
   )
 
   let preWinWidth = winWidth.value
   const handleResize = debounce(() => {
     if (Math.abs(preWinWidth - winWidth.value) > 10) {
       initConfig()
-      fetchFooterInfo()
     }
     preWinWidth = winWidth.value
   }, 300)
@@ -136,7 +119,6 @@ export const useFooter = defineStore((defaultProps?: Props) => {
   return {
     footerProps,
     updateProps,
-    fetchFooterInfo,
     mergeConfig,
     config,
     on: event.on,

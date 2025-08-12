@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 
 const isClient = process.client
-const isDebug = isClient && Boolean(localStorage?.getItem('MICRO_HEADER:DEBUG'))
+const isDebug = isClient && Boolean(localStorage?.getItem('MICRO_COMPONENT:DEBUG'))
 
 async function getMicroRutime() {
   if ((window as any).MicroRuntime) {

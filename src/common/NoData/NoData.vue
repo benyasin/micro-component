@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center justify-center py-20px">
     <Component :is="img || ImgNodata" />
     <span class="mt-16px text-thirdText">
-      <slot>{{ t('common_header.no_data') }}</slot>
+      <slot>{{ t('common.no_data') }}</slot>
     </span>
   </div>
 </template>
