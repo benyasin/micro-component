@@ -13,7 +13,7 @@
           <div pc="my-20px" lt-ipad="hidden">
             <div
               class="mt-3"
-              lt-pc="flex items-center pb-6 flex-wrap ltr:children:mr-5 rtl:children:ml-5"
+              :lt-pc="config?.rtlSupport ? 'flex items-center pb-6 flex-wrap ltr:children:mr-5 rtl:children:ml-5' : 'flex items-center pb-6 flex-wrap children:mr-5'"
               pc="grid grid-cols-5 gap-y-3"
             >
               <div
@@ -90,7 +90,7 @@
           class="text-thirdText text-fs14 mb-15px"
           pc="pb-44px space-y-5 mt-6"
           lt-ipad="hidden"
-          at-ipad="flex items-center ltr:children:mr-5 rtl:children:ml-5"
+          :at-ipad="config?.rtlSupport ? 'flex items-center ltr:children:mr-5 rtl:children:ml-5' : 'flex items-center children:mr-5'"
         >
           <div v-for="(item, index) in config.community.list" :key="index" at-ipad="w-162px">
             <div class="leading-22px text-primaryText">
@@ -144,7 +144,10 @@ function open(url: string) {
 <style scoped lang="less">
 // 为了SSG时可以显示正确的Logo，这里用CSS来控制深浅Logo的显示，不能动态拼接src
 .logo {
-  @apply hidden w-132px h-54px !rtl:rotate-y-0;
+  @apply hidden w-132px h-54px;
+}
+.logo.rtl-enabled {
+  @apply !rtl:rotate-y-0;
 }
 .logo-light {
   @apply inline-block;

@@ -32,7 +32,7 @@
             :href="itemList.url"
             :target="itemList.isTarget ? '_blank' : ''"
             :rel="itemList.newRel != null ? itemList.newRel : `noopener${itemList.rel || ''}`"
-            class="nav-item box-border w-full no-underline text-thirdText inline-flex justify-start items-center dark:text-contentDisabled fw-500 text-fs14"
+            :class="['nav-item box-border w-full no-underline text-thirdText inline-flex justify-start items-center dark:text-contentDisabled fw-500 text-fs14', { 'rtl-enabled': config?.rtlSupport }]"
             ipad:hover="text-primary cursor-pointer transition-all"
             @click="handleClickMessi(itemList.type, itemList.content, itemList.url, $event)"
           >
@@ -91,6 +91,9 @@ a.nav-item {
     visibility: hidden;
     // transform: translate(-10px, 0px);
     opacity: 0;
+  }
+  
+  &.rtl-enabled .arrow-right {
     @apply ltr:-translate-x-10px rtl:translate-x-10px rtl:rotate-y-180;
   }
   .football {
@@ -103,6 +106,10 @@ a.nav-item {
       visibility: visible;
       opacity: 1;
       transition: all 0.25s ease-out;
+      @apply translate-x-0;
+    }
+    
+    &.rtl-enabled .arrow-right {
       @apply translate-x-0 rtl:rotate-y-180;
     }
   }

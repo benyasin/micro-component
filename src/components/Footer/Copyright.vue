@@ -1,7 +1,7 @@
 <template>
   <div
-    class="max-w-1200px leading-5 text-fs12 text-thirdText"
-    pc="flex justify-between border-t-1 border-line rtl:space-x-reverse"
+    :class="['max-w-1200px leading-5 text-fs12 text-thirdText', { 'rtl-enabled': config?.rtlSupport }]"
+    :pc="config?.rtlSupport ? 'flex justify-between border-t-1 border-line rtl:space-x-reverse' : 'flex justify-between border-t-1 border-line'"
     at-ipad="flex flex-col-reverse border-t-1 border-line"
     lt-ipad="flex flex-col-reverse space-y-5"
   >
@@ -10,7 +10,7 @@
         class="flex flex-row items-center flex-wrap copyright py-5"
         lt-ipad="border-t-2 border-line w-full justify-between"
       >
-        <div class="mr-16px fw-500 text-thirdText dark:text-[var(--content-disabled)]" dir="ltr">
+        <div class="mr-16px fw-500 text-thirdText dark:text-[var(--content-disabled)]" :dir="config?.rtlSupport ? 'ltr' : undefined">
           {{ t(config.copyright) }}
         </div>
         <span>丨</span>
@@ -98,8 +98,8 @@ function showLanguageDialog(tab: LanguageTab) {
 </script>
 
 <style scoped lang="less">
-[dir='rtl'] .link,
-[dir='rtl'] .copyright {
+.rtl-enabled[dir='rtl'] .link,
+.rtl-enabled[dir='rtl'] .copyright {
   direction: ltr;
 }
 .item {

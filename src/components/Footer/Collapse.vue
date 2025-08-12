@@ -29,7 +29,7 @@
       v-show="config?.community?.iconLinkList?.length"
       class="mt-3"
       pc="grid grid-cols-5 gap-y-4"
-      lt-pc="flex items-center flex-wrap ltr:children:mr-5 rtl:children:ml-5"
+      :lt-pc="config?.rtlSupport ? 'flex items-center flex-wrap ltr:children:mr-5 rtl:children:ml-5' : 'flex items-center flex-wrap children:mr-5'"
     >
       <div
         v-for="item in config.community.iconLinkList"
@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { Collapse, CollapsePanel, Tooltip } from 'ant-design-vue'
+// Removed ant-design-vue imports as they are not used in this component
 import { useI18n } from '@/compositions/useI18n'
 import { useFooter } from './useFooter'
 import { useTrack } from './useTrack'
@@ -108,24 +108,20 @@ const { trackFooterListLink, trackFooterSocialContact } = useTrack()
   --mi-collapse-content-bg-color: transparent;
   --mi-collapse-header-bg-color: transparent;
 
-  :deep {
-    .mi-collapse-item__header {
-      @apply border-none py-12px px-0;
-    }
-    .mi-collapse-item__wrap {
-      @apply border-none;
-    }
-    .mi-collapse-item__content {
-      @apply py-12px px-0 leading-18px text-primaryText;
-    }
-    .mi-collapse-item__arrow {
-      @apply hidden;
-    }
-    .mi-collapse-item.is-active {
-      .arrow {
-        @apply rotate-180;
-      }
-    }
+  :deep(.mi-collapse-item__header) {
+    @apply border-none py-12px px-0;
+  }
+  :deep(.mi-collapse-item__wrap) {
+    @apply border-none;
+  }
+  :deep(.mi-collapse-item__content) {
+    @apply py-12px px-0 leading-18px text-primaryText;
+  }
+  :deep(.mi-collapse-item__arrow) {
+    @apply hidden;
+  }
+  :deep(.mi-collapse-item.is-active .arrow) {
+    @apply rotate-180;
   }
 }
 .nav-item {

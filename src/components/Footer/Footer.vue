@@ -18,7 +18,7 @@
         </div>
         <div
           class="box-border relative w-full overflow-hidden"
-          pc="flex justify-between space-x-30px min-h-540px mb-35px rtl:space-x-reverse"
+          :pc="config?.rtlSupport ? 'flex justify-between space-x-30px min-h-540px mb-35px rtl:space-x-reverse' : 'flex justify-between space-x-30px min-h-540px mb-35px'"
         >
           <Community v-if="winWidth >= 768" at-ipad="hidden" lt-ipad="hidden" />
           <Nav />

@@ -27,6 +27,7 @@ export const useFooter = defineStore((defaultProps?: Props) => {
     config.value = {
       describe: target.describe || source.describe,
       copyright: target.copyright || source.copyright,
+      rtlSupport: target.rtlSupport ?? source.rtlSupport ?? false,
       list: target.list || source.list,
       community: target.community || source.community
     }

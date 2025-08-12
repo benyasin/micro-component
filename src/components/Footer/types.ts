@@ -9,6 +9,8 @@ export interface Config {
   describe?: string
   copyright?: string
   builderAds?: boolean
+  /** RTL 支持开关，默认关闭 */
+  rtlSupport?: boolean
 
   /** 项目名，如main、events、otc、cms、mix等，用来兼容多站点的一些业务逻辑区别 */
   project?: string
