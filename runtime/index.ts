@@ -12,8 +12,11 @@ import { Spin } from 'ant-design-vue'
 import 'ant-design-vue/dist/reset.css'
 
 function injectToGlobal(app) {
+  // 兼容：把i18n同时挂到globalProperties和全局对象，便于外部同步
   // @ts-ignore
-  window.MicroRuntime = { ...runtime, app }
+  app.config.globalProperties.$i18n = i18n
+  // @ts-ignore
+  window.MicroRuntime = { ...runtime, app, i18n }
   window.dispatchEvent(new Event('MicroRuntime:ready'))
 }
 

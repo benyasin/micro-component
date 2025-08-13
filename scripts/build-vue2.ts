@@ -3,7 +3,7 @@ import { build } from 'vite'
 import { createVuePlugin } from 'vite-plugin-vue2'
 import postcssRtlcss from 'postcss-rtlcss'
 import { copyTemplate, rm } from './utils.js'
-import { terser } from '@rollup/plugin-terser'
+import terser from '@rollup/plugin-terser'
 
 async function buildComponents() {
   const templateFiles = await copyTemplate('vue2', 'temp')

@@ -111,9 +111,7 @@ export const _createComponent = async ({ el, elementId, microId, type, props }: 
   }
 
   // 加载和渲染组件
-  const [i18nMessages, comp] = await Promise.all([
-    // 下载语言包
-    props.locale && props.locale !== 'en' ? fetchLocale(props.locale) : Promise.resolve(null),
+  const [comp] = await Promise.all([
     // 下载组件
     fetchComponent(type),
     // 下载组件数据
@@ -122,11 +120,9 @@ export const _createComponent = async ({ el, elementId, microId, type, props }: 
     waitStyle()
   ])
 
-  if (i18nMessages) {
-    i18n.global.setLocaleMessage(props.locale, i18nMessages.default || {})
-    i18n.global.locale.value = props.locale
-  }
-
+  // 移除runtime自己的i18n设置，让组件内的useI18n统一管理
+  // 这样避免了两套i18n实例的冲突
+  
   const element = el || document.getElementById(elementId)
   const existsComp = el
     ? config.keepAlive
@@ -215,16 +211,7 @@ export const fetchComponent = async (type: string) => {
  * @param locale
  * @returns
  */
-export const fetchLocale = async (locale: string) => {
-  const localeFiles = import.meta.glob<{ default: LocaleMessageValue }>(`../locales/js/*.js`)
-  const localeInfo = defaultLanguageList.find((item) => item.locale === locale)
-  const languageKey = getLanguageKey(localeInfo)
-  const filepath = Object.keys(localeFiles).find((filepath) =>
-    filepath.toLowerCase().includes(`${languageKey.toLowerCase()}.js`)
-  )
-
-  return localeFiles[filepath]()
-}
+// 统一由组件内useI18n进行语言包加载
 
 /**
  * 加载组件预渲染数据
@@ -252,6 +239,5 @@ export default {
   createComponent,
   removeComponent,
   fetchComponent,
-  fetchLocale,
   componentTasks
 }

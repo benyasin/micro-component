@@ -21,57 +21,18 @@
       </div>
       <div id="content" style="width: 100vw; height: 100px; background: #fafafa">TEST</div>
       <div id="footer"></div>
-      <div id="globalDialog"></div>
-      <div id="kycGuideBar"></div>
-      <div id="kycGuideDialog"></div>
     </div>
     <script>
       if (location.search.includes('height')) {
         document.getElementById('content').style.height = '1000px'
       }
       window.addEventListener("MicroRuntime:ready", () => {
-        if (location.search.includes('header=true')) {
-          MicroRuntime.createComponent({
-            type: "Header",
-            props: { locale: "zh-CN" },
-            microId: "1",
-            el: document.getElementById("header"),
-          });
-        }
-
         if (location.search.includes('footer=true')) {
           MicroRuntime.createComponent({
             type: "Footer",
             props: { locale: "zh-CN" },
-            microId: "2",
+            microId: "1",
             el: document.getElementById("footer"),
-          });
-        }
-
-        if (location.search.includes('globalDialog=true')) {
-          MicroRuntime.createComponent({
-            type: "GlobalDialog",
-            props: { locale: "zh-CN" },
-            microId: "3",
-            el: document.getElementById("globalDialog"),
-          });
-        }
-
-        if (location.search.includes('KycGuideDialog=true')) {
-          MicroRuntime.createComponent({
-            type: "kycGuideDialog",
-            props: { locale: "zh-CN" },
-            microId: "4",
-            el: document.getElementById("kycGuideDialog"),
-          });
-        }
-
-        if (location.search.includes('KycGuideBar=true')) {
-          MicroRuntime.createComponent({
-            type: "KycGuideBar",
-            props: { locale: "zh-CN" },
-            microId: "5",
-            el: document.getElementById("kycGuideBar"),
           });
         }
       });

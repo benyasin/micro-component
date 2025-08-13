@@ -161,13 +161,7 @@ async function buildRuntime() {
       }
     },
     plugins: [
-      vue({
-        template: {
-          compilerOptions: {
-            isCustomElement: (tag) => ['lottie-player'].includes(tag)
-          }
-        }
-      }),
+      vue(),
       svg({ svgo: false }),
       UnoCss(),
       Components({
@@ -177,7 +171,7 @@ async function buildRuntime() {
       // chunkSplitPlugin({
       //   customSplitting: await getSplitChunks()
       // })
-    ]
+    ].filter(Boolean)
   })
 
   await buildEntry()

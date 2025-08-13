@@ -4,10 +4,21 @@
     "support": "Support", 
     "settings": "Settings",
     "language": "Language",
-    "switch_theme": "Switch Theme"
-  },
-  "common_header": {
-    "language_area": "Language & Region",
-    "language_rate": "Exchange Rate"
+    "switch_theme": "Switch Theme",
+    "slogan": "Simple & Powerful",
+    "product_links": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "api": "API",
+      "documentation": "Documentation"
+    },
+    "support_links": {
+      "help_center": "Help Center",
+      "contact_us": "Contact Us",
+      "status": "Status",
+      "privacy_policy": "Privacy Policy",
+      "terms_of_service": "Terms of Service"
+    },
+    "copyright_suffix": "All rights reserved."
   }
 }

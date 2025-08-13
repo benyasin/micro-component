@@ -3,7 +3,7 @@ import { build } from 'vite'
 import react from '@vitejs/plugin-react'
 import postcssRtlcss from 'postcss-rtlcss'
 import { copyTemplate, rm } from './utils.js'
-import { terser } from '@rollup/plugin-terser'
+import terser from '@rollup/plugin-terser'
 
 async function buildComponents() {
   const templateFiles = await copyTemplate('react', 'temp')

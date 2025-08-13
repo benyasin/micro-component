@@ -3,6 +3,7 @@
     :locale="locale" 
     :theme="theme as 'light' | 'dark'" 
     :log-event="logEvent" 
+    :is-i18n-enabled="true"
     @language-change="handleLanguageChange"
     @theme-change="handleThemeChange"
   />

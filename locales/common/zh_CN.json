@@ -4,10 +4,21 @@
     "support": "支持",
     "settings": "设置",
     "language": "语言",
-    "switch_theme": "切换主题"
-  },
-  "common_header": {
-    "language_area": "语言和地区",
-    "language_rate": "汇率"
+    "switch_theme": "切换主题",
+    "slogan": "简单而强大",
+    "product_links": {
+      "features": "功能",
+      "pricing": "定价",
+      "api": "API",
+      "documentation": "文档"
+    },
+    "support_links": {
+      "help_center": "帮助中心",
+      "contact_us": "联系我们",
+      "status": "系统状态",
+      "privacy_policy": "隐私政策",
+      "terms_of_service": "服务条款"
+    },
+    "copyright_suffix": "版权所有"
   }
 }

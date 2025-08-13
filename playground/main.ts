@@ -19,8 +19,11 @@ function run() {
   app.use(Spin)
   app.mount('#app')
   // @ts-ignore
+  app.config.globalProperties.$i18n = i18n
+  // @ts-ignore
   window.MicroRuntime = {
-    app
+    app,
+    i18n
   }
 }
 

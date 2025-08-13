@@ -12,17 +12,19 @@
               {{ config?.brandName || 'MicroApp' }}
             </div>
             <div class="text-sm text-secondaryText">
-              {{ config?.slogan || 'Simple & Powerful' }}
+              {{ isI18nEnabled ? t('footer.slogan') : (config?.slogan || 'Simple & Powerful') }}
             </div>
           </div>
           
           <!-- 主题切换按钮 -->
+           <!-- 
           <button 
             class="px-4 py-2 rounded bg-primary text-white hover:bg-primaryHover transition-colors"
             @click="toggleTheme"
           >
             {{ currentTheme === 'dark' ? '🌞' : '🌙' }} {{ isI18nEnabled ? t('footer.switch_theme') : 'Switch Theme' }}
           </button>
+           -->
         </div>
 
         <!-- 主要内容区域 -->
@@ -39,7 +41,7 @@
                   class="text-secondaryText hover:text-primaryText transition-colors"
                   @click="handleLinkClick(item.url, item.target)"
                 >
-                  {{ item.title }}
+                  {{ isI18nEnabled ? t(`footer.product_links.${item.title.toLowerCase()}`) : item.title }}
                 </a>
               </li>
             </ul>
@@ -57,7 +59,7 @@
                   class="text-secondaryText hover:text-primaryText transition-colors"
                   @click="handleLinkClick(item.url, item.target)"
                 >
-                  {{ item.title }}
+                  {{ isI18nEnabled ? t(`footer.support_links.${formatSupportKey(item.title)}`) : item.title }}
                 </a>
               </li>
             </ul>
@@ -91,7 +93,12 @@
         <!-- 底部版权信息 -->
         <div class="border-t border-line pt-6 flex flex-col md:flex-row justify-between items-center">
           <div class="text-sm text-secondaryText">
-            {{ config?.copyright || `© ${new Date().getFullYear()} MicroApp. All rights reserved.` }}
+            <template v-if="isI18nEnabled">
+              © {{ new Date().getFullYear() }} {{ config?.brandName || 'MicroApp' }}. {{ t('footer.copyright_suffix') }}
+            </template>
+            <template v-else>
+              {{ config?.copyright || `© ${new Date().getFullYear()} MicroApp. All rights reserved.` }}
+            </template>
           </div>
           
           <!-- 社交媒体链接 -->
@@ -181,7 +188,7 @@ const toggleTheme = () => {
   console.log('[Footer] 主题切换完成')
 }
 
-const handleLanguageChange = (domEvent: Event) => {
+const handleLanguageChange = async (domEvent: Event) => {
   console.log('[Footer] 开始语言切换')
   console.log('[Footer] 当前语言:', currentLocale.value)
   console.log('[Footer] 国际化开启状态:', isI18nEnabled.value)
@@ -197,20 +204,25 @@ const handleLanguageChange = (domEvent: Event) => {
   if (language) {
     console.log('[Footer] 开始切换语言到:', newLocale)
     
-    // 更新i18n实例
-    console.log('[Footer] 调用changeLocale')
-    changeLocale(newLocale)
-    
-    // 更新组件props
-    console.log('[Footer] 更新props前的footerProps:', footerProps.value)
-    updateProps({ locale: newLocale })
-    console.log('[Footer] 更新props后的footerProps:', footerProps.value)
-    
-    // 触发事件
-    console.log('[Footer] 触发languageChange事件:', language)
-    event.emit('languageChange', language)
-    
-    console.log('[Footer] 语言切换完成')
+    try {
+      // 等待i18n实例切换完成
+      console.log('[Footer] 调用changeLocale并等待完成')
+      await changeLocale(newLocale)
+      console.log('[Footer] changeLocale完成')
+      
+      // 更新组件props
+      console.log('[Footer] 更新props前的footerProps:', footerProps.value)
+      updateProps({ locale: newLocale })
+      console.log('[Footer] 更新props后的footerProps:', footerProps.value)
+      
+      // 触发事件
+      console.log('[Footer] 触发languageChange事件:', language)
+      event.emit('languageChange', language)
+      
+      console.log('[Footer] 语言切换完成')
+    } catch (error) {
+      console.error('[Footer] 语言切换失败:', error)
+    }
   } else {
     console.warn('[Footer] 未找到对应的语言配置:', newLocale)
   }
@@ -245,6 +257,18 @@ watchEffect(() => {
 onMounted(() => {
   dispatchReady('Footer')
 })
+
+// Helper function for support link key mapping
+const formatSupportKey = (title: string) => {
+  const map: Record<string, string> = {
+    'Help Center': 'help_center',
+    'Contact Us': 'contact_us',
+    'Status': 'status',
+    'Privacy Policy': 'privacy_policy',
+    'Terms of Service': 'terms_of_service'
+  }
+  return map[title] || title.toLowerCase().replace(/\s+/g, '_')
+}
 
 defineExpose(
   makeExpose({
