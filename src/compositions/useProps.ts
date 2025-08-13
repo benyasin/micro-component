@@ -29,13 +29,10 @@ export function useProps<T extends BaseProps>(defaultProps?: T) {
 
   function updateProps(options: Partial<T> = {}) {
     Object.assign(props.value, filterUndefined(options))
-    // 给父元素挂上theme class
-    if (options.theme) {
-      const parentElement = proxy?.$el?.parentElement
-      if (parentElement) {
-        parentElement.classList.remove('micro-light', 'micro-dark')
-        parentElement.classList.add(`micro-${options.theme}`)
-      }
+    // 统一主题：同步到 body.global-theme 上的 white/black，而不再添加 micro- 类
+    if (options.theme && typeof document !== 'undefined') {
+      document.body.classList.toggle('black', options.theme === 'dark')
+      document.body.classList.toggle('white', options.theme === 'light')
     }
   }
 

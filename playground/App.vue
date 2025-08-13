@@ -42,7 +42,7 @@
           @click="theme = theme === 'dark' ? 'light' : 'dark'"
         />
       </div>
-      <div class="relative mt-72px bg-bg" :class="[`micro-${theme}`]">
+      <div class="relative mt-72px bg-bg">
         <RouterView v-slot="{ Component }">
           <component :is="Component" :key="$route.fullPath" />
         </RouterView>
@@ -72,14 +72,19 @@ const router = useRouter()
 const route = useRoute()
 const routeName = ref(route.name)
 
-console.log('isLogin', isLogin.value)
-
 function onComponentChange(component: string) {
   router.push(component)
 }
 
 watchEffect(() => {
   routeName.value = route.name
+})
+
+// 统一主题体系：根据 theme 同步 body.global-theme 的类
+watchEffect(() => {
+  if (typeof document === 'undefined') return
+  document.body.classList.toggle('black', theme.value === 'dark')
+  document.body.classList.toggle('white', theme.value === 'light')
 })
 </script>
 

@@ -9,8 +9,9 @@ const config: UserConfig = {
   presets: [
     presetUno({
       dark: {
-        dark: '.micro-dark',
-        light: '.micro-light'
+        // 与全局主题统一：使用 body 上的 .global-theme.white / .global-theme.black
+        dark: '.global-theme.black',
+        light: '.global-theme.white'
       }
     }),
     presetAttributify()
@@ -18,8 +19,9 @@ const config: UserConfig = {
   theme: {
     // 初始化默认主题
     darkMode: {
-      dark: '.micro-dark',
-      light: '.micro-light'
+      // 与全局主题统一：使用 body 上的 .global-theme.white / .global-theme.black
+      dark: '.global-theme.black',
+      light: '.global-theme.white'
     },
     colors: {
       // 实际使用的颜色变量 - Footer 组件和 playground 所需
