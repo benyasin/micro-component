@@ -40,12 +40,6 @@ export const footerExampleConfig = {
   languages: [
     { locale: 'en', languageKey: 'en_US', languageType: 0, languageName: 'English' },
     { locale: 'zh-CN', languageKey: 'zh_CN', languageType: 1, languageName: '简体中文' },
-    { locale: 'zh-TW', languageKey: 'zh_TW', languageType: 5, languageName: '繁體中文' },
-    { locale: 'ja', languageKey: 'ja_JP', languageType: 2, languageName: '日本語' },
-    { locale: 'ko', languageKey: 'ko_KR', languageType: 3, languageName: '한국어' },
-    { locale: 'es', languageKey: 'es_ES', languageType: 6, languageName: 'Español' },
-    { locale: 'fr', languageKey: 'fr_FR', languageType: 10, languageName: 'Français' },
-    { locale: 'de', languageKey: 'de_DE', languageType: 11, languageName: 'Deutsch' }
   ],
   
 
