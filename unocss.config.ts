@@ -2,8 +2,9 @@ import presetUno from '@unocss/preset-uno'
 import presetAttributify from '@unocss/preset-attributify'
 import transformerDirectives from '@unocss/transformer-directives'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
+import type { UserConfig } from '@unocss/core'
 
-export default {
+const config: UserConfig = {
   transformers: [transformerDirectives(), transformerVariantGroup()],
   presets: [
     presetUno({
@@ -21,243 +22,50 @@ export default {
       light: '.micro-light'
     },
     colors: {
-      // 新样式
-      brand: 'var(--color-brand)',
-      title: 'var(--color-title)',
-      subTitle: 'var(--color-sub-title)',
-      descreption: 'var(--color-descreption)',
-      hint: 'var(--color-hint)',
-      input: 'var(--color-input)',
-      outline: 'var(--color-outline)',
-      disable: 'var(--color-disable)',
-      divide: 'var(--color-divide)',
-      frontground: 'var(--color-frontground)',
-      Background: 'var(--color-background)',
-      brandHover: 'var(--color-brand-hover)',
-      // Brand press / 品牌色点击
-      brandActive: 'var(--color-brand-active)',
-
-      // 大改版颜色
-      // 全局
+      // 实际使用的颜色变量 - Footer 组件和 playground 所需
       primary: 'var(--color-primary)',
-      buy: 'var(--color-buy)',
-      sell: 'var(--color-sell)',
       error: 'var(--color-error)',
       success: 'var(--color-success)',
       warning: 'var(--color-warning)',
-      green: 'var(--color-green)',
-      red: 'var(--color-red)',
-      // 字体
+      
+      // 字体颜色 - 实际使用
       primaryText: 'var(--color-primary-text)',
       secondaryText: 'var(--color-secondary-text)',
       thirdText: 'var(--color-third-text)',
-      disabledText: 'var(--color-disabled-text)',
-      placeholderText: 'var(--color-placeholder-text)',
-      whiteText: 'var(--color-white-text)',
-      warningText: 'var(--color-warning-text)',
-      blackText: 'var(--color-black-text)',
-      textBtn: 'var(--color-text-btn)',
-      // 线条
-      line: 'var(--color-line)',
-      inputBorder: 'var(--color-input-border)',
-      // 背景
+      
+      // 背景颜色 - 实际使用  
       bg: 'var(--color-bg)',
       cardBg: 'var(--color-card-bg)',
-      specialBg: 'var(--color-special-bg)',
-      secondaryBtnBg: 'var(--color-secondary-btn-bg)',
-      popupBg: 'var(--color-popup-bg)',
-      primaryBtnBg: 'var(--color-primary-btn-bg)',
-      primaryPressedBg: 'var(--color-primary-pressed-bg)',
-      primaryHoverBg: 'var(--color-primary-hover-bg)',
-      modalBg: 'var(--color-modal-bg)',
-      primaryRgba: '#1da2b4',
-
-      inputBg: 'var(--color-input-bg)',
-
-      // 新大改版颜色
-      nextPrimaryText: 'var(--v3-text-primary)',
-      nextSecondaryText: 'var(--v3-text-secondary)',
-      nextTertiaryText: 'var(--v3-text-tertiary)',
-      nextDisabledText: 'var(--v3-text-disabled)',
-      nextLinkDefaultText: 'var(--v3-text-link-default)',
-      nextLinkHover: 'var(--v3-text-link-hover)',
-      nextGreenText: 'var(--v3-text-green)',
-      nextRedText: 'var(--v3-text-red)',
-      nextInverseText: 'var(--v3-text-inverse)',
-      nextPrimaryIcon: 'var(--v3-icon-primary)',
-      nextSecondaryIcon: 'var(--v3-icon-secondary)',
-      nextTertiaryIcon: 'var(--v3-icon-tertiary)',
-      nextDisabledIcon: 'var(--v3-icon-disabled)',
-      nextGreenIcon: 'var(--v3-icon-green)',
-      nextRedIcon: 'var(--v3-icon-red)',
-      nextInverseIcon: 'var(--v3-icon-inverse)',
-      nextStrengthBorderZero: 'var(--v3-border-strength-0)',
-      nextStrengthBorderOne: 'var(--v3-border-strength-1)',
-      nextStrengthBorderTwo: 'var(--v3-border-strength-2)',
-      nextLevelsurfaceZero: 'var(--v3-surface-level-0)',
-      nextLevelsurfaceOne: 'var(--v3-surface-level-1)',
-      nextLevelsurfaceTwo: 'var(--v3-surface-level-2)',
-      nextSurfaceLightBlue: 'var(--v3-surface-light-blue)',
-      nextSurfaceBrightBlue: 'var(--v3-surface-bright-blue)',
-      nextSurfaceLightPurple: 'var(--v3-surface-light-purple)',
-      nextSurfaceBrightPurple: 'var(--v3-surface-bright-purple)',
-      nextSurfaceLightOrange: 'var(--v3-surface-light-orange)',
-      nextSurfaceBrightOrange: 'var(--v3-surface-bright-orange)',
-      nextColorBuy: 'var(--v3-color-buy)',
-      nextColorSell: 'var(--v3-color-sell)',
-      nextBgSecondary: 'var(--v3-bg-secondary-color)',
-
-      contentPrimary: 'var(--content-primary)',
-      contentSecondary: 'var(--content-secondary)',
-      contentTertiary: 'var(--content-tertiary)',
-      contentDisabled: 'var(--content-disabled)',
-      contentLinkDefault: 'var(--content-link-default)',
-      contentLinkHover: 'var(--content-link-hover)',
-      contentAlwaysBlack: 'var(--content-always-black)',
-      contentAlwaysWhite: 'var(--content-always-white)',
-      contentSuccess: 'var(--content-success)',
-      contentError: 'var(--content-error)',
-      contentWarning: 'var(--content-warning)',
-      contentTradeBuyText: 'var(--content-trade-buy-text)',
-      contentTradeSellText: 'var(--content-trade-sell-text)',
-      contentTradeBuy: 'var(--content-trade-buy)',
-      contentTradeSell: 'var(--content-trade-sell)',
-      contentInversePrimary: 'var(--content-inverse-primary)',
-      contentInverseSecondary: 'var(--content-inverse-secondary)',
-      contentInverseTertiary: 'var(--content-inverse-tertiary)',
-      contentHighlighBlue: 'var(--content-highlight-blue)',
-      borderStrengthOne: 'var(--border-strength-100)',
-      borderStrengthTwo: 'var(--border-strength-200)',
-      borderStrengthEight: 'var(--border-strength-800)',
-      borderBlue: 'var(--border-blue)',
-      borderOrange: 'var(--border-orange)',
-      borderGrey: 'var(--border-grey)',
-      borderYellow: 'var(--border-yellow)',
-      borderRed: 'var(--border-red)',
-      bgPrimary: 'var(--background-primary)',
-      bgSecondary: 'var(--background-secondary)',
-      bgTertiary: 'var(--background-tertiary)',
-      bgDisabled: 'var(--background-disabled)',
-      bgAlwaysBlack: 'var(--background-always-black)',
-      bgBlueSoft: 'var(--background-blue-soft)',
-      bgBlueSharp: 'var(--background-blue-sharp)',
-      bgPurpleSoft: 'var(--background-purple-soft)',
-      bgPurpleSharp: 'var(--background-purple-sharp)',
-      bgOrangeSoft: 'var(--background-orange-soft)',
-      bgOrangeSharp: 'var(--background-orange-sharp)',
-      bgInversePrimary: 'var(--background-inverse-primary)',
-      bgInverseSecondary: 'var(--background-inverse-secondary)',
-      bgInverseTertiary: 'var(--background-inverse-tertiary)',
-      bgPopup: 'var(--background-popup)',
-
-      dsColorBackgroundDisabled: 'var(--ds-color-background-disabled)',
-      dsColorBackgroundInput: 'var(--ds-color-background-input)',
-      dsColorBackgroundInverseDisabled: 'var(--ds-color-background-inverse-disabled)',
-      dsColorBackgroundInversePrimary: 'var(--ds-color-background-inverse-primary)',
-      dsColorBackgroundInverseSecondary: 'var(--ds-color-background-inverse-secondary)',
-      dsColorBackgroundInverseTertiary: 'var(--ds-color-background-inverse-tertiary)',
-      dsColorBackgroundMask: 'var(--ds-color-background-mask)',
-      dsColorBackgroundPrimary: 'var(--ds-color-background-primary)',
-      dsColorBackgroundSecondary: 'var(--ds-color-background-secondary)',
-      dsColorBackgroundTertiary: 'var(--ds-color-background-tertiary)',
-      dsColorBackgroundTooltip: 'var(--ds-color-background-tooltip)',
-      dsColorBackgroundPopover: 'var(--ds-color-background-popover)',
-      dsColorBorderBlack: 'var(--ds-color-border-black)',
-      dsColorBorderStrong: 'var(--ds-color-border-strong)',
-      dsColorBorderSubtle: 'var(--ds-color-border-subtle)',
-      dsColorBorderGutter: 'var(--ds-color-border-gutter)',
-      dsColorFunctionBrand: 'var(--ds-color-function-brand)',
-      dsColorFunctionBrandActive: 'var(--ds-color-function-brand-active)',
-      dsColorFunctionBrandDisabled: 'var(--ds-color-function-brand-disabled)',
-      dsColorFunctionBrandHover: 'var(--ds-color-function-brand-hover)',
-      dsColorFunctionBrandSoft: 'var(--ds-color-function-brand-soft)',
-      dsColorFunctionError: 'var(--ds-color-function-error)',
-      dsColorFunctionErrorActive: 'var(--ds-color-function-error-active)',
-      dsColorFunctionErrorDisabled: 'var(--ds-color-function-error-disabled)',
-      dsColorFunctionErrorHover: 'var(--ds-color-function-error-hover)',
-      dsColorFunctionErrorSoft: 'var(--ds-color-function-error-soft)',
-      dsColorFunctionSuccess: 'var(--ds-color-function-success)',
-      dsColorFunctionSuccessActive: 'var(--ds-color-function-success-active)',
-      dsColorFunctionSuccessDisabled: 'var(--ds-color-function-success-disabled)',
-      dsColorFunctionSuccessHover: 'var(--ds-color-function-success-hover)',
-      dsColorFunctionSuccessSoft: 'var(--ds-color-function-success-soft)',
-      dsColorFunctionTradeBuy: 'var(--ds-color-function-trade-buy)',
-      dsColorFunctionTradeBuyActive: 'var(--ds-color-function-trade-buy-active)',
-      dsColorFunctionTradeBuyDisabled: 'var(--ds-color-function-trade-buy-disabled)',
-      dsColorFunctionTradeBuyHover: 'var(--ds-color-function-trade-buy-hover)',
-      dsColorFunctionTradeSell: 'var(--ds-color-function-trade-sell)',
-      dsColorFunctionTradeSellActive: 'var(--ds-color-function-trade-sell-active)',
-      dsColorFunctionTradeSellDisabled: 'var(--ds-color-function-trade-sell-disabled)',
-      dsColorFunctionTradeSellHover: 'var(--ds-color-function-trade-sell-hover)',
-      dsColorFunctionWarning: 'var(--ds-color-function-warning)',
-      dsColorFunctionWarningActive: 'var(--ds-color-function-warning-active)',
-      dsColorFunctionWarningDisabled: 'var(--ds-color-function-warning-disabled)',
-      dsColorFunctionWarningHover: 'var(--ds-color-function-warning-hover)',
-      dsColorFunctionWarningSoft: 'var(--ds-color-function-warning-soft)',
-      dsColorFunctionDiscovery: 'var(--ds-color-function-discovery)',
-      dsColorFunctionDiscoverySoft: 'var(--ds-color-function-discovery-soft)',
-      dsColorLayerZero: 'var(--ds-color-layer-0)',
-      dsColorLayerOne: 'var(--ds-color-layer-1)',
-      dsColorLayerTwo: 'var(--ds-color-layer-2)',
-      dsColorLayerThree: 'var(--ds-color-layer-3)',
-      dsColorLayerActive: 'var(--ds-color-layer-active)',
-      dsColorLinkDefault: 'var(--ds-color-link-default)',
-      dsColorLinkDisabled: 'var(--ds-color-link-disabled)',
-      dsColorLinkHover: 'var(--ds-color-link-hover)',
-      dsColorLinkPressed: 'var(--ds-color-link-pressed)',
-      dsColorTextError: 'var(--ds-color-text-error)',
-      dsColorTextInversePrimary: 'var(--ds-color-text-inverse-primary)',
-      dsColorTextInverseSecondary: 'var(--ds-color-text-inverse-secondary)',
-      dsColorTextInverseTertiary: 'var(--ds-color-text-inverse-tertiary)',
-      dsColorTextPrimary: 'var(--ds-color-text-primary)',
-      dsColorTextSecondary: 'var(--ds-color-text-secondary)',
-      dsColorTextTertiary: 'var(--ds-color-text-tertiary)',
-      dsColorTextDisabled: 'var(--ds-color-text-disabled)',
-      dsColorTextSuccess: 'var(--ds-color-text-success)',
-      dsColorTextWarning: 'var(--ds-color-text-warning)',
-      dsColorCardDiscovery: 'var(--ds-color-card-discovery)'
+      
+      // 线条颜色
+      line: 'var(--color-line)',
     },
     boxShadow: {
       DEFAULT: '2px 4px 6px 2px rgba(171, 188, 203, 0.12)',
-      popover: '0px 0px 32px 0px rgba(146, 160, 171, 0.28)',
-      sl1: 'var(--shoadow-sl1)',
-      sl2: 'var(--shoadow-sl2)',
-      sl3: 'var(--shoadow-sl3)',
-      sl4: 'var(--shoadow-sl4)'
     },
     // tailwind 中的 screens，unocss使用breakpoints
     breakpoints: {
-      ipad: '768px',
-      pc: '1200px',
       sm: '376px',
-      md: '768px',
+      md: '768px', 
       lg: '1024px',
       xl: '1200px',
       '2xl': '1440px',
-      '3xl': '1600px'
     },
     screens: {
-      // 基本编排
+      // 基本编排 - 保留标准断点
       sm: '376px',
       md: '768px',
-      lg: '1020px',
+      lg: '1020px', 
       xl: '1200px',
       '2xl': '1440px',
-      '3xl': '1600px',
-
-      ltIpad: { max: '767px' }, //小于等于767px
-      ipad: '768px', //大于768px
-      atIpad: { min: '768px', max: '1199px' }, //大于768px，小于1199px
-      ltPc: { max: '1200px' }, //小于等于1200px
-      pc: '1200px' //大于1200px
     },
     fontSize: {
+      // 保留 Footer 组件可能用到的字体大小
       fs12: ['0.75rem', '18px'],
       fs14: ['0.875rem', '22px'],
       fs16: ['1rem', '22px'],
       fs18: ['1.125rem', '26px'],
       fs20: ['1.25rem', '28px'],
-      fs22: ['1.375rem', '30px'],
       fs24: ['1.5rem', '34px'],
       fs26: ['1.625rem', '34px'],
       fs28: ['1.75rem', '34px'],
@@ -284,3 +92,5 @@ export default {
     }
   }
 }
+
+export default config

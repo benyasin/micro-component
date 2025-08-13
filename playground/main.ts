@@ -2,7 +2,7 @@ import 'virtual:uno.css'
 // import '@bit/styles/bit-colors.css' // 私有包，已注释
 // import '@bit/styles/index.css' // 私有包，已注释
 import 'ant-design-vue/dist/reset.css'
-// import './index.less'
+import './index.less'
 // polyfill
 import '@/polyfill/event-target'
 import '@/polyfill/request-idle'
