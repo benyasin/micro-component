@@ -1,7 +1,7 @@
-import fs from 'fs/promises'
-import path from 'path'
+import { readFile, appendFile, access } from 'fs/promises'
+import * as path from 'path'
 import { build } from 'vite'
-import glob from 'glob'
+import { glob } from 'glob'
 import vue from '@vitejs/plugin-vue'
 import UnoCss from 'unocss/vite'
 import svg from 'vite-svg-loader'
@@ -12,12 +12,24 @@ import postcssRtlcss from 'postcss-rtlcss'
 import replacePostcss from './postcss-replace.js'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { rm } from './utils.js'
-import { terser } from '@rollup/plugin-terser'
-import { chunkSplitPlugin } from 'vite-plugin-chunk-split'
+import terser from '@rollup/plugin-terser'
+// import { chunkSplitPlugin } from 'vite-plugin-chunk-split'
+
+async function loadManifest() {
+  const candidates = ['dist/manifest.json', 'dist/.vite/manifest.json']
+  for (const p of candidates) {
+    try {
+      const buf = await readFile(p)
+      return JSON.parse(buf.toString())
+    } catch (e) {
+      // try next
+    }
+  }
+  throw new Error('manifest.json not found in dist')
+}
 
 async function buildEntry() {
-  const manifest = JSON.parse((await fs.readFile('dist/manifest.json')).toString())
-  const polyfillFile = Object.keys(manifest).find((key) => key.startsWith('_polyfill'))
+  const manifest = await loadManifest()
 
   const styleCode = `
     const link = document.createElement("link");
@@ -30,7 +42,6 @@ async function buildEntry() {
     document.head.appendChild(link);
   `
   const scriptCode = `
-    import('/micro-runtime/${manifest[polyfillFile].file}')
     import('/micro-runtime/${manifest['index.ts'].file}')
   `
 
@@ -42,7 +53,7 @@ async function buildEntry() {
   `
 
   const entry = path.resolve(`dist/micro-runtime.js`)
-  await fs.appendFile(entry, code, 'utf-8')
+  await appendFile(entry, code, 'utf-8')
 }
 
 async function getSplitChunks() {
@@ -135,6 +146,7 @@ async function buildRuntime() {
             }
           }),
           postcssRtlcss({
+            // @ts-ignore
             selectorBlackList: ['.bit-tabs__active-bar', '.mi-tabs__active-bar']
           }),
           replacePostcss({
@@ -162,9 +174,9 @@ async function buildRuntime() {
         resolvers: [AntDesignVueResolver({ importStyle: false })]
       }),
       visualizer({ gzipSize: true }),
-      chunkSplitPlugin({
-        customSplitting: await getSplitChunks()
-      })
+      // chunkSplitPlugin({
+      //   customSplitting: await getSplitChunks()
+      // })
     ]
   })
 

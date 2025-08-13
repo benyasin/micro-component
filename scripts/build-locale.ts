@@ -1,14 +1,9 @@
 import path from 'path'
 import fs from 'fs/promises'
 import shell from 'shelljs'
-import glob from 'glob'
+import { glob } from 'glob'
 
 const configs = {
-  // web: {
-  //   subDir: "seperation",
-  //   branch: "web_seperation_new",
-  //   target: "web",
-  // },
   common: {
     subDir: 'locale',
     branch: 'web_common',

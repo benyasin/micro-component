@@ -3,13 +3,13 @@ import '@/polyfill/event-target'
 import '@/polyfill/request-idle'
 
 import { createApp } from 'vue'
-import { BitLoading } from '@bit-design/vue3'
 import { createElement } from '@/utils'
 import { i18n } from './i18n'
 import runtime from './runtime'
 import Runtime from './Runtime.vue'
 import './index.less'
-import '@bit-design/vue3/theme-chalk/dark/css-vars.css'
+import { Spin } from 'ant-design-vue'
+import 'ant-design-vue/dist/reset.css'
 
 function injectToGlobal(app) {
   // @ts-ignore
@@ -22,7 +22,7 @@ function createRuntime() {
   const app = createApp(Runtime)
 
   app.use(i18n)
-  app.use(BitLoading)
+  app.use(Spin)
   app.mount(el)
 
   injectToGlobal(app)

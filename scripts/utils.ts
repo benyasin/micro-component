@@ -1,12 +1,12 @@
-import fs from 'fs/promises'
-import glob from 'glob'
-import path from 'path'
+import { readFile, appendFile, cp, writeFile, rm as fsRm } from 'fs/promises'
+import { glob } from 'glob'
+import * as path from 'path'
 
 export const excludeCompoents = ['ConfigProvider']
 
 export async function rm(target: string) {
   try {
-    await fs.rm(target, { recursive: true })
+    await fsRm(target, { recursive: true })
   } catch {}
 }
 
@@ -31,33 +31,23 @@ export async function copyTemplate(library: 'vue' | 'react' | 'vue2', target: st
   )
 
   await rm(target)
-  await fs.cp(source, target, { recursive: true })
-  await fs.cp('dist/server-app', `${target}/server-app`, {
-    recursive: true
-  })
-
-  const componentContent = (await fs.readFile(templateFile)).toString()
+  await cp(source, target, { recursive: true })
+  await cp('dist/server-app', `${target}/server-app`, { recursive: true })
+  const componentContent = (await readFile(templateFile)).toString()
 
   let indexFileExportContent = ``
-  let files = []
+  let files: string[] = []
 
-  // 为每个组件创建一个组件文件
   for (const filepath of await glob('src/components/*/')) {
     const name = filepath.replace('src/components/', '')
-
     const content = componentContent
       .replace(/{{elementId}}/g, `Micro${name}`)
       .replace(/{{type}}/g, name)
-
     if (excludeCompoents.includes(name)) continue
-
-    await fs.writeFile(`${target}/${name}${ext}`, content)
+    await writeFile(`${target}/${name}${ext}`, content)
     indexFileExportContent += `export { default as ${name} } from "./${name}${ext}";\n`
-
     files.push(`${target}/${name}${ext}`)
   }
-
-  await fs.writeFile(`${target}/index.ts`, indexFileExportContent)
-
+  await writeFile(`${target}/index.ts`, indexFileExportContent)
   return files
 }

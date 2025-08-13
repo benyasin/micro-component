@@ -28,20 +28,42 @@ export function useProps<T extends BaseProps>(defaultProps?: T) {
   }
 
   function updateProps(options: Partial<T> = {}) {
+    console.log('[useProps] updateProps调用')
+    console.log('[useProps] 当前props.value:', props.value)
+    console.log('[useProps] 传入的options:', options)
+    console.log('[useProps] 过滤后的options:', filterUndefined(options))
+    
     Object.assign(props.value, filterUndefined(options))
-    // 统一主题：同步到 body.global-theme 上的 white/black，而不再添加 micro- 类
+    
+    console.log('[useProps] 更新后的props.value:', props.value)
+    
+    // 统一主题：同步到 body.global-theme 上的 white/black
     if (options.theme && typeof document !== 'undefined') {
+      console.log('[useProps] 更新主题到document.body')
+      console.log('[useProps] 新主题:', options.theme)
+      console.log('[useProps] 更新前body.className:', document.body.className)
+      
       document.body.classList.toggle('black', options.theme === 'dark')
       document.body.classList.toggle('white', options.theme === 'light')
+      
+      console.log('[useProps] 更新后body.className:', document.body.className)
     }
+    
+    console.log('[useProps] updateProps完成')
   }
 
   watchEffect(() => updateProps(defaultProps || {}))
   watch(
     () => props.value.locale,
-    (locale) => {
+    (locale, oldLocale) => {
+      console.log('[useProps] locale变化监听器触发')
+      console.log('[useProps] 旧locale:', oldLocale)
+      console.log('[useProps] 新locale:', locale)
+      
       if (locale) {
+        console.log('[useProps] 调用changeLocale:', locale)
         changeLocale(locale)
+        console.log('[useProps] changeLocale调用完成')
       }
     },
     { immediate: true }

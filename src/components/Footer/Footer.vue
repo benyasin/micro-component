@@ -140,34 +140,79 @@ const currentLocale = computed(() => footerProps.value.locale || 'en')
 // 国际化
 const { t, changeLocale } = useI18n()
 
-// 检查是否启用多语言
-const isI18nEnabled = computed(() => config.value?.i18nEnabled !== false)
+// 检查是否启用多语言 - 优先使用 props，然后是 config，默认为 true
+const isI18nEnabled = computed(() => {
+  // 如果 props 中明确设置了 isI18nEnabled，使用 props 的值
+  if (footerProps.value.isI18nEnabled !== undefined) {
+    return footerProps.value.isI18nEnabled
+  }
+  // 否则使用 config 中的设置，默认为 true
+  return config.value?.i18nEnabled !== false
+})
 
 // 主题切换 - 统一使用global-theme体系
 const toggleTheme = () => {
+  console.log('[Footer] 开始主题切换')
+  console.log('[Footer] 当前主题:', currentTheme.value)
+  console.log('[Footer] 国际化开启状态:', isI18nEnabled.value)
+  console.log('[Footer] 当前配置:', config.value)
+  
   const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
+  console.log('[Footer] 新主题:', newTheme)
   
   // 更新props
+  console.log('[Footer] 更新props前的footerProps:', footerProps.value)
   updateProps({ theme: newTheme })
+  console.log('[Footer] 更新props后的footerProps:', footerProps.value)
   
   // 触发事件
+  console.log('[Footer] 触发themeChange事件:', newTheme)
   event.emit('themeChange', newTheme as any)
   
   // 同步到全局主题 - 只使用一套主题体系
   if (typeof document !== 'undefined') {
+    console.log('[Footer] 更新document.body类名')
+    console.log('[Footer] 更新前body.className:', document.body.className)
     document.body.classList.toggle('black', newTheme === 'dark')
     document.body.classList.toggle('white', newTheme === 'light')
+    console.log('[Footer] 更新后body.className:', document.body.className)
   }
+  
+  console.log('[Footer] 主题切换完成')
 }
 
 const handleLanguageChange = (domEvent: Event) => {
+  console.log('[Footer] 开始语言切换')
+  console.log('[Footer] 当前语言:', currentLocale.value)
+  console.log('[Footer] 国际化开启状态:', isI18nEnabled.value)
+  console.log('[Footer] 可用语言列表:', config.value?.languages)
+  
   const target = domEvent.target as HTMLSelectElement
   const newLocale = target.value
+  console.log('[Footer] 选择的新语言:', newLocale)
+  
   const language = config.value?.languages?.find(lang => lang.locale === newLocale)
+  console.log('[Footer] 找到的语言配置:', language)
+  
   if (language) {
+    console.log('[Footer] 开始切换语言到:', newLocale)
+    
+    // 更新i18n实例
+    console.log('[Footer] 调用changeLocale')
     changeLocale(newLocale)
+    
+    // 更新组件props
+    console.log('[Footer] 更新props前的footerProps:', footerProps.value)
     updateProps({ locale: newLocale })
+    console.log('[Footer] 更新props后的footerProps:', footerProps.value)
+    
+    // 触发事件
+    console.log('[Footer] 触发languageChange事件:', language)
     event.emit('languageChange', language)
+    
+    console.log('[Footer] 语言切换完成')
+  } else {
+    console.warn('[Footer] 未找到对应的语言配置:', newLocale)
   }
 }
 

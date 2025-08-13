@@ -9,7 +9,19 @@ export interface localeInfo {
   localeType: string
 }
 
-export const useI18n = defineStore(() => {
+export const useI18n = defineStore((): {
+  locale: Ref<string>;
+  t: any;
+  changeLocale: (lang: string) => Promise<void>;
+  fetchLocaleMessage: (lang: string) => Promise<LocaleMessageValue>;
+  getLocaleMessage: any;
+  getPostTranslationHandler: any;
+  formatLocalPath: (link: string, withCurrentOrigin?: boolean, lang?: string) => string;
+  isLocaleFething: Ref<boolean>;
+  getMatchLocale: (locales: string[], fallback?: string) => string;
+  getPathWithoutLocale: () => string;
+  getAppLang: (lang: string) => string;
+} => {
   const { locale, t, setLocaleMessage, getLocaleMessage, getPostTranslationHandler } = _useI18n({
     useScope: 'global'
   })
@@ -66,19 +78,49 @@ export const useI18n = defineStore(() => {
    * 切换语言
    */
   async function changeLocale(lang: string) {
+    console.log('[useI18n] changeLocale调用')
+    console.log('[useI18n] 当前locale.value:', locale.value)
+    console.log('[useI18n] 目标语言:', lang)
+    console.log('[useI18n] 是否SSR环境:', import.meta.env.SSR)
+    console.log('[useI18n] 当前fetchingLocale.value:', fetchingLocale.value)
+    
     if (import.meta.env.SSR) {
+      console.log('[useI18n] SSR环境，直接设置locale')
       locale.value = lang
       setCurrentLocale(lang)
+      console.log('[useI18n] SSR环境设置完成')
       return
     }
+    
     // 浏览器端异步加载locales
+    console.log('[useI18n] 浏览器环境，开始异步加载语言包')
     fetchingLocale.value = lang
-    await fetchLocaleMessage(lang)
+    console.log('[useI18n] 设置fetchingLocale.value为:', lang)
+    
+    try {
+      console.log('[useI18n] 开始fetchLocaleMessage')
+      await fetchLocaleMessage(lang)
+      console.log('[useI18n] fetchLocaleMessage完成')
+    } catch (error) {
+      console.error('[useI18n] fetchLocaleMessage失败:', error)
+      return
+    }
+    
     // 避免快速切换语言时，有可能上一个语言比下一个语言加载慢的情况
+    console.log('[useI18n] 检查语言切换一致性')
+    console.log('[useI18n] 目标语言:', lang)
+    console.log('[useI18n] 当前fetchingLocale.value:', fetchingLocale.value)
+    
     if (lang === fetchingLocale.value) {
+      console.log('[useI18n] 语言一致，开始设置locale')
+      console.log('[useI18n] 调用setCurrentLocale:', lang)
       setCurrentLocale(lang)
+      console.log('[useI18n] 设置locale.value为:', lang)
       locale.value = lang
       fetchingLocale.value = lang
+      console.log('[useI18n] 语言切换完成')
+    } else {
+      console.warn('[useI18n] 语言不一致，跳过设置。目标:', lang, '当前fetching:', fetchingLocale.value)
     }
   }
 
@@ -111,7 +153,7 @@ export const useI18n = defineStore(() => {
 
     // en不拼接语言到url上
     const path = lang === 'en' ? link.replace('/en', '') : link
-    return withCurrentOrigin && process.client ? `${window.location.origin}${path}` : path
+    return withCurrentOrigin && typeof window !== 'undefined' ? `${window.location.origin}${path}` : path
   }
 
   /** 获取不带语言的pathname */

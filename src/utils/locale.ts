@@ -38,12 +38,6 @@ export function getCurrentlLocaleConfig(locale = getCurrentLocale()) {
 export function getLanguageKey(localeInfo): string {
   return (
     {
-      'en-GB': 'en_US',
-      'pt-PT': 'pt_PT',
-      'es-ES': 'es_ES',
-      ar: 'ar_SA',
-      es: 'es_AR',
-      pt: 'pt_BR',
       nl: 'en_US'
     }[localeInfo.locale] || localeInfo.languageKey
   )

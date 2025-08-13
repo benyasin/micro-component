@@ -8,15 +8,15 @@ import { build } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import svg from 'vite-svg-loader'
 import UnoCss from 'unocss/vite'
-import BitDesign from 'unplugin-bit-design-vue3/vite'
+// import BitDesign from 'unplugin-bit-design-vue3/vite'
 import prefixer from 'postcss-prefix-selector'
-import rtlPostcss from '@bit/postcss-dir'
+// import rtlPostcss from '@bit/postcss-dir'
 import replacePostcss from './postcss-replace'
 import messages from '../locales/index'
 import { defaultLanguageList } from '../src/utils/config'
 import { setCurrentLocale, getLanguageKey } from '../src/utils/locale'
 import { excludeCompoents, rm } from './utils'
-import { terser } from '@rollup/plugin-terser'
+import terser from '@rollup/plugin-terser'
 
 const i18nMessages = {}
 defaultLanguageList.forEach((item) => {
@@ -51,7 +51,7 @@ async function buildComponent(name: string) {
     base: '/micro-runtime/',
     publicDir: path.resolve('./src/public'),
     ssr: {
-      noExternal: ['@bit-design/vue3']
+      noExternal: []
     },
     resolve: {
       alias: {
@@ -106,9 +106,9 @@ async function buildComponent(name: string) {
               return prefixedSelector
             }
           }),
-          rtlPostcss({
-            selectorBlackList: ['.bit-tabs__active-bar', '.mi-tabs__active-bar']
-          }),
+          // rtlPostcss({
+          //   selectorBlackList: ['.bit-tabs__active-bar', '.mi-tabs__active-bar']
+          // }),
           replacePostcss({
             rule: {
               '$1mi-': /(\.|=)bit-/g
