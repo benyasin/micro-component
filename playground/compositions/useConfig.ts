@@ -8,9 +8,9 @@ const commonInstance = getInstance()
 
 // 模拟埋点工具
 const logEvent = {
-  click: (...args) => console.log('[logEvent] click:', ...args),
-  expose: (...args) => console.log('[logEvent] expose:', ...args),
-  registerExposeEvent: (...args) => console.log('[logEvent] registerExposeEvent:', ...args)
+  click: (...args) => console.log('[logEvent] click:', args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg)),
+  expose: (...args) => console.log('[logEvent] expose:', args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg)),
+  registerExposeEvent: (...args) => console.log('[logEvent] registerExposeEvent:', args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
 }
 
 export const useConfig = defineStore(() => {
@@ -56,9 +56,9 @@ export const useConfig = defineStore(() => {
 
   watch([direction, theme, isLogin, locale, config], (newValues, oldValues) => {
     console.log('[useConfig] 配置变化监听器触发')
-    console.log('[useConfig] 旧配置值:', oldValues)
-    console.log('[useConfig] 新配置值:', newValues)
-    console.log('[useConfig] 当前config.value:', config.value)
+    console.log('[useConfig] 旧配置值:', JSON.stringify(oldValues, null, 2))
+    console.log('[useConfig] 新配置值:', JSON.stringify(newValues, null, 2))
+    console.log('[useConfig] 当前config.value:', JSON.stringify(config.value, null, 2))
     
     saveConfig(config.value)
     
@@ -70,14 +70,14 @@ export const useConfig = defineStore(() => {
     () => locale.value,
     (newLocale, oldLocale) => {
       console.log('[useConfig] locale变化监听器触发')
-      console.log('[useConfig] 旧locale:', oldLocale)
-      console.log('[useConfig] 新locale:', newLocale)
-      console.log('[useConfig] 当前i18n.global.locale:', i18n.global.locale.value)
+      console.log('[useConfig] 旧locale:', JSON.stringify(oldLocale, null, 2))
+      console.log('[useConfig] 新locale:', JSON.stringify(newLocale, null, 2))
+      console.log('[useConfig] 当前i18n.global.locale:', JSON.stringify(i18n.global.locale.value, null, 2))
       
       // @ts-ignore
       i18n.global.locale.value = newLocale
       
-      console.log('[useConfig] 更新后i18n.global.locale:', i18n.global.locale.value)
+      console.log('[useConfig] 更新后i18n.global.locale:', JSON.stringify(i18n.global.locale.value, null, 2))
       console.log('[useConfig] locale同步完成')
     },
     { immediate: true }

@@ -40,7 +40,7 @@ export const useEvent = <Events extends Record<string | number | symbol, (...arg
     ...args: Parameters<Event[Key]>
   ) => {
     if (import.meta.env.DEV) {
-      console.log(`[Event] ${eventName.toString()}`, ...args)
+      console.log(`[Event] ${eventName.toString()}`, args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
       // playground emit
       proxy.$emit(eventName as string, ...args)
     }

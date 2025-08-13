@@ -31,6 +31,7 @@ export function message(options: MessageOptions, context?: AppContext) {
     createContext()
   }
   createdPromise.then((appContext) => {
-    antMessage.success(options)
+    //antMessage.success(options)
+    console.log(options)
   })
 }

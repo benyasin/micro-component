@@ -30,7 +30,7 @@ export default {
   methods: {
     log(text, ...args) {
       if (this.$attrs.logger || isDebug) {
-        console.log(`[MicroComponent] ${type}: ${text}`, ...args)
+        console.log(`[MicroComponent] ${type}: ${text}`, args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
       }
     },
     async createComponent() {

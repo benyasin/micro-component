@@ -24,7 +24,7 @@ export function getComponent({ elementId, type }) {
     const isCreating = useRef(false)
     const serverHTML = useRef('')
     const microId = useRef(
-      props.microId ||
+      (props as any).microId ||
         Math.floor(Date.now() * Math.random())
           .toString()
           .substr(4)
@@ -32,7 +32,7 @@ export function getComponent({ elementId, type }) {
 
     const log = (text, ...args) => {
       if (propsRef.current?.logger || isDebug) {
-        console.log(`[MicroComponent] ${type}: ${text}`, ...args)
+        console.log(`[MicroComponent] ${type}: ${text}`, args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
       }
     }
 
