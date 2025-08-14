@@ -37,7 +37,15 @@
     "build:beta": "VITE_ENV=beta pnpm run build:runtime && pnpm run jampack",
     "build:test1": "VITE_ENV=test pnpm run build:runtime && pnpm run jampack ",
     "lint": "prettier --config .prettierrc.cjs --write ./src/**/*.{ts,vue,js}",
-    "jampack": "jampack ./dist --exclude {server-locales,server-locale-modules}/**/**"
+    "jampack": "jampack ./dist --exclude {server-locales,server-locale-modules}/**/**",
+    "test:install": "cd test-projects/vue3 && pnpm install && cd ../react && pnpm install && cd ../vue2 && pnpm install",
+    "test:dev": "concurrently \"pnpm run test:dev:vue3\" \"pnpm run test:dev:react\" \"pnpm run test:dev:vue2\"",
+    "test:dev:vue3": "cd test-projects/vue3 && pnpm run dev",
+    "test:dev:react": "cd test-projects/react && pnpm run dev",
+    "test:dev:vue2": "cd test-projects/vue2 && pnpm run dev",
+    "test:build": "cd test-projects/vue3 && pnpm run build && cd ../react && pnpm run build && cd ../vue2 && pnpm run build",
+    "kill-ports": "./scripts/kill-test-ports.sh",
+    "test:restart": "./scripts/restart-test-projects.sh"
   },
   "pnpm": {
     "overrides": {}
@@ -58,6 +66,7 @@
     "axios-cache-interceptor": "^1.5.3",
     "buffer": "^6.0.3",
     "clipboard": "^2.0.11",
+    "concurrently": "^8.2.2",
     "dayjs": "^1.11.10",
     "events": "^3.3.0",
     "glob": "^10.3.10",

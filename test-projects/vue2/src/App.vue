@@ -53,8 +53,8 @@ export default {
     return {
       testResults: [],
       languages: [
-        { name: '简体中文', locale: 'zh-CN' },
-        { name: 'English', locale: 'en-US' }
+        { locale: 'en', languageKey: 'en_US', languageType: 0, languageName: 'English' },
+        { locale: 'zh-CN', languageKey: 'zh_CN', languageType: 1, languageName: '简体中文' }
       ]
     }
   },

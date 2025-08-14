@@ -55,11 +55,39 @@ export default defineConfig({
     'process.browser': 'true'
   },
   server: {
-    port: 3000,
-    open: true
+    port: 5173,
+    cors: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
+        fs: {
+      // 允许访问工程根目录之外的构建产物与包根目录
+      allow: [
+        __dirname,
+        resolve(__dirname, '../../dist'),
+        resolve(__dirname, '../..')
+      ]
+    }
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
+    lib: {
+      entry: resolve(__dirname, 'src/main.ts'),
+      name: 'vue3Test',
+      formats: ['umd']
+    },
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        globals: {
+          vue: 'Vue'
+        },
+        format: 'umd',
+        inlineDynamicImports: true
+      }
+    }
   }
 })

@@ -54,9 +54,13 @@ module.exports = {
     })
   ],
   devServer: {
-    port: 3002,
-    open: true,
+    port: 5172,
     hot: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
     onBeforeSetupMiddleware(devServer) {
       // 统一处理 /micro-runtime/* 静态资源
       devServer.app.use((req, res, next) => {

@@ -56,8 +56,13 @@ export default defineConfig({
     'process.browser': 'true'
   },
   server: {
-    port: 3001,
-    open: true,
+    port: 5171,
+    cors: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
     fs: {
       // 允许访问工程根目录之外的构建产物与包根目录
       allow: [
@@ -69,6 +74,12 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        format: 'umd',
+        inlineDynamicImports: true
+      }
+    }
   }
 })
