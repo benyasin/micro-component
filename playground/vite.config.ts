@@ -3,9 +3,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import UnoCss from 'unocss/vite'
 import svg from 'vite-svg-loader'
-// 移除私有包 unplugin-bit-design-vue3，使用 ant-design-vue 替代
 import prefixer from 'postcss-prefix-selector'
-// import rtlPostcss from '@bit/postcss-dir' // 私有包，暂时注释
 import replacePostcss from '../scripts/postcss-replace.js'
 
 export default defineConfig({
@@ -21,7 +19,14 @@ export default defineConfig({
     'process.client': 'true'
   },
   server: {
-    open: 'http://localhost:5173/micro/playground/index.html#/footer'
+    port: 5170,
+    cors: true,
+    open: 'http://localhost:5170/micro/playground/index.html#/footer',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
   },
   build: {
     emptyOutDir: true
@@ -41,9 +46,6 @@ export default defineConfig({
             return prefixedSelector
           }
         }),
-        // rtlPostcss({
-        //   selectorBlackList: ['.bit-tabs__active-bar', '.mi-tabs__active-bar']
-        // }), // 私有包，暂时注释
         replacePostcss({
           rule: {
             '$1mi-': /(\.|=)bit-/g
@@ -61,6 +63,5 @@ export default defineConfig({
       svgo: false
     }),
     UnoCss()
-    // BitDesign({}) - 已移除私有包，ant-design-vue 组件可直接使用
   ]
 })

@@ -103,7 +103,13 @@
           
           <!-- 社交媒体链接 -->
           <div class="flex space-x-4 mt-4 md:mt-0">
-            <a 
+            <a  class="mt-1 text-secondaryText hover:text-primaryText transition-colors"
+                @click="toggleTheme"
+                href="javascript:void(0);"
+            >
+              <span>{{ currentTheme === 'dark' ? '🌞' : '🌙' }}</span>
+            </a>
+            <a
               v-for="social in config?.socialLinks" 
               :key="social.name"
               :href="social.url"
