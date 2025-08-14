@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@stackblitz/sdk':
+        specifier: ^1.11.0
+        version: 1.11.0
     devDependencies:
       '@divriots/jampack':
         specifier: ^0.28.0
@@ -1275,6 +1279,9 @@ packages:
   '@sindresorhus/merge-streams@2.3.0':
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
+
+  '@stackblitz/sdk@1.11.0':
+    resolution: {integrity: sha512-DFQGANNkEZRzFk1/rDP6TcFdM82ycHE+zfl9C/M/jXlH68jiqHWHFMQURLELoD8koxvu/eW5uhg94NSAZlYrUQ==}
 
   '@swc/core-darwin-arm64@1.13.3':
     resolution: {integrity: sha512-ux0Ws4pSpBTqbDS9GlVP354MekB1DwYlbxXU3VhnDr4GBcCOimpocx62x7cFJkSpEBF8bmX8+/TTCGKh4PbyXw==}
@@ -4624,6 +4631,8 @@ snapshots:
       nanopop: 2.4.2
 
   '@sindresorhus/merge-streams@2.3.0': {}
+
+  '@stackblitz/sdk@1.11.0': {}
 
   '@swc/core-darwin-arm64@1.13.3':
     optional: true

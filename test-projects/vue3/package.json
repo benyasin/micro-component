@@ -1,0 +1,25 @@
+{
+  "name": "micro-component-vue3-test",
+  "version": "1.0.0",
+  "description": "Vue3 test project for micro-component built artifacts",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "dependencies": {
+    "vue": "^3.4.0",
+    "@vue/runtime-core": "^3.4.0",
+    "micro-components": "link:../.."
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "@playwright/test": "^1.40.0",
+    "typescript": "^5.0.0",
+    "vue-tsc": "^3.0.5",
+    "vite": "^5.0.0"
+  }
+}

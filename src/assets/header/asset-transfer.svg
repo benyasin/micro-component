@@ -1,5 +1,0 @@
-<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="24" cy="24" r="23.5" transform="matrix(-1 0 0 1 48 0)" stroke="var(--color-input-border)"/>
-<path d="M33 21L16 21L20.2083 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-<path d="M15 27L32 27L27.5442 32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-</svg>

@@ -8,6 +8,7 @@ import terser from '@rollup/plugin-terser'
 async function buildComponents() {
   const templateFiles = await copyTemplate('react', 'temp')
 
+  // 构建 ESM 版本（保持向后兼容）
   await build({
     define: {
       'process.client': 'process.browser'
@@ -26,6 +27,45 @@ async function buildComponents() {
         external: ['react', 'react-dom'],
         plugins: [terser()],
         output: {
+          assetFileNames: (chunkInfo) => {
+            return '[name].[ext]'
+          }
+        }
+      }
+    },
+    css: {
+      postcss: {
+        plugins: []
+      }
+    },
+    plugins: [react()]
+  })
+
+  // 构建 UMD 版本（用于浏览器直接引入）
+  await build({
+    define: {
+      'process.client': 'true',
+      'process.browser': 'true'
+    },
+    build: {
+      emptyOutDir: false,
+      outDir: 'dist/components/react',
+      cssCodeSplit: true,
+      assetsDir: './',
+      lib: {
+        entry: path.resolve('temp/index.ts'),
+        name: 'MicroComponentsReact',
+        fileName: (format, entryName) => entryName.replace('temp/', '') + '.umd.js',
+        formats: ['umd']
+      },
+      rollupOptions: {
+        external: ['react', 'react-dom'],
+        plugins: [terser()],
+        output: {
+          globals: {
+            react: 'React',
+            'react-dom': 'ReactDOM'
+          },
           assetFileNames: (chunkInfo) => {
             return '[name].[ext]'
           }

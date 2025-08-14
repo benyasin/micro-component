@@ -8,9 +8,9 @@ pnpm-debug.log*
 # Build outputs
 dist/
 build/
-storybook/public
-storybook/node_modules
-storybook/storybook-static
+test-projects/vue2/node_modules
+test-projects/vue3/node_modules
+test-projects/react/node_modules
 *.tsbuildinfo
 
 # Environment variables

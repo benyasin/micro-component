@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
-const isClient = process.client
+const isClient = typeof window !== 'undefined'
 const isDebug = isClient && Boolean(localStorage?.getItem('MICRO_COMPONENT:DEBUG'))
 
 async function getMicroRutime() {
@@ -17,7 +17,7 @@ async function getMicroRutime() {
 export function getComponent({ elementId, type }) {
   let _serverHTML
 
-  return function Comp(props = {}) {
+  return React.forwardRef(function Comp(props = {}, ref) {
     const el = useRef()
     const propsRef = useRef(props)
     const component = useRef()
@@ -113,5 +113,5 @@ export function getComponent({ elementId, type }) {
         data-micro-type={type}
       ></div>
     )
-  }
+  })
 }
