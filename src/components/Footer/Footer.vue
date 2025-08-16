@@ -174,8 +174,9 @@ const toggleTheme = () => {
   event.emit('themeChange', newTheme as any)
   
   if (typeof document !== 'undefined') {
-    document.body.classList.toggle('black', newTheme === 'dark')
-    document.body.classList.toggle('white', newTheme === 'light')
+    // 使用全局主题类名体系
+    document.body.classList.remove('global-theme', 'black', 'white')
+    document.body.classList.add('global-theme', newTheme === 'dark' ? 'black' : 'white')
   }
   dlog('toggleTheme done →', newTheme)
 }
@@ -208,8 +209,8 @@ const handleLinkClick = (url: string, target?: string) => {
 watch(
   () => document.body.className,
   (newClassName) => {
-    const isDark = newClassName.includes('black')
-    const isLight = newClassName.includes('white')
+    const isDark = newClassName.includes('global-theme') && newClassName.includes('black')
+    const isLight = newClassName.includes('global-theme') && newClassName.includes('white')
     
     if (isDark && currentTheme.value !== 'dark') {
       updateProps({ theme: 'dark' })

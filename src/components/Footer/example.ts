@@ -9,7 +9,7 @@ export const footerExampleConfig = {
   // 主题和语言
   theme: 'light' as const,
   locale: 'en',
-  currencyVisible: true,
+  isI18nEnabled: true,
   
   // 产品链接
   productLinks: [

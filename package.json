@@ -1,7 +1,7 @@
 {
   "name": "micro-components",
   "version": "1.0.0",
-  "main": "dist/runtime/rutime.js",
+  "main": "dist/runtime/runtime.js",
   "module": "dist/runtime/runtime.js",
   "types": "./types.d.ts",
   "type": "module",

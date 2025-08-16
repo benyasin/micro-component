@@ -96,7 +96,6 @@ export const Enterprise: Story = {
     theme: 'light',
     locale: 'en',
     currencyVisible: true,
-    i18nEnabled: true,
     productLinks: [
       { title: 'Enterprise Features', url: '/enterprise', target: '_self' as const },
       { title: 'Business API', url: '/business-api', target: '_blank' as const },
