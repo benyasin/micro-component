@@ -11,12 +11,12 @@ import '../src/polyfill/event-target.js'
 import '../src/polyfill/request-idle.js'
 
 // 加载 micro-runtime
-if (typeof window !== 'undefined') {
-  const script = document.createElement('script')
-  script.src = '/micro-runtime.js'
-  script.async = true
-  document.head.appendChild(script)
-}
+// if (typeof window !== 'undefined') {
+//   const script = document.createElement('script')
+//   script.src = '/micro-runtime.js'
+//   script.async = true
+//   document.head.appendChild(script)
+// }
 
 // 安装 vue-i18n 到 Storybook 的 Vue 应用实例
 setup((app) => {

@@ -57,6 +57,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@storybook/addon-docs": "^9.1.2",
     "@storybook/addon-links": "^9.1.2",
+    "@storybook/blocks": "9.0.0-alpha.17",
     "@storybook/vue3-vite": "^9.1.2",
     "@types/node": "^20.11.0",
     "@unocss/core": "^0.58.0",

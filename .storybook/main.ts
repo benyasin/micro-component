@@ -7,7 +7,7 @@ import { resolve } from 'path'
 import { fileURLToPath, URL } from 'node:url'
 
 const config: StorybookConfig = {
-  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|vue|mdx)'],
+  stories: ['./stories/**/*.stories.@(js|jsx|ts|tsx|vue)', './stories/**/*.mdx'],
   addons: [
     '@storybook/addon-docs',
     '@storybook/addon-links',

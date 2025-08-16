@@ -12,7 +12,7 @@
               {{ config?.brandName || 'MicroApp' }}
             </div>
             <div class="text-sm text-secondaryText">
-              {{ isI18nEnabled ? t('footer.slogan') : (config?.slogan || 'Simple & Powerful') }}
+              {{ i18nEnabled ? t('footer.slogan') : (config?.slogan || 'Simple & Powerful') }}
             </div>
           </div>
           
@@ -22,7 +22,7 @@
             class="px-4 py-2 rounded bg-primary text-white hover:bg-primaryHover transition-colors"
             @click="toggleTheme"
           >
-            {{ currentTheme === 'dark' ? '🌞' : '🌙' }} {{ isI18nEnabled ? t('footer.switch_theme') : 'Switch Theme' }}
+            {{ currentTheme === 'dark' ? '🌞' : '🌙' }} {{ i18nEnabled ? t('footer.switch_theme') : 'Switch Theme' }}
           </button>
            -->
         </div>
@@ -32,7 +32,7 @@
           <!-- 产品链接 -->
           <div>
             <h3 class="text-lg font-semibold text-primaryText mb-4">
-              {{ isI18nEnabled ? t('footer.products') : 'Products' }}
+              {{ i18nEnabled ? t('footer.products') : 'Products' }}
             </h3>
             <ul class="space-y-2">
               <li v-for="item in config?.productLinks" :key="item.title">
@@ -41,7 +41,7 @@
                   class="text-secondaryText hover:text-primaryText transition-colors"
                   @click="handleLinkClick(item.url, item.target)"
                 >
-                  {{ isI18nEnabled ? t(`footer.product_links.${item.title.toLowerCase()}`) : item.title }}
+                  {{ i18nEnabled ? t(`footer.product_links.${item.title.toLowerCase()}`) : item.title }}
                 </a>
               </li>
             </ul>
@@ -50,7 +50,7 @@
           <!-- 支持链接 -->
           <div>
             <h3 class="text-lg font-semibold text-primaryText mb-4">
-              {{ isI18nEnabled ? t('footer.support') : 'Support' }}
+              {{ i18nEnabled ? t('footer.support') : 'Support' }}
             </h3>
             <ul class="space-y-2">
               <li v-for="item in config?.supportLinks" :key="item.title">
@@ -59,7 +59,7 @@
                   class="text-secondaryText hover:text-primaryText transition-colors"
                   @click="handleLinkClick(item.url, item.target)"
                 >
-                  {{ isI18nEnabled ? t(`footer.support_links.${formatSupportKey(item.title)}`) : item.title }}
+                  {{ i18nEnabled ? t(`footer.support_links.${formatSupportKey(item.title)}`) : item.title }}
                 </a>
               </li>
             </ul>
@@ -68,13 +68,13 @@
           <!-- 语言选择 -->
           <div>
             <h3 class="text-lg font-semibold text-primaryText mb-4">
-              {{ isI18nEnabled ? t('footer.settings') : 'Settings' }}
+              {{ i18nEnabled ? t('footer.settings') : 'Settings' }}
             </h3>
             <div class="space-y-4">
               <!-- 语言选择 -->
               <div>
                 <label class="block text-sm mb-2 text-secondaryText">
-                  {{ isI18nEnabled ? t('footer.language') : 'Language' }}
+                  {{ i18nEnabled ? t('footer.language') : 'Language' }}
                 </label>
                 <select 
                   :value="currentLocale" 
@@ -93,7 +93,7 @@
         <!-- 底部版权信息 -->
         <div class="border-t border-line pt-6 flex flex-col md:flex-row justify-between items-center">
           <div class="text-sm text-secondaryText">
-            <template v-if="isI18nEnabled">
+            <template v-if="i18nEnabled">
               © {{ new Date().getFullYear() }} {{ config?.brandName || 'MicroApp' }}. {{ t('footer.copyright_suffix') }}
             </template>
             <template v-else>
@@ -153,12 +153,8 @@ const currentLocale = computed(() => footerProps.value.locale || 'en')
 const { t, changeLocale } = useI18n()
 
 // 检查是否启用多语言 - 优先使用 props，然后是 config，默认为 true
-const isI18nEnabled = computed(() => {
-  // 如果 props 中明确设置了 isI18nEnabled，使用 props 的值
-  if (footerProps.value.isI18nEnabled !== undefined) {
-    return footerProps.value.isI18nEnabled
-  }
-  // 否则使用 config 中的设置，默认为 true
+const i18nEnabled = computed(() => {
+  // 使用 config 中的设置，默认为 true
   return config.value?.i18nEnabled !== false
 })
 
@@ -167,7 +163,7 @@ const __DEBUG__ = Boolean(localStorage.getItem('MICRO_COMPONENT:DEBUG'))
 const dlog = (...args: any[]) => { if (__DEBUG__) console.log('[Footer]', ...args) }
 
 const toggleTheme = () => {
-  dlog('toggleTheme start', { theme: currentTheme.value, i18n: isI18nEnabled.value })
+  dlog('toggleTheme start', { theme: currentTheme.value, i18n: i18nEnabled.value })
   const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
   
   updateProps({ theme: newTheme })

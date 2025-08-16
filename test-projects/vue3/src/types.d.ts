@@ -8,7 +8,7 @@ declare module 'micro-components/vue/Footer' {
     copyright?: string
     locale?: string
     theme?: string
-    currencyVisible?: boolean
+
     productLinks?: Array<{
       title: string
       url: string

@@ -73,7 +73,7 @@ function App() {
           <div className="component-demo">
             <MicroFooter
               theme="light"
-              isI18nEnabled={true}
+      
               languages={languages}
               onThemeChange={handleThemeChange}
               onLanguageChange={handleLanguageChange}

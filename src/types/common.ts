@@ -1,11 +1,3 @@
-export interface Currency {
-  symbol: string
-  name: string
-  type?: string
-  value: string
-  iconUrl?: string
-}
-
 export interface Language {
   locale: string
   languageKey: string

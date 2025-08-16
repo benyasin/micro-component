@@ -3,7 +3,6 @@ import { Currency, Language, UserInfo } from '@/types/common'
 
 export interface Props extends BaseProps, Config {
   webUrl?: string
-  currencyVisible?: boolean
 }
 
 export interface Config {
@@ -54,8 +53,6 @@ export interface Config {
   /** 货币配置 */
   currencies?: Currency[]
 
-  /** 是否显示货币选择器 */
-  currencyVisible?: boolean
   /** 是否启用多语言支持 */
   i18nEnabled?: boolean
 }

@@ -12,8 +12,7 @@ export interface WebSDK {
 export interface BaseProps {
   locale: string
   theme?: 'light' | 'dark'
-  // 是否启用国际化
-  isI18nEnabled?: boolean
+
   // 是否打印logger
   logger?: boolean
   // theme?: "white" | "black";

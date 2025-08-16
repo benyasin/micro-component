@@ -1,45 +1,33 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import Footer from './Footer.vue'
-import { footerExampleConfig } from './example'
+import Footer from '../../src/components/Footer/Footer.vue'
+import { footerExampleConfig } from '../../src/components/Footer/example'
 
 const meta: Meta = {
   title: 'Components/Footer',
-  component: Footer as any,
+  component: Footer,
   parameters: {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
   argTypes: {
     theme: {
-      control: 'radio',
+      control: { type: 'select' },
       options: ['light', 'dark'],
-      description: '主题设置'
+      description: '主题模式'
     },
     locale: {
-      control: 'select',
-      options: ['en', 'zh-CN'],
+      control: { type: 'select' },
+      options: ['en', 'zh_CN'],
       description: '语言设置'
-    },
-    brandName: {
-      control: 'text',
-      description: '品牌名称'
-    },
-    slogan: {
-      control: 'text',  
-      description: '品牌标语'
-    },
-    currencyVisible: {
-      control: 'boolean',
-      description: '是否显示货币选择器'
     },
     i18nEnabled: {
       control: 'boolean',
       description: '是否启用多语言'
     },
     onThemeChange: { action: 'theme-changed' },
-    onLanguageChange: { action: 'language-changed' }, 
-    onPush: { action: 'link-clicked' },
-  },
+    onLanguageChange: { action: 'language-changed' },
+    onPush: { action: 'link-clicked' }
+  }
 }
 
 export default meta
@@ -50,7 +38,7 @@ export const Default: Story = {
     ...(footerExampleConfig as any),
     theme: 'light',
     locale: 'en',
-    currencyVisible: true,
+
     i18nEnabled: true,
   } as any,
 }
@@ -60,7 +48,6 @@ export const DarkTheme: Story = {
     ...(footerExampleConfig as any),
     theme: 'dark',
     locale: 'en',
-    currencyVisible: true,
     i18nEnabled: true,
   } as any,
 }
@@ -69,8 +56,7 @@ export const ChineseLocale: Story = {
   args: {
     ...(footerExampleConfig as any),
     theme: 'light',
-    locale: 'zh-CN',
-    currencyVisible: true,
+    locale: 'zh_CN',
     i18nEnabled: true,
   } as any,
 }
@@ -80,7 +66,7 @@ export const Minimal: Story = {
     ...(footerExampleConfig as any),
     theme: 'light',
     locale: 'en',
-    currencyVisible: false,
+
     i18nEnabled: false,
     productLinks: (footerExampleConfig.productLinks || []).slice(0, 2),
     supportLinks: (footerExampleConfig.supportLinks || []).slice(0, 3),
@@ -95,7 +81,6 @@ export const Enterprise: Story = {
     slogan: 'Professional Business Solutions',
     theme: 'light',
     locale: 'en',
-    currencyVisible: true,
     productLinks: [
       { title: 'Enterprise Features', url: '/enterprise', target: '_self' as const },
       { title: 'Business API', url: '/business-api', target: '_blank' as const },

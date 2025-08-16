@@ -9,7 +9,7 @@ export const footerExampleConfig = {
   // 主题和语言
   theme: 'light' as const,
   locale: 'en',
-  isI18nEnabled: true,
+
   
   // 产品链接
   productLinks: [
@@ -51,7 +51,7 @@ export const vueExample = `
   <MicroFooter 
     :theme="theme"
     :locale="locale"
-    :currency-visible="true"
+
     :product-links="footerConfig.productLinks"
     :support-links="footerConfig.supportLinks"
     :social-links="footerConfig.socialLinks"
@@ -137,7 +137,7 @@ function App() {
       <Footer 
         theme={theme}
         locale={locale}
-        currencyVisible={true}
+
         productLinks={footerConfig.productLinks}
         supportLinks={footerConfig.supportLinks}
         socialLinks={footerConfig.socialLinks}
