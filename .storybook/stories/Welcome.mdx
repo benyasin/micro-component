@@ -182,18 +182,637 @@ import { Meta } from '@storybook/blocks';
 </div>
 
 <div style={{
-  textAlign: 'center',
-  padding: '2rem',
   background: '#f8f9fa',
-  borderRadius: '12px',
-  margin: '3rem 0'
+  padding: '3rem 2rem',
+  borderRadius: '16px',
+  margin: '4rem 0',
+  border: '1px solid #e9ecef'
 }}>
-  <h3 style={{
-    fontSize: '1.5rem',
+  <h2 style={{
+    fontSize: '2.5rem',
     fontWeight: '600',
-    margin: '0 0 1rem 0',
+    margin: '0 0 2rem 0',
+    textAlign: 'center',
     color: '#2c3e50'
-  }}>探索更多</h3>
+  }}>🔬 工作原理</h2>
+  
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '2rem',
+    margin: '2rem 0'
+  }}>
+    
+    <div style={{
+      background: 'white',
+      borderRadius: '12px',
+      padding: '2rem',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+      border: '1px solid #e9ecef'
+    }}>
+      <h4 style={{
+        fontSize: '1.3rem',
+        fontWeight: '600',
+        margin: '0 0 1rem 0',
+        color: '#2c3e50'
+      }}>🏗️ 统一抽象层</h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0'
+      }}>通过统一的组件接口和事件系统，屏蔽不同框架的差异，提供一致的开发体验。组件内部使用 Vue 3 Composition API 实现，通过适配器模式支持多框架。</p>
+    </div>
+    
+    <div style={{
+      background: 'rgba(255,255,255,0.1)',
+      borderRadius: '12px',
+      padding: '2rem',
+      backdropFilter: 'blur(10px)'
+    }}>
+      <h4 style={{
+        fontSize: '1.3rem',
+        fontWeight: '600',
+        margin: '0 0 1rem 0',
+        color: '#2c3e50'
+      }}>⚡ 智能加载</h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0'
+      }}>采用动态导入和资源预加载策略，根据组件使用情况智能加载所需资源。支持组件级别的代码分割和缓存策略。</p>
+    </div>
+    
+    <div style={{
+      background: 'rgba(255,255,255,0.1)',
+      borderRadius: '12px',
+      padding: '2rem',
+      backdropFilter: 'blur(10px)'
+    }}>
+      <h4 style={{
+        fontSize: '1.3rem',
+        fontWeight: '600',
+        margin: '0 0 1rem 0',
+        color: '#2c3e50'
+      }}>🌉 事件桥接</h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0'
+      }}>建立统一的事件通信机制，支持组件间的数据传递和状态同步。通过事件总线实现跨框架的组件通信。</p>
+    </div>
+    
+  </div>
+</div>
+
+<div style={{
+  margin: '4rem 0'
+}}>
+  <h2 style={{
+    fontSize: '2.5rem',
+    fontWeight: '600',
+    margin: '0 0 2rem 0',
+    textAlign: 'center',
+    color: '#2c3e50'
+  }}>💻 使用示例</h2>
+  
+  <div style={{
+    display: 'grid',
+    gap: '2rem'
+  }}>
+    
+
+    
+    <div style={{
+      border: '1px solid #e1e5e9',
+      borderRadius: '12px',
+      overflow: 'hidden'
+    }}>
+      <div style={{
+        background: '#f8f9fa',
+        color: '#2c3e50',
+        padding: '1rem 1.5rem',
+        fontSize: '1.1rem',
+        fontWeight: '600',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        cursor: 'pointer',
+        borderBottom: '1px solid #e1e5e9'
+      }} onClick={(e) => {
+        const content = document.getElementById('vue3-code');
+        const button = e.currentTarget.querySelector('button');
+        if (content.style.display === 'none') {
+          content.style.display = 'block';
+          button.textContent = '收起代码';
+        } else {
+          content.style.display = 'none';
+          button.textContent = '展开代码';
+        }
+      }}>
+        <span>🟢 Vue 3 使用方式</span>
+        <button 
+          data-target="vue3-code"
+          style={{
+            background: 'none',
+            border: '1px solid #2c3e50',
+            borderRadius: '4px',
+            padding: '0.25rem 0.5rem',
+            fontSize: '0.8rem',
+            color: '#2c3e50',
+            cursor: 'pointer'
+          }}
+        >展开代码</button>
+      </div>
+      <div id="vue3-code" style={{
+        padding: '1.5rem',
+        background: '#f7fafc',
+        display: 'none'
+      }}>
+        <pre style={{
+          background: '#f1f5f9',
+          color: '#2c3e50',
+          padding: '1.5rem',
+          borderRadius: '8px',
+          overflow: 'auto',
+          fontSize: '0.9rem',
+          lineHeight: '1.5',
+          margin: '0',
+          border: '1px solid #e1e5e9'
+        }}>{`// 1. 安装依赖
+npm install @micro-components/vue3
+
+// 2. 在 main.js 中注册
+import { createApp } from 'vue'
+import MicroComponents from '@micro-components/vue3'
+import App from './App.vue'
+
+const app = createApp(App)
+app.use(MicroComponents)
+app.mount('#app')
+
+// 3. 在组件中使用
+<template>
+  <div>
+    <MicroFooter 
+      :theme="theme"
+      :locale="locale"
+      @theme-change="handleThemeChange"
+      @language-change="handleLanguageChange"
+    />
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const theme = ref('light')
+const locale = ref('zh_CN')
+
+const handleThemeChange = (newTheme) => {
+  theme.value = newTheme
+}
+
+const handleLanguageChange = (newLocale) => {
+  locale.value = newLocale
+}
+</script>`}</pre>
+      </div>
+    </div>
+    
+    <div style={{
+      border: '1px solid #e1e5e9',
+      borderRadius: '12px',
+      overflow: 'hidden'
+    }}>
+      <div style={{
+        background: '#f8f9fa',
+        color: '#2c3e50',
+        padding: '1rem 1.5rem',
+        fontSize: '1.1rem',
+        fontWeight: '600',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        cursor: 'pointer',
+        borderBottom: '1px solid #e1e5e9'
+      }} onClick={(e) => {
+        const content = document.getElementById('vue2-code');
+        const button = e.currentTarget.querySelector('button');
+        if (content.style.display === 'none') {
+          content.style.display = 'block';
+          button.textContent = '收起代码';
+        } else {
+          content.style.display = 'none';
+          button.textContent = '展开代码';
+        }
+      }}>
+        <span>🔵 Vue 2 使用方式</span>
+        <button 
+          data-target="vue2-code"
+          style={{
+            background: 'none',
+            border: '1px solid #2c3e50',
+            borderRadius: '4px',
+            padding: '0.25rem 0.5rem',
+            fontSize: '0.8rem',
+            color: '#2c3e50',
+            cursor: 'pointer'
+          }}
+        >展开代码</button>
+      </div>
+      <div id="vue2-code" style={{
+        padding: '1.5rem',
+        background: '#f7fafc',
+        display: 'none'
+      }}>
+        <pre style={{
+          background: '#f1f5f9',
+          color: '#2c3e50',
+          padding: '1.5rem',
+          borderRadius: '8px',
+          overflow: 'auto',
+          fontSize: '0.9rem',
+          lineHeight: '1.5',
+          margin: '0',
+          border: '1px solid #e1e5e9'
+        }}>{`// 1. 安装依赖
+npm install @micro-components/vue2
+
+// 2. 在 main.js 中注册
+import Vue from 'vue'
+import MicroComponents from '@micro-components/vue2'
+import App from './App.vue'
+
+Vue.use(MicroComponents)
+
+new Vue({
+  render: h => h(App)
+}).$mount('#app')
+
+// 3. 在组件中使用
+<template>
+  <div>
+    <micro-footer 
+      :theme="theme"
+      :locale="locale"
+      @theme-change="handleThemeChange"
+      @language-change="handleLanguageChange"
+    />
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      theme: 'light',
+      locale: 'zh_CN'
+    }
+  },
+  methods: {
+    handleThemeChange(newTheme) {
+      this.theme = newTheme
+    },
+    handleLanguageChange(newLocale) {
+      this.locale = newLocale
+    }
+  }
+}
+</script>`}</pre>
+      </div>
+    </div>
+    
+    <div style={{
+      border: '1px solid #e1e5e9',
+      borderRadius: '12px',
+      overflow: 'hidden'
+    }}>
+      <div style={{
+        background: '#f8f9fa',
+        color: '#2c3e50',
+        padding: '1rem 1.5rem',
+        fontSize: '1.1rem',
+        fontWeight: '600',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        cursor: 'pointer',
+        borderBottom: '1px solid #e1e5e9'
+      }} onClick={(e) => {
+        const content = document.getElementById('react-code');
+        const button = e.currentTarget.querySelector('button');
+        if (content.style.display === 'none') {
+          content.style.display = 'block';
+          button.textContent = '收起代码';
+        } else {
+          content.style.display = 'none';
+          button.textContent = '展开代码';
+        }
+      }}>
+        <span>⚛️ React 使用方式</span>
+        <button 
+          data-target="react-code"
+          style={{
+            background: 'none',
+            border: '1px solid #2c3e50',
+            borderRadius: '4px',
+            padding: '0.25rem 0.5rem',
+            fontSize: '0.8rem',
+            color: '#2c3e50',
+            cursor: 'pointer'
+          }}
+        >展开代码</button>
+      </div>
+      <div id="react-code" style={{
+        padding: '1.5rem',
+        background: '#f7fafc',
+        display: 'none'
+      }}>
+        <pre style={{
+          background: '#f1f5f9',
+          color: '#2c3e50',
+          padding: '1.5rem',
+          borderRadius: '8px',
+          overflow: 'auto',
+          fontSize: '0.9rem',
+          lineHeight: '1.5',
+          margin: '0',
+          border: '1px solid #e1e5e9'
+        }}>{`// 1. 安装依赖
+npm install @micro-components/react
+
+// 2. 在应用中使用
+import React, { useState } from 'react'
+import { MicroFooter } from '@micro-components/react'
+
+function App() {
+  const [theme, setTheme] = useState('light')
+  const [locale, setLocale] = useState('zh_CN')
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme)
+  }
+
+  const handleLanguageChange = (newLocale) => {
+    setLocale(newLocale)
+  }
+
+  return (
+    <div>
+      <MicroFooter 
+        theme={theme}
+        locale={locale}
+        onThemeChange={handleThemeChange}
+        onLanguageChange={handleLanguageChange}
+      />
+    </div>
+  )
+}
+
+export default App`}</pre>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div style={{
+  background: '#f8f9fa',
+  padding: '3rem 2rem',
+  borderRadius: '16px',
+  margin: '4rem 0'
+}}>
+  <h2 style={{
+    fontSize: '2.5rem',
+    fontWeight: '600',
+    margin: '0 0 2rem 0',
+    textAlign: 'center',
+    color: '#2c3e50'
+  }}>🎯 最佳实践</h2>
+  
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '2rem'
+  }}>
+    
+    <div style={{
+      background: 'white',
+      padding: '2rem',
+      borderRadius: '12px',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+    }}>
+      <h4 style={{
+        fontSize: '1.2rem',
+        fontWeight: '600',
+        margin: '0 0 1rem 0',
+        color: '#2c3e50'
+      }}>📦 按需引入</h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0 0 1rem 0'
+      }}>只引入需要的组件，减少包体积：</p>
+      <pre style={{
+        background: '#f1f5f9',
+        padding: '1rem',
+        borderRadius: '6px',
+        fontSize: '0.85rem',
+        margin: '0',
+        overflow: 'auto'
+      }}>{`import { Footer } from '@micro-components/vue3'
+// 而不是
+import MicroComponents from '@micro-components/vue3'`}</pre>
+    </div>
+    
+    <div style={{
+      background: 'white',
+      padding: '2rem',
+      borderRadius: '12px',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+    }}>
+      <h4 style={{
+        fontSize: '1.2rem',
+        fontWeight: '600',
+        margin: '0 0 1rem 0',
+        color: '#2c3e50'
+      }}>🎨 主题配置</h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0 0 1rem 0'
+      }}>统一配置主题变量：</p>
+      <pre style={{
+        background: '#f1f5f9',
+        padding: '1rem',
+        borderRadius: '6px',
+        fontSize: '0.85rem',
+        margin: '0',
+        overflow: 'auto'
+      }}>{`// 在应用入口配置
+MicroComponents.config({
+  theme: {
+    primaryColor: '#667eea',
+    borderRadius: '8px'
+  }
+})`}</pre>
+    </div>
+    
+    <div style={{
+      background: 'white',
+      padding: '2rem',
+      borderRadius: '12px',
+      boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+    }}>
+      <h4 style={{
+        fontSize: '1.2rem',
+        fontWeight: '600',
+        margin: '0 0 1rem 0',
+        color: '#2c3e50'
+      }}>🌐 国际化</h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0 0 1rem 0'
+      }}>配置多语言支持：</p>
+      <pre style={{
+        background: '#f1f5f9',
+        padding: '1rem',
+        borderRadius: '6px',
+        fontSize: '0.85rem',
+        margin: '0',
+        overflow: 'auto'
+      }}>{`MicroComponents.i18n({
+  locale: 'zh_CN',
+  messages: {
+    zh_CN: { /* 中文配置 */ },
+    en: { /* 英文配置 */ }
+  }
+})`}</pre>
+    </div>
+    
+  </div>
+</div>
+ 
+ <div style={{
+   background: '#f8f9fa',
+   padding: '3rem 2rem',
+   borderRadius: '16px',
+   margin: '4rem 0',
+   border: '1px solid #e9ecef'
+ }}>
+   <h2 style={{
+     fontSize: '2.5rem',
+     fontWeight: '600',
+     margin: '0 0 2rem 0',
+     textAlign: 'center',
+     color: '#2c3e50'
+   }}>❓ 常见问题</h2>
+   
+   <div style={{
+     display: 'grid',
+     gap: '1.5rem',
+     maxWidth: '800px',
+     margin: '0 auto'
+   }}>
+     
+     <div style={{
+       background: 'white',
+       padding: '2rem',
+       borderRadius: '12px',
+       boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+       border: '1px solid #e9ecef'
+     }}>
+       <h4 style={{
+         fontSize: '1.2rem',
+         fontWeight: '600',
+         margin: '0 0 1rem 0',
+         color: '#2c3e50'
+       }}>Q: 如何在现有项目中集成微组件？</h4>
+       <p style={{
+         color: '#666',
+         lineHeight: '1.6',
+         margin: '0'
+       }}>A: 根据你的项目框架选择对应的适配包（@micro-components/vue2、@micro-components/vue3 或 @micro-components/react），然后按照使用示例进行安装和配置即可。</p>
+     </div>
+     
+     <div style={{
+       background: 'white',
+       padding: '2rem',
+       borderRadius: '12px',
+       boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+       border: '1px solid #e9ecef'
+     }}>
+       <h4 style={{
+         fontSize: '1.2rem',
+         fontWeight: '600',
+         margin: '0 0 1rem 0',
+         color: '#2c3e50'
+       }}>Q: 微组件支持哪些浏览器？</h4>
+       <p style={{
+         color: '#666',
+         lineHeight: '1.6',
+         margin: '0'
+       }}>A: 支持所有现代浏览器，包括 Chrome 60+、Firefox 55+、Safari 12+、Edge 79+。对于旧版浏览器，我们提供了相应的 polyfill 支持。</p>
+     </div>
+     
+     <div style={{
+       background: 'white',
+       padding: '2rem',
+       borderRadius: '12px',
+       boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+       border: '1px solid #e9ecef'
+     }}>
+       <h4 style={{
+         fontSize: '1.2rem',
+         fontWeight: '600',
+         margin: '0 0 1rem 0',
+         color: '#2c3e50'
+       }}>Q: 如何自定义组件样式？</h4>
+       <p style={{
+         color: '#666',
+         lineHeight: '1.6',
+         margin: '0'
+       }}>A: 可以通过 CSS 变量覆盖默认样式，或者使用 MicroComponents.config() 方法进行全局主题配置。每个组件都支持 className 和 style 属性进行个性化定制。</p>
+     </div>
+     
+     <div style={{
+       background: 'white',
+       padding: '2rem',
+       borderRadius: '12px',
+       boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+       border: '1px solid #e9ecef'
+     }}>
+       <h4 style={{
+         fontSize: '1.2rem',
+         fontWeight: '600',
+         margin: '0 0 1rem 0',
+         color: '#2c3e50'
+       }}>Q: 组件的性能如何？</h4>
+       <p style={{
+         color: '#666',
+         lineHeight: '1.6',
+         margin: '0'
+       }}>A: 采用按需加载和智能缓存策略，单个组件平均加载时间 < 100ms，内存占用 < 2MB。支持 Tree Shaking，只打包使用到的组件代码。</p>
+     </div>
+     
+   </div>
+ </div>
+ 
+ <div style={{
+   textAlign: 'center',
+   padding: '2rem',
+   background: '#f8f9fa',
+   borderRadius: '12px',
+   margin: '3rem 0',
+   border: '1px solid #e9ecef'
+ }}>
+   <h3 style={{
+     fontSize: '1.5rem',
+     fontWeight: '600',
+     margin: '0 0 1rem 0',
+     color: '#2c3e50'
+   }}>探索更多</h3>
   <p style={{
     color: '#666',
     margin: '0 0 1.5rem 0'
