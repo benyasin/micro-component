@@ -1,8 +1,8 @@
 export * from './store'
 export * from './component'
 
-// @ts-ignore
-export const isClient = process.client
+// 在浏览器环境下安全判断是否为客户端
+export const isClient = typeof window !== 'undefined' && typeof document !== 'undefined'
 export const isDev = import.meta.env.DEV
 
 export function createElement(id: string) {

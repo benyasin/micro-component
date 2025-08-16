@@ -45,9 +45,9 @@ export const useI18n = defineStore((): {
       defaultLanguageList.find((item) => item.locale === 'en')
     let localeFiles
 
-    // 优化构建流程，构建ssr时只需打包当前语言
-    //@ts-ignore
-    if (process.locale) {
+    // 优化构建流程，构建ssr时只需打包当前语言；在浏览器/Storybook 环境避免直接访问 process
+    const isProcessLocale = typeof process !== 'undefined' && (process as any)?.locale
+    if (isProcessLocale) {
       localeFiles = import.meta.glob<{ default: LocaleMessageValue }>(
         `../../locales/js/process.locale.js`
       )
@@ -205,7 +205,7 @@ export const useI18n = defineStore((): {
 
   /** 获取不带语言的pathname */
   function getPathWithoutLocale() {
-    const reg = new RegExp(`^\/${locale.value}|\/$/g`)
+    const reg = new RegExp(`^\/${locale.value}|\/$`, 'g')
     return location.pathname.replace(reg, '')
   }
 

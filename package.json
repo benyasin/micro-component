@@ -1,6 +1,6 @@
 {
   "name": "micro-components",
-  "version": "1.5.3",
+  "version": "1.0.0",
   "main": "dist/runtime/rutime.js",
   "module": "dist/runtime/runtime.js",
   "types": "./types.d.ts",
@@ -45,7 +45,9 @@
     "test:dev:vue2": "cd test-projects/vue2 && pnpm run dev",
     "test:build": "cd test-projects/vue3 && pnpm run build && cd ../react && pnpm run build && cd ../vue2 && pnpm run build",
     "kill-ports": "./scripts/kill-test-ports.sh",
-    "test:restart": "./scripts/restart-test-projects.sh"
+    "test:restart": "./scripts/restart-test-projects.sh",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "pnpm": {
     "overrides": {}
@@ -53,6 +55,9 @@
   "devDependencies": {
     "@divriots/jampack": "^0.28.0",
     "@rollup/plugin-terser": "^0.4.4",
+    "@storybook/addon-docs": "^9.1.2",
+    "@storybook/addon-links": "^9.1.2",
+    "@storybook/vue3-vite": "^9.1.2",
     "@types/node": "^20.11.0",
     "@unocss/core": "^0.58.0",
     "@unocss/preset-attributify": "^0.58.0",
@@ -85,6 +90,7 @@
     "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.70.0",
     "shelljs": "^0.8.5",
+    "storybook": "^9.1.2",
     "swiper": "^11.0.5",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.4",

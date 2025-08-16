@@ -109,20 +109,20 @@ function App() {
 
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme)
-    console.log('Theme changed to:', newTheme)
+    // console.log('Theme changed to:', newTheme)
   }
 
   const handleLanguageChange = (language) => {
     setLocale(language.locale)
-    console.log('Language changed to:', language)
+    // console.log('Language changed to:', language)
   }
 
   const handleCurrencyChange = (currency) => {
-    console.log('Currency changed to:', currency)
+    // console.log('Currency changed to:', currency)
   }
 
   const handleLinkClick = (url, target) => {
-    console.log('Link clicked:', url, target)
+    // console.log('Link clicked:', url, target)
     // 处理链接跳转
     if (target === '_blank') {
       window.open(url, '_blank')

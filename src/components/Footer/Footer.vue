@@ -138,7 +138,6 @@ import ConfigProvider from '@/common/ConfigProvider/ConfigProvider.vue'
 createStore()
 
 const defaultProps = withDefaults(defineProps<Props>(), {
-  currencyVisible: true,
   theme: 'light',
   locale: 'en'
 })
@@ -164,68 +163,35 @@ const isI18nEnabled = computed(() => {
 })
 
 // 主题切换 - 统一使用global-theme体系
+const __DEBUG__ = Boolean(localStorage.getItem('MICRO_COMPONENT:DEBUG'))
+const dlog = (...args: any[]) => { if (__DEBUG__) console.log('[Footer]', ...args) }
+
 const toggleTheme = () => {
-  console.log('[Footer] 开始主题切换')
-  console.log('[Footer] 当前主题:', currentTheme.value)
-  console.log('[Footer] 国际化开启状态:', isI18nEnabled.value)
-  console.log('[Footer] 当前配置:', config.value)
-  
+  dlog('toggleTheme start', { theme: currentTheme.value, i18n: isI18nEnabled.value })
   const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
-  console.log('[Footer] 新主题:', newTheme)
   
-  // 更新props
-  console.log('[Footer] 更新props前的footerProps:', footerProps.value)
   updateProps({ theme: newTheme })
-  console.log('[Footer] 更新props后的footerProps:', footerProps.value)
-  
-  // 触发事件
-  console.log('[Footer] 触发themeChange事件:', newTheme)
   event.emit('themeChange', newTheme as any)
   
-  // 同步到全局主题 - 只使用一套主题体系
   if (typeof document !== 'undefined') {
-    console.log('[Footer] 更新document.body类名')
-    console.log('[Footer] 更新前body.className:', document.body.className)
     document.body.classList.toggle('black', newTheme === 'dark')
     document.body.classList.toggle('white', newTheme === 'light')
-    console.log('[Footer] 更新后body.className:', document.body.className)
   }
-  
-  console.log('[Footer] 主题切换完成')
+  dlog('toggleTheme done →', newTheme)
 }
 
 const handleLanguageChange = async (domEvent: Event) => {
-  console.log('[Footer] 开始语言切换')
-  console.log('[Footer] 当前语言:', currentLocale.value)
-  console.log('[Footer] 国际化开启状态:', isI18nEnabled.value)
-  console.log('[Footer] 可用语言列表:', config.value?.languages)
-  
+  dlog('language change start', { current: currentLocale.value })
   const target = domEvent.target as HTMLSelectElement
   const newLocale = target.value
-  console.log('[Footer] 选择的新语言:', newLocale)
   
   const language = config.value?.languages?.find(lang => lang.locale === newLocale)
-  console.log('[Footer] 找到的语言配置:', language)
-  
   if (language) {
-    console.log('[Footer] 开始切换语言到:', newLocale)
-    
     try {
-      // 等待i18n实例切换完成
-      console.log('[Footer] 调用changeLocale并等待完成')
       await changeLocale(newLocale)
-      console.log('[Footer] changeLocale完成')
-      
-      // 更新组件props
-      console.log('[Footer] 更新props前的footerProps:', footerProps.value)
       updateProps({ locale: newLocale })
-      console.log('[Footer] 更新props后的footerProps:', footerProps.value)
-      
-      // 触发事件
-      console.log('[Footer] 触发languageChange事件:', language)
       event.emit('languageChange', language)
-      
-      console.log('[Footer] 语言切换完成')
+      dlog('language change done →', newLocale)
     } catch (error) {
       console.error('[Footer] 语言切换失败:', error)
     }

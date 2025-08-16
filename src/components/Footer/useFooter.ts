@@ -14,8 +14,6 @@ const getDefaultConfig = (locale: string): Config => {
     brandName: 'MicroApp',
     slogan: 'Simple & Powerful',
     copyright: `© ${new Date().getFullYear()} MicroApp. All rights reserved.`,
-    rtlSupport: false,
-    currencyVisible: true,
     // 默认启用多语言支持
     i18nEnabled: true,
     
@@ -48,8 +46,6 @@ const getDefaultConfig = (locale: string): Config => {
       { locale: 'en', languageKey: 'en_US', languageType: 0, languageName: 'English' },
       { locale: 'zh-CN', languageKey: 'zh_CN', languageType: 1, languageName: '简体中文' }
     ],
-    
-
   }
 }
 

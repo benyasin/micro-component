@@ -59,7 +59,8 @@ export const useTrackTool = (baseProp: Ref<BaseProps> | BaseProps) => {
     }
   }
 
-  if (process.client && !getLogEvent()) {
+  const isClient = typeof window !== 'undefined' && typeof document !== 'undefined'
+  if (isClient && !getLogEvent()) {
     logNullError('logEvent')
   }
 

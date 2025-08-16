@@ -12,8 +12,8 @@ export function setCurrentLocale(locale: string) {
  * @returns
  */
 export function getCurrentLocale() {
-  // @ts-ignore
-  if (!process.client || currentLocale) {
+  const isClient = typeof window !== 'undefined' && typeof document !== 'undefined'
+  if (!isClient || currentLocale) {
     return currentLocale || 'en'
   }
 
