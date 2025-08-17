@@ -15,16 +15,6 @@
               {{ i18nEnabled ? t('footer.slogan') : (config?.slogan || 'Simple & Powerful') }}
             </div>
           </div>
-          
-          <!-- 主题切换按钮 -->
-           <!-- 
-          <button 
-            class="px-4 py-2 rounded bg-primary text-white hover:bg-primaryHover transition-colors"
-            @click="toggleTheme"
-          >
-            {{ currentTheme === 'dark' ? '🌞' : '🌙' }} {{ i18nEnabled ? t('footer.switch_theme') : 'Switch Theme' }}
-          </button>
-           -->
         </div>
 
         <!-- 主要内容区域 -->
@@ -139,7 +129,8 @@ createStore()
 
 const defaultProps = withDefaults(defineProps<Props>(), {
   theme: 'light',
-  locale: 'en'
+  locale: 'en',
+  i18nEnabled: undefined
 })
 
 const $footer = ref()
@@ -154,16 +145,15 @@ const { t, changeLocale } = useI18n()
 
 // 检查是否启用多语言 - 优先使用 props，然后是 config，默认为 true
 const i18nEnabled = computed(() => {
-  // 使用 config 中的设置，默认为 true
+  // 优先使用 props 中的 i18nEnabled，如果未定义则使用 config 中的设置，默认为 true
+  if (defaultProps.i18nEnabled !== undefined) {
+    return defaultProps.i18nEnabled
+  }
   return config.value?.i18nEnabled !== false
 })
 
 // 主题切换 - 统一使用global-theme体系
-const __DEBUG__ = Boolean(localStorage.getItem('MICRO_COMPONENT:DEBUG'))
-const dlog = (...args: any[]) => { if (__DEBUG__) console.log('[Footer]', ...args) }
-
 const toggleTheme = () => {
-  dlog('toggleTheme start', { theme: currentTheme.value, i18n: i18nEnabled.value })
   const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
   
   updateProps({ theme: newTheme })
@@ -174,11 +164,9 @@ const toggleTheme = () => {
     document.body.classList.remove('global-theme', 'black', 'white')
     document.body.classList.add('global-theme', newTheme === 'dark' ? 'black' : 'white')
   }
-  dlog('toggleTheme done →', newTheme)
 }
 
 const handleLanguageChange = async (domEvent: Event) => {
-  dlog('language change start', { current: currentLocale.value })
   const target = domEvent.target as HTMLSelectElement
   const newLocale = target.value
   
@@ -188,7 +176,6 @@ const handleLanguageChange = async (domEvent: Event) => {
       await changeLocale(newLocale)
       updateProps({ locale: newLocale })
       event.emit('languageChange', language)
-      dlog('language change done →', newLocale)
     } catch (error) {
       console.error('[Footer] 语言切换失败:', error)
     }

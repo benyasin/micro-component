@@ -29,13 +29,13 @@ export function useProps<T extends BaseProps>(defaultProps?: T) {
 
   function updateProps(options: Partial<T> = {}) {
     console.log('[useProps] updateProps调用')
-    console.log('[useProps] 当前props.value:', props.value)
-    console.log('[useProps] 传入的options:', options)
-    console.log('[useProps] 过滤后的options:', filterUndefined(options))
+    console.log('[useProps] 当前props.value:', JSON.stringify(props.value, null, 2))
+    console.log('[useProps] 传入的options:', JSON.stringify(options, null, 2))
+    console.log('[useProps] 过滤后的options:', JSON.stringify(filterUndefined(options), null, 2))
     
     Object.assign(props.value, filterUndefined(options))
     
-    console.log('[useProps] 更新后的props.value:', props.value)
+    console.log('[useProps] 更新后的props.value:', JSON.stringify(props.value, null, 2))
     
     // 统一主题：同步到 body.global-theme 上的 white/black
     if (options.theme && typeof document !== 'undefined') {

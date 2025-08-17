@@ -9,6 +9,7 @@
 - 特性速览
 - 项目结构
 - 核心概念
+- 组件配置系统
 - 运行原理
 - 快速开始与用法
 - 构建与产物
@@ -46,6 +47,124 @@
 - 包装器（Wrapper）：面向不同宿主框架的外层适配（Vue2/Vue3/React）
 - 运行时（Runtime）：统一的调度与渲染中枢，负责组件创建、样式注入、事件桥与资源加载
 - 任务（Task）：一次组件创建过程的抽象，带有优先级、状态与生命周期
+- 配置系统（Config System）：多层次的配置合并机制，支持默认配置、基础配置和用户自定义配置的智能合并
+
+
+## 组件配置系统
+
+### 配置层次结构
+
+组件配置系统采用三层架构，按优先级从低到高依次为：
+
+1. **默认配置（Default Config）**
+   - 组件的基础配置，定义在各组件的 `useComponent.ts` 文件中
+   - 包含组件运行所需的最小配置集合
+   - 提供合理的默认值，确保组件在无配置情况下正常工作
+
+2. **基础配置（Source Config）**
+   - 来自上层组件、全局配置或 ConfigProvider 的配置
+   - 通常用于设置项目级别的通用配置
+   - 可以覆盖默认配置中的部分或全部字段
+
+3. **用户配置（Target Config）**
+   - 组件实例级别的自定义配置
+   - 具有最高优先级，可以覆盖前两层的任何配置
+   - 通过组件 props 传入
+
+### 配置合并策略
+
+配置合并遵循以下规则：
+
+```javascript
+// 合并优先级：用户配置 > 基础配置 > 默认配置
+finalConfig = { ...defaultConfig, ...sourceConfig, ...targetConfig }
+
+// 特殊处理数组类型配置（如 links、languages 等）
+// 采用完全替换策略，而非数组合并
+productLinks = targetConfig.productLinks || sourceConfig.productLinks || defaultConfig.productLinks
+```
+
+### 配置示例
+
+以 Footer 组件为例：
+
+```javascript
+// 1. 默认配置
+const defaultConfig = {
+  brandName: 'MicroApp',
+  slogan: 'Simple & Powerful',
+  copyright: '© 2025 MicroApp. All rights reserved.',
+  i18nEnabled: true,
+  productLinks: [
+    { title: 'Features', url: '/features', target: '_self' },
+    { title: 'Pricing', url: '/pricing', target: '_self' }
+  ],
+  supportLinks: [
+    { title: 'Help Center', url: '/help', target: '_self' },
+    { title: 'Contact Us', url: '/contact', target: '_self' }
+  ],
+  socialLinks: [
+    { name: 'twitter', title: 'Follow us on Twitter', url: 'https://twitter.com/microapp' }
+  ],
+  languages: [
+    { locale: 'en', languageKey: 'en_US', languageName: 'English' },
+    { locale: 'zh-CN', languageKey: 'zh_CN', languageName: '简体中文' }
+  ]
+}
+
+// 2. 基础配置（来自 ConfigProvider 或全局设置）
+const sourceConfig = {
+  brandName: 'MyCompany',
+  rtlSupport: false,
+  project: 'main'
+}
+
+// 3. 用户配置（组件实例传入）
+const targetConfig = {
+  brandName: 'CustomBrand',
+  slogan: '自定义标语 - 创新科技，引领未来',
+  copyright: '© 2024 CustomBrand. 保留所有权利。',
+  productLinks: [
+    { title: '产品介绍', url: '/products', target: '_self' },
+    { title: '解决方案', url: '/solutions', target: '_self' }
+  ]
+}
+
+// 4. 最终合并结果
+const finalConfig = {
+  brandName: 'CustomBrand',           // 来自用户配置
+  slogan: '自定义标语 - 创新科技，引领未来', // 来自用户配置
+  copyright: '© 2024 CustomBrand. 保留所有权利。', // 来自用户配置
+  i18nEnabled: true,                  // 来自默认配置
+  rtlSupport: false,                  // 来自基础配置
+  project: 'main',                    // 来自基础配置
+  productLinks: [                     // 来自用户配置（完全替换）
+    { title: '产品介绍', url: '/products', target: '_self' },
+    { title: '解决方案', url: '/solutions', target: '_self' }
+  ],
+  supportLinks: [                     // 来自默认配置（未被覆盖）
+    { title: 'Help Center', url: '/help', target: '_self' },
+    { title: 'Contact Us', url: '/contact', target: '_self' }
+  ],
+  socialLinks: [                      // 来自默认配置（未被覆盖）
+    { name: 'twitter', title: 'Follow us on Twitter', url: 'https://twitter.com/microapp' }
+  ],
+  languages: [                        // 来自默认配置（未被覆盖）
+    { locale: 'en', languageKey: 'en_US', languageName: 'English' },
+    { locale: 'zh-CN', languageKey: 'zh_CN', languageName: '简体中文' }
+  ]
+}
+```
+### 配置验证
+
+系统内置配置验证机制，确保配置的正确性：
+
+- **必填字段检查**：验证关键配置项是否存在
+- **类型验证**：确保配置项类型正确（如数组类型的 links）
+- **格式验证**：检查链接格式、语言配置等是否符合规范
+- **警告提示**：对可能的配置问题给出友好提示
+
+配置验证会在组件初始化时自动执行，开发模式下会在控制台输出详细的验证结果。
 
 
 ## 运行原理
