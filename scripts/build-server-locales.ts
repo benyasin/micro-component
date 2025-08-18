@@ -3,7 +3,7 @@ import fs from 'fs/promises'
 import { glob } from 'glob'
 import { createSSRApp } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import { createI18n } from 'vue-i18n'
+import { createI18n } from 'vue-i18n/dist/vue-i18n.runtime.mjs'
 import { build } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import svg from 'vite-svg-loader'
@@ -46,20 +46,29 @@ async function buildComponent(name: string) {
   // const entry = `./src/components/${name}/${name}.vue`
   const outDir = `dist/server-app/${name}`
 
-  // 构建组件
+  // Shim Vue and vue-i18n compile-time constants for Node SSR execution context
+  ;(globalThis as any).__VUE_OPTIONS_API__ = true
+  ;(globalThis as any).__VUE_PROD_DEVTOOLS__ = false
+  ;(globalThis as any).__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false
+  ;(globalThis as any).__VUE_I18N_LEGACY_API__ = false
+  ;(globalThis as any).__VUE_I18N_FULL_INSTALL__ = true
   await build({
     base: '/micro-runtime/',
     publicDir: path.resolve('./src/public'),
     ssr: {
-      noExternal: []
+      noExternal: ['vue-i18n']
     },
     resolve: {
       alias: {
-        '@': path.resolve('./src')
+        '@': path.resolve('./src'),
+        'vue-i18n': 'vue-i18n/dist/vue-i18n.runtime.mjs'
       }
     },
     define: {
-      'process.client': false
+      'process.client': false,
+      __VUE_PROD_DEVTOOLS__: false,
+      __VUE_OPTIONS_API__: true,
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
     },
     build: {
       ssr: true,
@@ -120,7 +129,7 @@ async function buildComponent(name: string) {
         ]
       }
     },
-    plugins: [svg({ svgo: false }), UnoCss(path.resolve('./unocss.config.ts'))]
+    plugins: [vue(), svg({ svgo: false }), UnoCss(path.resolve('./unocss.config.ts'))]
   })
 
   // 生成组件各语言HTML

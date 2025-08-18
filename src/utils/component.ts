@@ -1,5 +1,4 @@
 import { useProps } from '@/compositions/useProps'
-import { useProps as usePropsNew } from '@/compositions/usePropsNew'
 import { useEvent } from '@/compositions/useEvent'
 
 /**
@@ -10,7 +9,7 @@ import { useEvent } from '@/compositions/useEvent'
 export function makeExpose(
   component: {
     updateProps: ReturnType<typeof useProps>['updateProps']
-    props: ReturnType<typeof useProps>['props'] | ReturnType<typeof usePropsNew>['props']
+    props: ReturnType<typeof useProps>['props'] | ReturnType<typeof useProps>['props']
     event: ReturnType<typeof useEvent>
   },
   data?: Record<string, any>

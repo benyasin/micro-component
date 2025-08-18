@@ -59,8 +59,6 @@ export interface Config {
   directionSwitchEnabled?: boolean
   /** 文本方向：'ltr' | 'rtl' */
   direction?: 'ltr' | 'rtl'
-  /** 是否启用 SSR 模式相关处理（覆盖 BaseProps） */
-  ssrEnabled?: boolean
 }
 
 export type Events = {

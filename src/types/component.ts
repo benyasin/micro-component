@@ -21,8 +21,6 @@ export interface BaseProps {
   directionSwitchEnabled?: boolean
   // 文本方向：'ltr' | 'rtl'（新字段，推荐使用）
   direction?: 'ltr' | 'rtl'
-  // 是否启用 SSR 模式下的特殊处理（默认不启用，由使用方手动开启）
-  ssrEnabled?: boolean
 
   // 是否打印logger
   logger?: boolean

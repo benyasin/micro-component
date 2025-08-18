@@ -37,10 +37,6 @@ const meta: Meta = {
       control: 'boolean',
       description: '是否允许在组件内切换方向（默认全局为 false，需要手动开启）'
     },
-    ssrEnabled: {
-      control: 'boolean',
-      description: '是否开启 SSR 环境兼容模式（默认全局为 false，需要手动开启）'
-    },
     onThemeChange: { action: 'theme-changed' },
     onLanguageChange: { action: 'language-changed' },
     onPush: { action: 'link-clicked' }
@@ -59,7 +55,6 @@ export const Default: Story = {
     i18nEnabled: true,
     themeSwitchEnabled: false,
     directionSwitchEnabled: false,
-    ssrEnabled: false,
   } as any,
 }
 

@@ -95,6 +95,8 @@ const defaultConfig = {
   slogan: 'Simple & Powerful',
   copyright: '© 2025 MicroApp. All rights reserved.',
   i18nEnabled: true,
+  direction: 'ltr',
+  directionSwitchEnabled: false,
   productLinks: [
     { title: 'Features', url: '/features', target: '_self' },
     { title: 'Pricing', url: '/pricing', target: '_self' }
@@ -115,7 +117,7 @@ const defaultConfig = {
 // 2. 基础配置（来自 ConfigProvider 或全局设置）
 const sourceConfig = {
   brandName: 'MyCompany',
-  
+  direction: 'rtl',
   project: 'main'
 }
 
@@ -124,6 +126,7 @@ const targetConfig = {
   brandName: 'CustomBrand',
   slogan: '自定义标语 - 创新科技，引领未来',
   copyright: '© 2024 CustomBrand. 保留所有权利。',
+  directionSwitchEnabled: true,
   productLinks: [
     { title: '产品介绍', url: '/products', target: '_self' },
     { title: '解决方案', url: '/solutions', target: '_self' }
@@ -136,7 +139,8 @@ const finalConfig = {
   slogan: '自定义标语 - 创新科技，引领未来', // 来自用户配置
   copyright: '© 2024 CustomBrand. 保留所有权利。', // 来自用户配置
   i18nEnabled: true,                  // 来自默认配置
-  
+  direction: 'rtl',                   // 来自基础配置
+  directionSwitchEnabled: true,       // 来自用户配置
   project: 'main',                    // 来自基础配置
   productLinks: [                     // 来自用户配置（完全替换）
     { title: '产品介绍', url: '/products', target: '_self' },
@@ -155,6 +159,34 @@ const finalConfig = {
   ]
 }
 ```
+
+### 组件属性说明
+
+#### 方向控制属性
+
+组件支持完整的方向控制功能：
+
+- `direction: 'ltr' | 'rtl'` - 控制组件布局方向（默认为 `'ltr'`）
+- `directionSwitchEnabled: boolean` - 是否显示方向切换开关（默认为 `false`）
+
+**使用示例：**
+
+```javascript
+// Vue 3
+<MicroFooter 
+  :direction="'rtl'" 
+  :directionSwitchEnabled="true"
+  @direction-change="handleDirectionChange"
+/>
+
+// React
+<MicroFooter 
+  direction="rtl"
+  directionSwitchEnabled={true}
+  onDirectionChange={handleDirectionChange}
+/>
+```
+
 ### 配置验证
 
 系统内置配置验证机制，确保配置的正确性：
@@ -168,7 +200,7 @@ const finalConfig = {
 
 
 ## 运行原理
-以下按“从调用到渲染完成”的时间线展开，展示一次组件完整流转。
+以下按"从调用到渲染完成"的时间线展开，展示一次组件完整流转。
 
 1) 宿主侧调用
 - Vue2/Vue3/React 宿主通过对应包装器使用组件（或直接通过全局 MicroRuntime#createComponent 调用）
@@ -194,7 +226,7 @@ const finalConfig = {
 5) 容器与 Teleport 渲染
 - Runtime.vue 内部为每个组件分配稳定的容器节点
 - 使用 Vue Teleport 将真实 DOM 渲染到宿主给定的 el 上
-- 这使得“跨框架挂载”成为可能：外壳可以是 React/Vue2，但真实渲染由 Runtime 控制
+- 这使得"跨框架挂载"成为可能：外壳可以是 React/Vue2，但真实渲染由 Runtime 控制
 
 6) 事件桥与双向通信
 - 运行时为每个组件建立事件总线（EventEmitter）
@@ -221,7 +253,7 @@ const finalConfig = {
 
 ### 运行原理（图解版）
 
-这套体系的目标：让“不同技术栈（Vue2/Vue3/React）的宿主项目”，都能像使用本地组件一样使用 micro-component 提供的统一组件，不需要关心内部实现用的是什么框架。
+这套体系的目标：让"不同技术栈（Vue2/Vue3/React）的宿主项目"，都能像使用本地组件一样使用 micro-component 提供的统一组件，不需要关心内部实现用的是什么框架。
 
 1) 我们如何抹平各技术栈差异
 - 统一协议层：不论你在 Vue2/Vue3 还是 React 中使用，包装器都会把外部传入的参数转换为一个统一对象：{ type, props, el, on }。
@@ -230,25 +262,25 @@ const finalConfig = {
   - el：一个真实 DOM 容器（包装器会拿到真实 DOM，交给运行时）。
   - on：一组回调，统一表现为 onXxx（例如 onClick、onChange）。
 - 事件桥（Event Bridge）：
-  - Vue3 的 @click、Vue2 的 $listeners、React 的 onClick，本质都是“事件回调”。包装器把这些都收敛为统一的 onXxx 回调列表交给运行时；组件内部只需要 emit("xxx", payload) 即可。
-  - 这样组件侧无需知道“外面是 React 还是 Vue”，事件照常工作。
+  - Vue3 的 @click、Vue2 的 $listeners、React 的 onClick，本质都是"事件回调"。包装器把这些都收敛为统一的 onXxx 回调列表交给运行时；组件内部只需要 emit("xxx", payload) 即可。
+  - 这样组件侧无需知道"外面是 React 还是 Vue"，事件照常工作。
 - 生命周期对齐：
   - 宿主侧只有三件事：mount（创建）、update（属性变化）、unmount（卸载）。
   - Vue2/Vue3/React 包装器都把各自的生命周期映射为这三步，并调用运行时对应的 API。
 - 插槽/children：
-  - 在需要插槽/children 的场景，包装器把它们转换为“可序列化数据或渲染描述”，统一作为 props 传入；组件内部按约定渲染。
+  - 在需要插槽/children 的场景，包装器把它们转换为"可序列化数据或渲染描述"，统一作为 props 传入；组件内部按约定渲染。
 - 样式与主题：
   - 运行时负责把组件的样式（CSS）注入到页面中，并做去重；不依赖宿主使用什么打包器。
 
 2) 浏览器实际是怎么解析/执行的
 - 模块解析：
-  - 你在宿主里写 import { Footer } from 'micro-components/react/Footer'（或 Vue2/Vue3 对应路径），打包器会把它编译成对“包装器代码”的引用。
+  - 你在宿主里写 import { Footer } from 'micro-components/react/Footer'（或 Vue2/Vue3 对应路径），打包器会把它编译成对"包装器代码"的引用。
   - 运行时在创建组件时，会使用动态 import 去加载真正的组件实现（按需加载）。
 - 网络加载与并发：
   - 浏览器并行发起请求：组件 JS、样式、i18n 语言包、可能的预取数据。
   - 命中缓存会快速返回；运行时内部也会做二级缓存，避免重复注入样式或重复 import。
 - 渲染与 Teleport：
-  - 运行时基于 Vue3 作为“统一渲染内核”。
+  - 运行时基于 Vue3 作为"统一渲染内核"。
   - 通过 Vue3 的 Teleport，把组件的真实 DOM 渲染到你传进来的 el 里。这样外部不管是 React、Vue2 还是 Vue3，最终都只是提供一个 DOM 容器而已。
 - 事件循环与回调：
   - 组件内部 emit 事件后，运行时经由事件桥把它派发给包装器，包装器再触发宿主提供的 onXxx 回调（或 @xxx / $listeners）。
@@ -271,7 +303,8 @@ const finalConfig = {
 ## 快速开始与用法
 1) 安装与构建
 - pnpm i
-- pnpm run build（一次性构建 runtime 与三端组件包装器）
+- pnpm run build 或 pnpm run build:client（构建 runtime 与三端组件包装器）
+- 可选：pnpm run build:ssr（生成 SSR 相关产物：server-app、server-locales、server-locale-modules）
 
 2) 在 Vue 3 使用
 - import { MicroFooter } from 'micro-components/vue/Footer'
@@ -294,11 +327,14 @@ const finalConfig = {
 - 核心脚本：
   - scripts/build-runtime.ts：构建运行时（runtime.js/css）
   - scripts/build-vue3.ts / build-vue2.ts / build-react.ts：为每个组件生成三端包装器
-  - scripts/build-server-locales.ts：生成 SSR 语言包
+  - scripts/build-server-locales.ts：生成 SSR 语言产物（可选，通过 pnpm run build:ssr 调用）
 - 产物结构（dist/）：
   - runtime/：runtime.js、runtime.css
   - components/vue|vue2|react：各端组件入口与类型
-  - server-locales/：按语言拆分的 SSR 资源
+  - 可选 SSR 产物：
+    - server-app/：各组件的 SSR 构建产物
+    - server-locales/：按语言生成的 HTML 片段（ESM 导出）
+    - server-locale-modules/：按语言生成的 HTML 片段（ESM/CJS 双格式）
 
 
 ## 调试与性能观测
@@ -313,8 +349,8 @@ const finalConfig = {
 - Q: 事件如何统一？
   A: 组件内部只关心 emit，包装器按宿主框架约定转换为 onXxx 或 $listeners。
 - Q: 运行时 CSS/JS 如何注入？
-  A: 构建后由运行时按需注入并等待就绪，防止“先渲染后样式”的闪烁。
+  A: 构建后由运行时按需注入并等待就绪，防止"先渲染后样式"的闪烁。
 - Q: 如何保证稳定？
   A: 超时/中断/降级对象三重保障，任何阶段失败都不影响宿主可用性。
 
-—— 若需深入实现，请阅读 runtime/runtime.ts、runtime/Runtime.vue 与 scripts/*。这三者正对应本文的“调度/渲染/构建”三大职责。
+—— 若需深入实现，请阅读 runtime/runtime.ts、runtime/Runtime.vue 与 scripts/*。这三者正对应本文的"调度/渲染/构建"三大职责。

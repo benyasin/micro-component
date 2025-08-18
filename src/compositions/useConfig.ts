@@ -10,8 +10,7 @@ export const useConfig = defineStore(() => {
     // 全局开关（默认均为 false）
     i18nEnabled: false,
     themeSwitchEnabled: false,
-    directionSwitchEnabled: false,
-    ssrEnabled: false
+    directionSwitchEnabled: false
   })
 
   watch(

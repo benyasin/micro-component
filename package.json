@@ -23,14 +23,14 @@
     "dev:beta": "VITE_ENV=beta vite -c playground/vite.config.ts",
     "preview": "vite preview -c playground/vite.config.ts",
     "create-component": "tsx scripts/create-component",
-    "build": "pnpm run build:runtime && ([ \"$ENABLE_SSR\" = \"true\" ] && pnpm run build:server-locales || echo \"跳过SSR locale构建\") && pnpm run build:react && pnpm run build:vue && pnpm run build:vue2 && rm -rf ./dist/server-app",
-    "build:test": "([ \"$ENABLE_SSR\" = \"true\" ] && pnpm run build:server-locales || echo \"跳过SSR locale构建\") && pnpm run build:react",
+    "build": "pnpm run build:client",
+    "build:client": "pnpm run build:runtime && pnpm run build:react && pnpm run build:vue && pnpm run build:vue2",
+    "build:ssr": "pnpm run build:server-locales",
     "build:runtime": "tsx --conditions=node scripts/build-runtime.ts",
     "build:server-locales": "tsx scripts/build-server-locales.ts",
     "build:vue": "tsx scripts/build-vue3.ts",
     "build:vue2": "tsx scripts/override-vue.ts --append && tsx scripts/build-vue2.ts && tsx scripts/override-vue.ts",
     "build:react": "tsx scripts/build-react.ts",
-    "build:flat-locale": "tsx scripts/build-flat-locale.ts",
     "build:locale": "tsx scripts/build-locale.ts --generate",
     "fetch:locale": "tsx scripts/build-locale.ts",
     "build:online": "VITE_ENV=production pnpm run build:runtime && pnpm run jampack",
@@ -118,5 +118,5 @@
     "pnpm": ">=7.12.2",
     "node": ">=16.16.0"
   },
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@10.14.0"
 }

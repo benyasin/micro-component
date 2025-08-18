@@ -152,7 +152,6 @@ const directionValue = computed(() => {
   return result
 })
 const isRtl = computed(() => directionValue.value === 'rtl')
-const ssrEnabledFlag = computed(() => footerProps.value.ssrEnabled === true)
 
 // 设置主题（仅当 themeSwitchEnabledFlag 为 true 时可切换）
 const setTheme = (theme: ThemeEnum | 'light' | 'dark'): boolean => {
@@ -242,12 +241,8 @@ onMounted(() => {
     document.body.classList.add('global-theme', currentTheme.value === 'dark' ? 'black' : 'white')
   }
 
-  // SSR 环境下避免直接操作 DOM（仅发送 ready 事件）
-  if (!ssrEnabledFlag.value) {
-    dispatchReady('Footer')
-  } else {
-    dispatchReady('Footer')
-  }
+  // SSR 相关逻辑已移除，始终发送 ready 事件
+  dispatchReady('Footer')
 })
 
 // Helper function for support link key mapping

@@ -35,7 +35,7 @@ async function generateEntry() {
   for (const filepath of await glob('locales/common/*.json')) {
     const name = path.basename(filepath).replace('.json', '')
     const content = `
-    import common from '../common/${name}.json' assert { type: "json" };
+    import common from '../common/${name}.json' with { type: "json" };
     export default common;`
 
     await fs.writeFile(`locales/js/${name}.js`, content)
