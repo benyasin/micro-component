@@ -17,8 +17,13 @@ const meta: Meta = {
     },
     locale: {
       control: { type: 'select' },
-      options: ['en', 'zh_CN'],
+      options: ['en', 'zh-CN'],
       description: '语言设置'
+    },
+    direction: {
+      control: { type: 'select' },
+      options: ['ltr', 'rtl'],
+      description: '文本方向'
     },
     i18nEnabled: {
       control: 'boolean',
@@ -28,9 +33,9 @@ const meta: Meta = {
       control: 'boolean',
       description: '是否允许在组件内切换主题（默认全局为 false，需要手动开启）'
     },
-    rtlEnabled: {
+    directionSwitchEnabled: {
       control: 'boolean',
-      description: '是否启用 RTL 布局（默认全局为 false，需要手动开启）'
+      description: '是否允许在组件内切换方向（默认全局为 false，需要手动开启）'
     },
     ssrEnabled: {
       control: 'boolean',
@@ -50,9 +55,10 @@ export const Default: Story = {
     ...(footerExampleConfig as any),
     theme: 'light',
     locale: 'en',
+    direction: 'ltr',
     i18nEnabled: true,
     themeSwitchEnabled: false,
-    rtlEnabled: false,
+    directionSwitchEnabled: false,
     ssrEnabled: false,
   } as any,
 }
@@ -62,8 +68,10 @@ export const DarkTheme: Story = {
     ...(footerExampleConfig as any),
     theme: 'dark',
     locale: 'en',
+    direction: 'ltr',
     i18nEnabled: true,
     themeSwitchEnabled: true,
+    directionSwitchEnabled: true,
   } as any,
 }
 
@@ -71,8 +79,10 @@ export const ChineseLocale: Story = {
   args: {
     ...(footerExampleConfig as any),
     theme: 'light',
-    locale: 'zh-CN',
+    locale: 'zh_CN',
+    direction: 'ltr',
     i18nEnabled: true,
+    directionSwitchEnabled: false,
   } as any,
 }
 
@@ -81,7 +91,9 @@ export const Minimal: Story = {
     ...(footerExampleConfig as any),
     theme: 'light',
     locale: 'en',
+    direction: 'ltr',
     i18nEnabled: false,
+    directionSwitchEnabled: false,
     productLinks: (footerExampleConfig.productLinks || []).slice(0, 2),
     supportLinks: (footerExampleConfig.supportLinks || []).slice(0, 3),
     socialLinks: (footerExampleConfig.socialLinks || []).slice(0, 2),
@@ -93,8 +105,9 @@ export const RTL: Story = {
     ...(footerExampleConfig as any),
     theme: 'light',
     locale: 'en',
+    direction: 'rtl',
     i18nEnabled: false,
-    rtlEnabled: true,
+    directionSwitchEnabled: true,
   } as any,
 }
 
@@ -105,6 +118,8 @@ export const Enterprise: Story = {
     slogan: 'Professional Business Solutions',
     theme: 'light',
     locale: 'en',
+    direction: 'ltr',
+    directionSwitchEnabled: false,
     productLinks: [
       { title: 'Enterprise Features', url: '/enterprise', target: '_self' as const },
       { title: 'Business API', url: '/business-api', target: '_blank' as const },

@@ -6,7 +6,7 @@
     :log-event="logEvent"
     :i18n-enabled="true"
     :theme-switch-enabled="true"
-    :rtl-enabled="true"
+    :direction-switch-enabled="true"
   />
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <ConfigProvider>
-    <div class="bg-bg micro-app-hide min-h-50px micro" :class="{ 'rtl': rtlEnabledFlag }">
+    <div class="bg-bg micro-app-hide min-h-50px micro" :class="{ 'rtl': isRtl }">
       <div
         ref="$footer"
         class="mx-auto max-w-1200px px-4 py-8"
@@ -141,13 +141,17 @@ const { t, changeLocale } = useI18n()
 // 开关：优先使用 props 显式传入，仅当为 true 时开启；否则默认关闭
 const i18nEnabled = computed(() => defaultProps.i18nEnabled === true || footerProps.value.i18nEnabled === true)
 const themeSwitchEnabledFlag = computed(() => footerProps.value.themeSwitchEnabled === true)
-// 支持基于 direction 和旧的 rtlEnabled 两种方式
+
+// 新：方向开关
+const directionSwitchEnabledFlag = computed(() => footerProps.value.directionSwitchEnabled === true)
+
+// 支持基于 direction 的方式
 const directionValue = computed(() => {
   const d = (footerProps.value as any).direction as string | undefined
-  const result: 'ltr' | 'rtl' = d === 'ltr' || d === 'rtl' ? (d as 'ltr' | 'rtl') : (footerProps.value.rtlEnabled === true ? 'rtl' : 'ltr')
+  const result: 'ltr' | 'rtl' = d === 'ltr' || d === 'rtl' ? (d as 'ltr' | 'rtl') : 'ltr'
   return result
 })
-const rtlEnabledFlag = computed(() => directionValue.value === 'rtl')
+const isRtl = computed(() => directionValue.value === 'rtl')
 const ssrEnabledFlag = computed(() => footerProps.value.ssrEnabled === true)
 
 // 设置主题（仅当 themeSwitchEnabledFlag 为 true 时可切换）
@@ -186,14 +190,13 @@ const changeLanguage = async (lang: string): Promise<boolean> => {
 
 // 设置/切换 RTL（以 'rtl' | 'ltr' 传入；由使用方决定是否允许暴露该能力）
 const setRtl = (dir: 'rtl' | 'ltr'): boolean => {
-  // 将方向字符串写入 props.direction；为兼容旧逻辑，内部渲染仍通过 rtlEnabledFlag 计算
-  const next = dir === 'rtl'
-  if (!rtlEnabledFlag.value && next === true && (footerProps.value.rtlEnabled !== true)) return false
+  // 需要开关允许，且仅当允许时才可切换到 rtl
+  if (dir === 'rtl' && !directionSwitchEnabledFlag.value) return false
   updateProps({ direction: dir } as any)
   return true
 }
 
-const toggleRtl = (): boolean => setRtl(rtlEnabledFlag.value ? 'ltr' : 'rtl')
+const toggleRtl = (): boolean => setRtl(isRtl.value ? 'ltr' : 'rtl')
 
 const handleLinkClick = (url: string, target?: string) => {
   event.emit('push', url, target as '_blank' | '_self')

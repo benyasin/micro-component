@@ -55,9 +55,9 @@ export interface Config {
   i18nEnabled?: boolean
   /** 是否启用组件内主题切换（覆盖 BaseProps） */
   themeSwitchEnabled?: boolean
-  /** 是否启用 RTL（覆盖 BaseProps） */
-  rtlEnabled?: boolean
-  /** 文本方向：'ltr' | 'rtl'（新字段，推荐使用） */
+  /** 是否允许在组件内显示并使用方向切换（覆盖 BaseProps） */
+  directionSwitchEnabled?: boolean
+  /** 文本方向：'ltr' | 'rtl' */
   direction?: 'ltr' | 'rtl'
   /** 是否启用 SSR 模式相关处理（覆盖 BaseProps） */
   ssrEnabled?: boolean

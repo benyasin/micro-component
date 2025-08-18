@@ -10,7 +10,7 @@ export const useConfig = defineStore(() => {
     // 全局开关（默认均为 false）
     i18nEnabled: false,
     themeSwitchEnabled: false,
-    rtlEnabled: false,
+    directionSwitchEnabled: false,
     ssrEnabled: false
   })
 
@@ -28,7 +28,10 @@ export const useConfig = defineStore(() => {
     const storageConfig = localStorage.getItem(CONFIG_KEY)
     if (storageConfig) {
       try {
-        const data = extend({}, config, JSON.parse(storageConfig))
+        const raw = JSON.parse(storageConfig)
+        if (raw && typeof raw === 'object') {
+        }
+        const data = extend({}, config, raw)
         setReactive(config, data)
       } catch {}
     }
