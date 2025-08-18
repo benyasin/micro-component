@@ -31,9 +31,14 @@ export function useProps<T extends BaseProps>(defaultProps?: T) {
     Object.assign(props.value, filterUndefined(options))
     
     // 统一主题：同步到 body.global-theme 上的 white/black
+    // 只有当组件明确启用主题切换时才自动同步到全局
     if (options.theme && typeof document !== 'undefined') {
-      document.body.classList.toggle('black', options.theme === 'dark')
-      document.body.classList.toggle('white', options.theme === 'light')
+      // 检查当前组件是否启用了主题切换功能
+      const themeSwitchEnabled = (props.value as any).themeSwitchEnabled === true
+      if (themeSwitchEnabled) {
+        document.body.classList.toggle('black', options.theme === 'dark')
+        document.body.classList.toggle('white', options.theme === 'light')
+      }
     }
   }
 

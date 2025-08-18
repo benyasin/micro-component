@@ -1,4 +1,4 @@
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, toRaw, isReactive, isRef } from 'vue'
 import { useProps } from '@/compositions/useProps'
 import { Props, Config } from './types'
 import { useI18n } from '@/compositions/useI18n'
@@ -53,6 +53,21 @@ const getDefaultConfig = (locale: string): Config => {
   }
 }
 
+// 将响应式/Proxy 深度还原为普通对象（便于在控制台查看）
+function deepToRaw<T = any>(val: T): any {
+  if (isRef(val)) return deepToRaw((val as any).value)
+  if (Array.isArray(val)) return val.map((v) => deepToRaw(v))
+  if (val && typeof val === 'object') {
+    const src: any = isReactive(val) ? toRaw(val as any) : (val as any)
+    const out: any = Array.isArray(src) ? [] : {}
+    for (const key in src) {
+      out[key] = deepToRaw(src[key])
+    }
+    return out
+  }
+  return val
+}
+
 export const useFooter = defineStore((defaultProps?: Props) => {
   const { props: footerProps, updateProps } = useProps(defaultProps)
   const event = useEvent<Events>()
@@ -74,6 +89,8 @@ export const useFooter = defineStore((defaultProps?: Props) => {
       socialLinks: target.socialLinks || source.socialLinks || defaultConfig.socialLinks,
       languages: target.languages || source.languages || defaultConfig.languages
     }
+    // 打印最终合并后的配置（转成普通对象，避免多层 Proxy 嵌套）
+    console.log('[Footer] final config (plain):', deepToRaw(config.value))
   }
 
   const initConfig = () => {

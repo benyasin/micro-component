@@ -115,7 +115,7 @@ const defaultConfig = {
 // 2. 基础配置（来自 ConfigProvider 或全局设置）
 const sourceConfig = {
   brandName: 'MyCompany',
-  rtlSupport: false,
+  
   project: 'main'
 }
 
@@ -136,7 +136,7 @@ const finalConfig = {
   slogan: '自定义标语 - 创新科技，引领未来', // 来自用户配置
   copyright: '© 2024 CustomBrand. 保留所有权利。', // 来自用户配置
   i18nEnabled: true,                  // 来自默认配置
-  rtlSupport: false,                  // 来自基础配置
+  
   project: 'main',                    // 来自基础配置
   productLinks: [                     // 来自用户配置（完全替换）
     { title: '产品介绍', url: '/products', target: '_self' },

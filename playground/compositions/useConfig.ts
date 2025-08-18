@@ -41,12 +41,6 @@ export const useConfig = defineStore(() => {
   }
 
   watchEffect(() => {
-    document.body.classList.toggle('black', theme.value === 'dark')
-    document.body.classList.toggle('white', theme.value === 'light')
-    document.documentElement.setAttribute('dir', direction.value)
-  })
-
-  watchEffect(() => {
     if (isLogin.value) {
       fetchUserInfo()
     } else {

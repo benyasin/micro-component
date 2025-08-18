@@ -12,8 +12,7 @@ export interface Config {
   slogan?: string
   /** 版权信息 */
   copyright?: string
-  /** RTL 支持开关，默认关闭 */
-  rtlSupport?: boolean
+
   /** 项目名，如main、events、otc、cms、mix等，用来兼容多站点的一些业务逻辑区别 */
   project?: string
   /** 语言列表，不传则用默认列表 */
@@ -58,6 +57,8 @@ export interface Config {
   themeSwitchEnabled?: boolean
   /** 是否启用 RTL（覆盖 BaseProps） */
   rtlEnabled?: boolean
+  /** 文本方向：'ltr' | 'rtl'（新字段，推荐使用） */
+  direction?: 'ltr' | 'rtl'
   /** 是否启用 SSR 模式相关处理（覆盖 BaseProps） */
   ssrEnabled?: boolean
 }

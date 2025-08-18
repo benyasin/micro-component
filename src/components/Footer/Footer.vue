@@ -117,6 +117,7 @@ import { makeExpose, dispatchReady } from '@/utils/component'
 import { useFooter } from './useFooter'
 import { useI18n } from '@/compositions/useI18n'
 import { Props } from './types'
+import { ThemeEnum } from '@/types/component'
 import ConfigProvider from '@/common/ConfigProvider/ConfigProvider.vue'
 
 createStore()
@@ -137,46 +138,62 @@ const currentLocale = computed(() => footerProps.value.locale || 'en')
 // 国际化
 const { t, changeLocale } = useI18n()
 
-// 开关：优先使用 props 显式传入，仅当为 true 才开启；否则默认关闭
+// 开关：优先使用 props 显式传入，仅当为 true 时开启；否则默认关闭
 const i18nEnabled = computed(() => defaultProps.i18nEnabled === true || footerProps.value.i18nEnabled === true)
 const themeSwitchEnabledFlag = computed(() => footerProps.value.themeSwitchEnabled === true)
-const rtlEnabledFlag = computed(() => footerProps.value.rtlEnabled === true)
+// 支持基于 direction 和旧的 rtlEnabled 两种方式
+const directionValue = computed(() => {
+  const d = (footerProps.value as any).direction as string | undefined
+  const result: 'ltr' | 'rtl' = d === 'ltr' || d === 'rtl' ? (d as 'ltr' | 'rtl') : (footerProps.value.rtlEnabled === true ? 'rtl' : 'ltr')
+  return result
+})
+const rtlEnabledFlag = computed(() => directionValue.value === 'rtl')
 const ssrEnabledFlag = computed(() => footerProps.value.ssrEnabled === true)
 
-// 主题切换 - 统一使用global-theme体系（仅当 themeSwitchEnabledFlag 为 true 时可切换）
-const toggleTheme = () => {
-  if (!themeSwitchEnabledFlag.value) return
-  const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
-  
+// 设置主题（仅当 themeSwitchEnabledFlag 为 true 时可切换）
+const setTheme = (theme: ThemeEnum | 'light' | 'dark'): boolean => {
+  if (!themeSwitchEnabledFlag.value) return false
+  const newTheme = theme === (ThemeEnum.Dark || theme === 'dark') ? 'dark' : 'light'
   updateProps({ theme: newTheme })
   event.emit('themeChange', newTheme as any)
-  
   if (typeof document !== 'undefined') {
-    // 使用全局主题类名体系
     document.body.classList.remove('global-theme', 'black', 'white')
     document.body.classList.add('global-theme', newTheme === 'dark' ? 'black' : 'white')
   }
+  return true
 }
 
-const handleLanguageChange = async (domEvent: Event) => {
-  const target = domEvent.target as HTMLSelectElement
-  const newLocale = target.value
-  
-  const language = config.value?.languages?.find(lang => lang.locale === newLocale)
-  if (language) {
-    try {
-      if (i18nEnabled.value) {
-        await changeLocale(newLocale)
-      }
-      updateProps({ locale: newLocale })
-      event.emit('languageChange', language)
-    } catch (error) {
-      console.error('[Footer] 语言切换失败:', error)
-    }
-  } else {
-    console.warn('[Footer] 未找到对应的语言配置:', newLocale)
+// 主题切换 - 使用 setTheme
+const toggleTheme = (): boolean => {
+  const nextTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
+  return setTheme(nextTheme)
+}
+
+// 切换语言（仅当 i18nEnabled 为 true 时才生效）
+const changeLanguage = async (lang: string): Promise<boolean> => {
+  if (!i18nEnabled.value) return false
+  try {
+    await changeLocale(lang)
+    updateProps({ locale: lang })
+    const matched = config.value?.languages?.find((l) => l.locale === lang)
+    if (matched) event.emit('languageChange', matched as any)
+    return true
+  } catch (e) {
+    console.warn('[Footer] changeLanguage failed:', e)
+    return false
   }
 }
+
+// 设置/切换 RTL（以 'rtl' | 'ltr' 传入；由使用方决定是否允许暴露该能力）
+const setRtl = (dir: 'rtl' | 'ltr'): boolean => {
+  // 将方向字符串写入 props.direction；为兼容旧逻辑，内部渲染仍通过 rtlEnabledFlag 计算
+  const next = dir === 'rtl'
+  if (!rtlEnabledFlag.value && next === true && (footerProps.value.rtlEnabled !== true)) return false
+  updateProps({ direction: dir } as any)
+  return true
+}
+
+const toggleRtl = (): boolean => setRtl(rtlEnabledFlag.value ? 'ltr' : 'rtl')
 
 const handleLinkClick = (url: string, target?: string) => {
   event.emit('push', url, target as '_blank' | '_self')
@@ -184,19 +201,20 @@ const handleLinkClick = (url: string, target?: string) => {
 
 // 监听全局主题变化
 watch(
-  () => typeof document !== 'undefined' ? document.body.className : '',
-  (newClassName) => {
+  () => (typeof document !== 'undefined' ? document.body.className : ''),
+  (newClassName, _oldClassName) => {
     if (!themeSwitchEnabledFlag.value) return
     const isDark = newClassName.includes('global-theme') && newClassName.includes('black')
     const isLight = newClassName.includes('global-theme') && newClassName.includes('white')
-    
+
     if (isDark && currentTheme.value !== 'dark') {
       updateProps({ theme: 'dark' })
     } else if (isLight && currentTheme.value !== 'light') {
       updateProps({ theme: 'light' })
     }
   },
-  { immediate: true }
+  // 避免初次 mounted 时就把外部类名同步进来，只有在变更时才处理
+  { immediate: false }
 )
 
 watchEffect(() => {
@@ -228,11 +246,20 @@ const formatSupportKey = (title: string) => {
 }
 
 defineExpose(
-  makeExpose({
-    event,
-    updateProps,
-    props: footerProps
-  })
+  makeExpose(
+    {
+      event,
+      updateProps,
+      props: footerProps
+    },
+    {
+      // 暴露的能力：在函数内部做好开关判断
+      toggleTheme,
+      changeLanguage,
+      setRtl,
+      toggleRtl
+    }
+  )
 )
 </script>
 

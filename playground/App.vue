@@ -21,43 +21,35 @@
 
         <!-- i18n / Theme / RTL controls -->
         <div class="flex items-center gap-8px mx-12px">
-            <!-- Language selector -->
-            <Select v-model:value="locale" class="w-160px" placeholder="Locale" show-search>
-              <SelectOption
-                v-for="lang in defaultLanguageList"
-                :key="lang.locale"
-                :value="lang.locale"
-              >
-                {{ lang.languageName }}
-              </SelectOption>
-            </Select>
+          <!-- Language selector -->
+          <Select v-model:value="locale" class="w-160px" placeholder="Locale" show-search @change="onLocaleChange">
+            <SelectOption
+              v-for="lang in defaultLanguageList"
+              :key="lang.locale"
+              :value="lang.locale"
+            >
+              {{ lang.languageName }}
+            </SelectOption>
+          </Select>
 
-            <!-- Theme switch -->
-            <AntSwitch
-              :checked="theme === 'dark'"
-              :checked-children="'Dark'"
-              :un-checked-children="'Light'"
-              @change="onThemeSwitch"
-            />
-
-            <!-- RTL switch -->
-            <AntSwitch
-              :checked="direction === 'rtl'"
-              checked-children="RTL"
-              un-checked-children="LTR"
-              @change="onDirectionSwitch"
-            />
+          <!-- RTL switch -->
+          <AntSwitch
+            :checked="direction === 'rtl'"
+            checked-children="RTL"
+            un-checked-children="LTR"
+            @change="onDirectionSwitch"
+          />
 
           <Component
             :is="{ light: ImgThemeLight, dark: ImgThemeDark }[theme]"
             class="cursor-pointer"
-            @click="theme = theme === 'dark' ? 'light' : 'dark'"
+            @click="onThemeIconClick"
           />
         </div>
       </div>
       <div class="relative mt-72px bg-bg">
         <RouterView v-slot="{ Component }">
-          <component :is="Component" :key="$route.fullPath" />
+          <component :is="Component" :key="$route.fullPath" ref="activeComponentRef" />
         </RouterView>
       </div>
     </div>
@@ -65,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watchEffect } from 'vue'
+import { ref, watchEffect, watch } from 'vue'
 import { ConfigProvider, Select, SelectOption, Switch as AntSwitch } from 'ant-design-vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from '@/compositions/useI18n'
@@ -73,6 +65,7 @@ import { defaultLanguageList } from '@/utils/config'
 import { createStore } from '@/utils/store'
 import { routes } from './router'
 import { useConfig } from './compositions/useConfig'
+import { useConfig as useGlobalConfig } from '@/compositions/useConfig'
 
 import ImgThemeLight from './assets/theme-light.svg?component'
 import ImgThemeDark from './assets/theme-dark.svg?component'
@@ -80,32 +73,41 @@ import ImgThemeDark from './assets/theme-dark.svg?component'
 createStore()
 useI18n()
 
-const { theme, locale, direction, isLogin } = useConfig()
+const { theme, locale, direction } = useConfig()
+const { config: finalConfig } = useGlobalConfig()
 const router = useRouter()
 const route = useRoute()
 const routeName = ref<string>(String(route.name || ''))
+const activeComponentRef = ref<any>()
 
 function onComponentChange(component: string) {
   router.push(component)
 }
 
-function onThemeSwitch(checked: boolean) {
-  theme.value = checked ? 'dark' : 'light'
+function onDirectionSwitch(checked: boolean) {
+  if (activeComponentRef.value?.toggleRtl) {
+    const ok = activeComponentRef.value.toggleRtl()
+    if (!ok) return
+  }
+  direction.value = checked ? 'rtl' : 'ltr'
 }
 
-function onDirectionSwitch(checked: boolean) {
-  direction.value = checked ? 'rtl' : 'ltr'
+function onThemeIconClick() {
+  if (activeComponentRef.value?.toggleTheme) {
+    activeComponentRef.value.toggleTheme()
+    return
+  }
+}
+
+function onLocaleChange(newLocale: string) {
+  locale.value = newLocale
+  if (activeComponentRef.value?.changeLanguage) {
+    activeComponentRef.value.changeLanguage(newLocale)
+  }
 }
 
 watchEffect(() => {
   routeName.value = String(route.name || '')
-})
-
-// 统一主题体系：根据 theme 同步 body.global-theme 的类
-watchEffect(() => {
-  if (typeof document === 'undefined') return
-  document.body.classList.toggle('black', theme.value === 'dark')
-  document.body.classList.toggle('white', theme.value === 'light')
 })
 </script>
 
