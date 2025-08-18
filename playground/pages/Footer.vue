@@ -4,6 +4,7 @@
     :locale="locale" 
     :theme="theme as 'light' | 'dark'" 
     :log-event="logEvent"
+    :i18n-enabled="true"
     @language-change="handleLanguageChange"
     @theme-change="handleThemeChange"
   />

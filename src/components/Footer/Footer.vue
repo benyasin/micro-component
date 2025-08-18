@@ -17,7 +17,7 @@
           </div>
         </div>
 
-        <!-- 主要内容区域 -->
+        <!-- 主要内容区域：三列布局 -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <!-- 产品链接 -->
           <div>
@@ -55,28 +55,22 @@
             </ul>
           </div>
 
-          <!-- 语言选择（仅当 i18nEnabled 手动开启时显示） -->
-          <div v-if="i18nEnabled">
+          <!-- 新增：公司/关于链接 -->
+          <div>
             <h3 class="text-lg font-semibold text-primaryText mb-4">
-              {{ i18nEnabled ? t('footer.settings') : 'Settings' }}
+              {{ i18nEnabled ? t('footer.company') : 'Company' }}
             </h3>
-            <div class="space-y-4">
-              <!-- 语言选择 -->
-              <div>
-                <label class="block text-sm mb-2 text-secondaryText">
-                  {{ i18nEnabled ? t('footer.language') : 'Language' }}
-                </label>
-                <select 
-                  :value="currentLocale" 
-                  @change="handleLanguageChange"
-                  class="w-full px-3 py-2 border border-line rounded bg-bg text-primaryText"
+            <ul class="space-y-2">
+              <li v-for="item in config?.companyLinks" :key="item.title">
+                <a 
+                  :href="item.url" 
+                  class="text-secondaryText hover:text-primaryText transition-colors"
+                  @click="handleLinkClick(item.url, item.target)"
                 >
-                  <option v-for="lang in config?.languages" :key="lang.locale" :value="lang.locale">
-                    {{ lang.languageName }}
-                  </option>
-                </select>
-              </div>
-            </div>
+                  {{ i18nEnabled ? t(`footer.company_links.${item.title.toLowerCase().replace(/\s+/g, '_')}`) : item.title }}
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 

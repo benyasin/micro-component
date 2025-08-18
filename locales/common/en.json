@@ -1,7 +1,8 @@
 {
   "footer": {
     "products": "Products",
-    "support": "Support", 
+    "support": "Support",
+    "company": "Company",
     "settings": "Settings",
     "language": "Language",
     "switch_theme": "Switch Theme",
@@ -18,6 +19,11 @@
       "status": "Status",
       "privacy_policy": "Privacy Policy",
       "terms_of_service": "Terms of Service"
+    },
+    "company_links": {
+      "about": "About",
+      "blog": "Blog",
+      "careers": "Careers"
     },
     "copyright_suffix": "All rights reserved."
   }

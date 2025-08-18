@@ -30,6 +30,13 @@ const getDefaultConfig = (locale: string): Config => {
       { title: 'Privacy Policy', url: '/privacy', target: '_self' },
       { title: 'Terms of Service', url: '/terms', target: '_self' }
     ],
+
+    // 新增：默认公司/关于链接
+    companyLinks: [
+      { title: 'About', url: '/about', target: '_self' },
+      { title: 'Blog', url: '/blog', target: '_self' },
+      { title: 'Careers', url: '/careers', target: '_self' }
+    ],
     
     // 默认社交媒体链接
     socialLinks: [
@@ -63,6 +70,7 @@ export const useFooter = defineStore((defaultProps?: Props) => {
       // 合并数组配置
       productLinks: target.productLinks || source.productLinks || defaultConfig.productLinks,
       supportLinks: target.supportLinks || source.supportLinks || defaultConfig.supportLinks,
+      companyLinks: target.companyLinks || source.companyLinks || defaultConfig.companyLinks,
       socialLinks: target.socialLinks || source.socialLinks || defaultConfig.socialLinks,
       languages: target.languages || source.languages || defaultConfig.languages
     }

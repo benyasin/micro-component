@@ -35,6 +35,13 @@ export interface Config {
     target?: '_blank' | '_self'
   }[]
 
+  /** 公司/关于链接列表（新增第三列） */
+  companyLinks?: {
+    title: string
+    url: string
+    target?: '_blank' | '_self'
+  }[]
+
   /** 社交媒体链接列表 */
   socialLinks?: {
     name: string
