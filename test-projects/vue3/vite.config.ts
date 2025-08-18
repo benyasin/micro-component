@@ -45,6 +45,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
+      '@root': resolve(__dirname, '../../src'),
       'micro-components/vue': resolve(__dirname, '../../dist/components/vue')
     }
   },

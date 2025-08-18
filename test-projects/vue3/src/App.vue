@@ -7,6 +7,36 @@
 
     <main class="main">
       <section class="test-section">
+        <h2>Button 组件测试</h2>
+        <div class="component-demo">
+          <div class="button-group">
+              <MicroButton text="默认按钮" @click="handleButtonClick" />
+              <MicroButton text="主要按钮" color="#1890ff" @click="handleButtonClick" />
+              <MicroButton text="成功按钮" color="#52c41a" @click="handleButtonClick" />
+              <MicroButton text="警告按钮" color="#faad14" @click="handleButtonClick" />
+              <MicroButton text="危险按钮" color="#ff4d4f" @click="handleButtonClick" />
+            </div>
+            
+            <div class="button-group">
+              <MicroButton text="大按钮" size="large" color="#1890ff" @click="handleButtonClick" />
+              <MicroButton text="中按钮" size="medium" color="#1890ff" @click="handleButtonClick" />
+              <MicroButton text="小按钮" size="small" color="#1890ff" @click="handleButtonClick" />
+            </div>
+            
+            <div class="button-group">
+              <MicroButton text="绿色" color="#52c41a" @click="handleButtonClick" />
+              <MicroButton text="橙色" color="#fa8c16" @click="handleButtonClick" />
+              <MicroButton text="紫色" color="#722ed1" @click="handleButtonClick" />
+              <MicroButton text="粉色" color="#eb2f96" @click="handleButtonClick" />
+            </div>
+            
+            <div class="button-group">
+              <MicroButton text="点击我" color="#1890ff" @click="handleButtonClick" />
+            </div>
+        </div>
+      </section>
+
+      <section class="test-section">
         <h2>Footer 组件（从 micro-components 包导入）</h2>
         <div class="component-demo">
           <MicroFooter
@@ -44,11 +74,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import MicroFooter from 'micro-components/vue/Footer'
+import MicroButton from 'micro-components/vue/Button'
 
 export default defineComponent({
   name: 'App',
   components: {
-    MicroFooter
+    MicroFooter,
+    MicroButton
   },
   setup() {
     const testResults = ref<Array<{
@@ -112,11 +144,26 @@ export default defineComponent({
       })
     }
 
+    const handleButtonClick = () => {
+      console.log('Button clicked')
+      addTestResult({
+        name: 'Button 点击',
+        status: 'success',
+        message: 'Button 组件点击事件触发成功'
+      })
+    }
+
     // 组件加载成功测试
     addTestResult({
       name: 'MicroFooter 组件导入',
       status: 'success',
       message: '成功从 micro-components/vue/Footer 导入'
+    })
+
+    addTestResult({
+      name: 'MicroButton 组件导入',
+      status: 'success',
+      message: '成功从 micro-components/vue/Button 导入'
     })
 
     return {
@@ -127,7 +174,8 @@ export default defineComponent({
       languages,
       handleThemeChange,
       handleLanguageChange,
-      handleLinkClick
+      handleLinkClick,
+      handleButtonClick
     }
   }
 })
@@ -177,6 +225,13 @@ export default defineComponent({
   border-radius: 8px;
   background: white;
   min-height: 200px;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 .test-results {

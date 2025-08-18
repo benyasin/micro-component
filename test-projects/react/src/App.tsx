@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import MicroFooter from 'micro-components/react/Footer'
+import MicroButton from 'micro-components/react/Button'
 import './App.css'
 
 interface TestResult {
@@ -51,12 +52,26 @@ function App() {
     })
   }
 
+  const handleButtonClick = (type: string) => {
+    console.log('Button clicked:', type)
+    addTestResult({
+      name: '按钮点击',
+      status: 'success',
+      message: `${type} 按钮被点击`
+    })
+  }
+
   // 组件加载成功测试
   React.useEffect(() => {
     addTestResult({
       name: 'MicroFooter 组件导入',
       status: 'success',
-      message: '成功从 micro-components/react/MicroFooter 导入'
+      message: '成功从 micro-components/react/Footer 导入'
+    })
+    addTestResult({
+      name: 'MicroButton 组件导入',
+      status: 'success',
+      message: '成功从 micro-components/react/Button 导入'
     })
   }, [])
 
@@ -79,6 +94,33 @@ function App() {
               onLanguageChange={handleLanguageChange}
               onPush={handleLinkClick}
             />
+          </div>
+        </section>
+
+        <section className="test-section">
+          <h2>MicroButton 组件（从 micro-components 包导入）</h2>
+          <div className="component-demo">
+            <div className="button-group">
+              <MicroButton text="默认按钮" onClick={() => handleButtonClick('默认')} />
+              <MicroButton text="主要按钮" color="#1890ff" onClick={() => handleButtonClick('主要')} />
+              <MicroButton text="成功按钮" color="#52c41a" onClick={() => handleButtonClick('成功')} />
+              <MicroButton text="警告按钮" color="#faad14" onClick={() => handleButtonClick('警告')} />
+              <MicroButton text="危险按钮" color="#ff4d4f" onClick={() => handleButtonClick('危险')} />
+            </div>
+            <div className="button-group">
+              <MicroButton text="大按钮" size="large" color="#1890ff" onClick={() => handleButtonClick('大尺寸')} />
+              <MicroButton text="中按钮" size="medium" color="#1890ff" onClick={() => handleButtonClick('中等尺寸')} />
+              <MicroButton text="小按钮" size="small" color="#1890ff" onClick={() => handleButtonClick('小尺寸')} />
+            </div>
+            <div className="button-group">
+              <MicroButton text="绿色" color="#52c41a" onClick={() => handleButtonClick('绿色')} />
+              <MicroButton text="橙色" color="#fa8c16" onClick={() => handleButtonClick('橙色')} />
+              <MicroButton text="紫色" color="#722ed1" onClick={() => handleButtonClick('紫色')} />
+              <MicroButton text="粉色" color="#eb2f96" onClick={() => handleButtonClick('粉色')} />
+            </div>
+            <div className="button-group">
+              <MicroButton text="点击我" color="#1890ff" onClick={() => handleButtonClick('点击')} />
+            </div>
           </div>
         </section>
 

@@ -21,6 +21,36 @@
       </section>
 
       <section class="test-section">
+        <h2>Button 组件测试</h2>
+        <div class="component-demo">
+          <div class="button-group">
+            <MicroButton text="默认按钮" @click="handleButtonClick" />
+            <MicroButton text="主要按钮" color="#1890ff" @click="handleButtonClick" />
+            <MicroButton text="成功按钮" color="#52c41a" @click="handleButtonClick" />
+            <MicroButton text="警告按钮" color="#faad14" @click="handleButtonClick" />
+            <MicroButton text="危险按钮" color="#ff4d4f" @click="handleButtonClick" />
+          </div>
+          
+          <div class="button-group">
+            <MicroButton text="大按钮" size="large" color="#1890ff" @click="handleButtonClick" />
+            <MicroButton text="中按钮" size="medium" color="#1890ff" @click="handleButtonClick" />
+            <MicroButton text="小按钮" size="small" color="#1890ff" @click="handleButtonClick" />
+          </div>
+          
+          <div class="button-group">
+            <MicroButton text="绿色" color="#52c41a" @click="handleButtonClick" />
+            <MicroButton text="橙色" color="#fa8c16" @click="handleButtonClick" />
+            <MicroButton text="紫色" color="#722ed1" @click="handleButtonClick" />
+            <MicroButton text="粉色" color="#eb2f96" @click="handleButtonClick" />
+          </div>
+          
+          <div class="button-group">
+            <MicroButton text="点击我" color="#1890ff" @click="handleButtonClick" />
+          </div>
+        </div>
+      </section>
+
+      <section class="test-section">
         <h2>测试结果</h2>
         <div class="test-results">
           <div v-if="testResults.length === 0" class="no-results">
@@ -43,11 +73,13 @@
 
 <script>
 const MicroFooter = require('micro-components/vue2/Footer')
+const MicroButton = require('micro-components/vue2/Button')
 
 export default {
   name: 'App',
   components: {
-    MicroFooter
+    MicroFooter,
+    MicroButton
   },
   data() {
     return {
@@ -84,6 +116,14 @@ export default {
         name: '链接跳转',
         status: 'success',
         message: `${url} (${target})`
+      })
+    },
+    handleButtonClick(type) {
+      console.log('Button clicked:', type)
+      this.addTestResult({
+        name: '按钮点击',
+        status: 'success',
+        message: `${type} 按钮被点击`
       })
     }
   }
@@ -134,6 +174,14 @@ export default {
   border-radius: 8px;
   background: white;
   min-height: 200px;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .test-results {

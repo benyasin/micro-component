@@ -47,6 +47,14 @@
   min-height: 200px;
 }
 
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .placeholder {
   text-align: center;
   color: #666;

@@ -1,5 +1,3 @@
-import { isMobile } from '@/utils/device'
-
 interface ComponentConfig {
   keepAlive?: boolean
   appShow?: boolean
