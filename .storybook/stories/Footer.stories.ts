@@ -79,7 +79,7 @@ export const ChineseLocale: Story = {
   args: {
     ...(footerExampleConfig as any),
     theme: 'light',
-    locale: 'zh_CN',
+    locale: 'zh-CN',
     direction: 'ltr',
     i18nEnabled: true,
     directionSwitchEnabled: false,

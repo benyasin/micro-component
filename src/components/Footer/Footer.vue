@@ -216,8 +216,17 @@ watch(
       updateProps({ theme: 'light' })
     }
   },
-  // 避免初次 mounted 时就把外部类名同步进来，只有在变更时才处理
   { immediate: false }
+)
+
+// 新增：当 theme prop 变化时，同步到 body 保证视觉一致
+watch(
+  () => currentTheme.value,
+  (next) => {
+    if (typeof document === 'undefined') return
+    document.body.classList.remove('global-theme', 'black', 'white')
+    document.body.classList.add('global-theme', next === 'dark' ? 'black' : 'white')
+  }
 )
 
 watchEffect(() => {
@@ -227,11 +236,16 @@ watchEffect(() => {
 })
 
 onMounted(() => {
-  // SSR 环境下避免直接操作 DOM
+  // 初始挂载时根据 props 同步一次 body 的主题类
+  if (typeof document !== 'undefined') {
+    document.body.classList.remove('global-theme', 'black', 'white')
+    document.body.classList.add('global-theme', currentTheme.value === 'dark' ? 'black' : 'white')
+  }
+
+  // SSR 环境下避免直接操作 DOM（仅发送 ready 事件）
   if (!ssrEnabledFlag.value) {
     dispatchReady('Footer')
   } else {
-    // SSR 模式可以在客户端激活时再行触发
     dispatchReady('Footer')
   }
 })
