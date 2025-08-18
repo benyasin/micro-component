@@ -1,5 +1,5 @@
 import { BaseProps, ThemeEnum } from '@/types/component'
-import { Currency, Language, UserInfo } from '@/types/common'
+import type { Language, UserInfo } from '@/types/common'
 
 export interface Props extends BaseProps, Config {
   webUrl?: string
@@ -18,10 +18,6 @@ export interface Config {
   project?: string
   /** 语言列表，不传则用默认列表 */
   languageList?: Language[]
-  /** 法币列表，不传则用默认列表 */
-  currencyList?: Currency[]
-  /** 显示的法币 */
-  currency?: string
   /** 用户信息 */
   userInfo?: UserInfo
 
@@ -49,12 +45,14 @@ export interface Config {
 
   /** 语言配置 */
   languages?: Language[]
-
-  /** 货币配置 */
-  currencies?: Currency[]
-
-  /** 是否启用多语言支持 */
+  /** 是否启用多语言支持（覆盖 BaseProps） */
   i18nEnabled?: boolean
+  /** 是否启用组件内主题切换（覆盖 BaseProps） */
+  themeSwitchEnabled?: boolean
+  /** 是否启用 RTL（覆盖 BaseProps） */
+  rtlEnabled?: boolean
+  /** 是否启用 SSR 模式相关处理（覆盖 BaseProps） */
+  ssrEnabled?: boolean
 }
 
 export type Events = {

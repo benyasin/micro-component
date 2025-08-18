@@ -36,7 +36,6 @@ export const useI18n = defineStore((): {
   async function fetchLocaleMessage(lang: string) {
     if (cacheMessages.has(lang)) {
       const cached = cacheMessages.get(lang)
-      console.log('[fetchLocaleMessage] 使用缓存的语言包:', lang)
       return cached instanceof Promise ? await cached : (cached as LocaleMessageValue)
     }
 
@@ -57,18 +56,12 @@ export const useI18n = defineStore((): {
 
     // 兼容一些奇怪名称
     const languageKey = getLanguageKey(localeInfo)
-    console.log('[fetchLocaleMessage] 查找语言包 - 目标语言:', lang)
-    console.log('[fetchLocaleMessage] 语言配置:', localeInfo)
-    console.log('[fetchLocaleMessage] 语言键:', languageKey)
-    console.log('[fetchLocaleMessage] 可用文件:', Object.keys(localeFiles))
-    
     let filepath = Object.keys(localeFiles).find((filepath) =>
       filepath.toLowerCase().includes(`${languageKey.toLowerCase()}.js`)
     )
     
     // 如果找不到，尝试直接用locale名称查找
     if (!filepath) {
-      console.log('[fetchLocaleMessage] 使用languageKey未找到，尝试使用locale')
       filepath = Object.keys(localeFiles).find((filepath) =>
         filepath.toLowerCase().includes(`${lang.toLowerCase()}.js`)
       )
@@ -77,13 +70,10 @@ export const useI18n = defineStore((): {
     // 如果还是找不到，尝试使用locale的下划线版本
     if (!filepath && lang.includes('-')) {
       const underscoreVersion = lang.replace('-', '_')
-      console.log('[fetchLocaleMessage] 尝试下划线版本:', underscoreVersion)
       filepath = Object.keys(localeFiles).find((filepath) =>
         filepath.toLowerCase().includes(`${underscoreVersion.toLowerCase()}.js`)
       )
     }
-
-    console.log('[fetchLocaleMessage] 最终选择的文件路径:', filepath)
 
     if (!filepath) {
       const error = `language ${lang} ${languageKey} not found. Available files: ${Object.keys(localeFiles).join(', ')}`
@@ -93,9 +83,7 @@ export const useI18n = defineStore((): {
 
     isLocaleFething.value = true
     try {
-      console.log('[fetchLocaleMessage] 开始加载文件:', filepath)
       const messages = (await localeFiles[filepath]()).default
-      console.log('[fetchLocaleMessage] 文件加载完成，消息数量:', Object.keys(messages || {}).length)
       cacheMessages.set(lang, messages)
       setLocaleMessage(lang, messages)
       return messages
@@ -111,40 +99,26 @@ export const useI18n = defineStore((): {
    * 切换语言 - 同步runtime全局i18n实例
    */
   async function changeLocale(lang: string) {
-    console.log('[useI18n] changeLocale调用')
-    console.log('[useI18n] 当前locale.value:', locale.value)
-    console.log('[useI18n] 目标语言:', lang)
-    console.log('[useI18n] 是否SSR环境:', import.meta.env.SSR)
-    console.log('[useI18n] 当前fetchingLocale.value:', fetchingLocale.value)
-    
     if (import.meta.env.SSR) {
-      console.log('[useI18n] SSR环境，直接设置locale')
       locale.value = lang
       setCurrentLocale(lang)
-      console.log('[useI18n] SSR环境设置完成')
       return
     }
     
     // 浏览器端异步加载locales
-    console.log('[useI18n] 浏览器环境，开始异步加载语言包')
     fetchingLocale.value = lang
-    console.log('[useI18n] 设置fetchingLocale.value为:', lang)
     
     try {
-      console.log('[useI18n] 开始fetchLocaleMessage')
       const messages = await fetchLocaleMessage(lang)
-      console.log('[useI18n] fetchLocaleMessage完成')
 
       // 同步更新runtime全局i18n实例
       const anyWindow = window as any
       if (anyWindow.MicroRuntime?.i18n) {
         const globalI18n = anyWindow.MicroRuntime.i18n
-        console.log('[useI18n] 同步更新runtime全局i18n实例')
         globalI18n.global.setLocaleMessage(lang, messages)
         globalI18n.global.locale.value = lang
       } else if (anyWindow.MicroRuntime?.app?.config?.globalProperties?.$i18n) {
         const globalI18n = anyWindow.MicroRuntime.app.config.globalProperties.$i18n
-        console.log('[useI18n] 通过$i18n同步更新runtime全局i18n实例')
         globalI18n.global.setLocaleMessage(lang, messages)
         globalI18n.global.locale.value = lang
       }
@@ -153,19 +127,10 @@ export const useI18n = defineStore((): {
       return
     }
     
-    // 避免快速切换语言时，有可能上一个语言比下一个语言加载慢的情况
-    console.log('[useI18n] 检查语言切换一致性')
-    console.log('[useI18n] 目标语言:', lang)
-    console.log('[useI18n] 当前fetchingLocale.value:', fetchingLocale.value)
-    
     if (lang === fetchingLocale.value) {
-      console.log('[useI18n] 语言一致，开始设置locale')
-      console.log('[useI18n] 调用setCurrentLocale:', lang)
       setCurrentLocale(lang)
-      console.log('[useI18n] 设置locale.value为:', lang)
       locale.value = lang
       fetchingLocale.value = lang
-      console.log('[useI18n] 语言切换完成')
     } else {
       console.warn('[useI18n] 语言不一致，跳过设置。目标:', lang, '当前fetching:', fetchingLocale.value)
     }

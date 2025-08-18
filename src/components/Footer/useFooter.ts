@@ -14,9 +14,6 @@ const getDefaultConfig = (locale: string): Config => {
     brandName: 'MicroApp',
     slogan: 'Simple & Powerful',
     copyright: `© ${new Date().getFullYear()} MicroApp. All rights reserved.`,
-    // 默认启用多语言支持
-    i18nEnabled: true,
-    
     // 默认产品链接
     productLinks: [
       { title: 'Features', url: '/features', target: '_self' },

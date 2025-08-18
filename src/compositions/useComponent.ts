@@ -2,7 +2,7 @@ import { watch, onMounted } from 'vue'
 import { defineStore } from '@/utils/store'
 import { makeExpose, dispatchReady } from '@/utils/component'
 import { useI18n } from '@/compositions/useI18n'
-import { useProps } from './usePropsNew'
+import { useProps } from './useProps'
 import { useEvent } from './useEvent'
 import { BaseProps } from '@/types/component'
 

@@ -22,7 +22,19 @@ const meta: Meta = {
     },
     i18nEnabled: {
       control: 'boolean',
-      description: '是否启用多语言'
+      description: '是否启用多语言（默认全局为 false，需要手动开启）'
+    },
+    themeSwitchEnabled: {
+      control: 'boolean',
+      description: '是否允许在组件内切换主题（默认全局为 false，需要手动开启）'
+    },
+    rtlEnabled: {
+      control: 'boolean',
+      description: '是否启用 RTL 布局（默认全局为 false，需要手动开启）'
+    },
+    ssrEnabled: {
+      control: 'boolean',
+      description: '是否开启 SSR 环境兼容模式（默认全局为 false，需要手动开启）'
     },
     onThemeChange: { action: 'theme-changed' },
     onLanguageChange: { action: 'language-changed' },
@@ -38,8 +50,10 @@ export const Default: Story = {
     ...(footerExampleConfig as any),
     theme: 'light',
     locale: 'en',
-
     i18nEnabled: true,
+    themeSwitchEnabled: false,
+    rtlEnabled: false,
+    ssrEnabled: false,
   } as any,
 }
 
@@ -49,6 +63,7 @@ export const DarkTheme: Story = {
     theme: 'dark',
     locale: 'en',
     i18nEnabled: true,
+    themeSwitchEnabled: true,
   } as any,
 }
 
@@ -56,7 +71,7 @@ export const ChineseLocale: Story = {
   args: {
     ...(footerExampleConfig as any),
     theme: 'light',
-    locale: 'zh_CN',
+    locale: 'zh-CN',
     i18nEnabled: true,
   } as any,
 }
@@ -66,11 +81,20 @@ export const Minimal: Story = {
     ...(footerExampleConfig as any),
     theme: 'light',
     locale: 'en',
-
     i18nEnabled: false,
     productLinks: (footerExampleConfig.productLinks || []).slice(0, 2),
     supportLinks: (footerExampleConfig.supportLinks || []).slice(0, 3),
     socialLinks: (footerExampleConfig.socialLinks || []).slice(0, 2),
+  } as any,
+}
+
+export const RTL: Story = {
+  args: {
+    ...(footerExampleConfig as any),
+    theme: 'light',
+    locale: 'en',
+    i18nEnabled: false,
+    rtlEnabled: true,
   } as any,
 }
 

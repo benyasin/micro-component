@@ -13,8 +13,15 @@ export interface BaseProps {
   locale: string
   theme?: 'light' | 'dark'
   
-  // 是否启用国际化
+  // 是否启用国际化（仅当为 true 时启用，默认不启用）
   i18nEnabled?: boolean
+  // 是否允许在组件内显示并使用主题切换（默认不启用，由使用方手动开启）
+  themeSwitchEnabled?: boolean
+  // 是否启用 RTL 布局（默认不启用，由使用方手动开启）
+  rtlEnabled?: boolean
+  // 是否启用 SSR 模式下的特殊处理（默认不启用，由使用方手动开启）
+  ssrEnabled?: boolean
+
   // 是否打印logger
   logger?: boolean
   // theme?: "white" | "black";

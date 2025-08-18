@@ -1,6 +1,6 @@
 <template>
   <ConfigProvider>
-    <div class="bg-bg micro-app-hide min-h-50px micro">
+    <div class="bg-bg micro-app-hide min-h-50px micro" :class="{ 'rtl': rtlEnabledFlag }">
       <div
         ref="$footer"
         class="mx-auto max-w-1200px px-4 py-8"
@@ -55,8 +55,8 @@
             </ul>
           </div>
 
-          <!-- 语言选择 -->
-          <div>
+          <!-- 语言选择（仅当 i18nEnabled 手动开启时显示） -->
+          <div v-if="i18nEnabled">
             <h3 class="text-lg font-semibold text-primaryText mb-4">
               {{ i18nEnabled ? t('footer.settings') : 'Settings' }}
             </h3>
@@ -93,7 +93,7 @@
           
           <!-- 社交媒体链接 -->
           <div class="flex space-x-4 mt-4 md:mt-0">
-            <a  class="mt-1 text-secondaryText hover:text-primaryText transition-colors"
+            <a  v-if="themeSwitchEnabledFlag" class="mt-1 text-secondaryText hover:text-primaryText transition-colors"
                 @click="toggleTheme"
                 href="javascript:void(0);"
             >
@@ -143,17 +143,15 @@ const currentLocale = computed(() => footerProps.value.locale || 'en')
 // 国际化
 const { t, changeLocale } = useI18n()
 
-// 检查是否启用多语言 - 优先使用 props，然后是 config，默认为 true
-const i18nEnabled = computed(() => {
-  // 优先使用 props 中的 i18nEnabled，如果未定义则使用 config 中的设置，默认为 true
-  if (defaultProps.i18nEnabled !== undefined) {
-    return defaultProps.i18nEnabled
-  }
-  return config.value?.i18nEnabled !== false
-})
+// 开关：优先使用 props 显式传入，仅当为 true 才开启；否则默认关闭
+const i18nEnabled = computed(() => defaultProps.i18nEnabled === true || footerProps.value.i18nEnabled === true)
+const themeSwitchEnabledFlag = computed(() => footerProps.value.themeSwitchEnabled === true)
+const rtlEnabledFlag = computed(() => footerProps.value.rtlEnabled === true)
+const ssrEnabledFlag = computed(() => footerProps.value.ssrEnabled === true)
 
-// 主题切换 - 统一使用global-theme体系
+// 主题切换 - 统一使用global-theme体系（仅当 themeSwitchEnabledFlag 为 true 时可切换）
 const toggleTheme = () => {
+  if (!themeSwitchEnabledFlag.value) return
   const newTheme = currentTheme.value === 'dark' ? 'light' : 'dark'
   
   updateProps({ theme: newTheme })
@@ -173,7 +171,9 @@ const handleLanguageChange = async (domEvent: Event) => {
   const language = config.value?.languages?.find(lang => lang.locale === newLocale)
   if (language) {
     try {
-      await changeLocale(newLocale)
+      if (i18nEnabled.value) {
+        await changeLocale(newLocale)
+      }
       updateProps({ locale: newLocale })
       event.emit('languageChange', language)
     } catch (error) {
@@ -190,8 +190,9 @@ const handleLinkClick = (url: string, target?: string) => {
 
 // 监听全局主题变化
 watch(
-  () => document.body.className,
+  () => typeof document !== 'undefined' ? document.body.className : '',
   (newClassName) => {
+    if (!themeSwitchEnabledFlag.value) return
     const isDark = newClassName.includes('global-theme') && newClassName.includes('black')
     const isLight = newClassName.includes('global-theme') && newClassName.includes('white')
     
@@ -211,7 +212,13 @@ watchEffect(() => {
 })
 
 onMounted(() => {
-  dispatchReady('Footer')
+  // SSR 环境下避免直接操作 DOM
+  if (!ssrEnabledFlag.value) {
+    dispatchReady('Footer')
+  } else {
+    // SSR 模式可以在客户端激活时再行触发
+    dispatchReady('Footer')
+  }
 })
 
 // Helper function for support link key mapping
@@ -241,5 +248,10 @@ defineExpose(
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+// 可选的 RTL class，交由使用方决定是否传入开启
+.rtl {
+  direction: rtl;
 }
 </style>

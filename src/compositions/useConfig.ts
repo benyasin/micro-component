@@ -7,14 +7,11 @@ const CONFIG_KEY = 'micro_config'
 
 export const useConfig = defineStore(() => {
   const config = reactive({
-    /** 用户手动选择的汇率 */
-    manualCurrency: '',
-    /** 是否首次登录或从未登录过 */
-    isFirstLogin: true,
-    /** tabbar交易区默认跳转 */
-    tabbar: {
-      tradeType: ''
-    }
+    // 全局开关（默认均为 false）
+    i18nEnabled: false,
+    themeSwitchEnabled: false,
+    rtlEnabled: false,
+    ssrEnabled: false
   })
 
   watch(
