@@ -14,7 +14,7 @@ export default defineConfig({
       '@locales': path.resolve('./locales')
     }
   },
-  publicDir: path.resolve('./src/public'),
+  publicDir: path.resolve('../src/public'),
   define: {
     'process.client': 'true'
   },

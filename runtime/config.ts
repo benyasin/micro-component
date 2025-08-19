@@ -16,6 +16,11 @@ export const config = {
       keepAlive: true,
       appShow: false,
       priority: 1 // 正常加载
+    },
+    ProTable: {
+      keepAlive: true,
+      appShow: false,
+      priority: 1 // 正常加载
     }
   }
 }

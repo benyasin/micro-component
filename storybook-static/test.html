@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en" class="global-theme light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/micro-runtime/test.css"></link>
+  </head>
+  <body>
+    <script>
+      const script = document.createElement('script')
+      script.src = '/micro-runtime/micro-runtime.js';
+      script.type = 'module'
+      script.async = location.search.includes('async=true')
+      script.defer = location.search.includes('defer=true')
+      document.head.appendChild(script)
+    </script>
+    <div class="micro">
+      <div style="min-height: 129px">
+        <div id="header" ></div>
+      </div>
+      <div id="content" style="width: 100vw; height: 100px; background: #fafafa">TEST</div>
+      <div id="footer"></div>
+    </div>
+    <script>
+      if (location.search.includes('height')) {
+        document.getElementById('content').style.height = '1000px'
+      }
+      window.addEventListener("MicroRuntime:ready", () => {
+        if (location.search.includes('footer=true')) {
+          MicroRuntime.createComponent({
+            type: "Footer",
+            props: { locale: "zh-CN" },
+            microId: "1",
+            el: document.getElementById("footer"),
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

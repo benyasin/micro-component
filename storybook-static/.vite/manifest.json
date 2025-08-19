@@ -1,0 +1,67 @@
+{
+  "../locales/js/en.js": {
+    "file": "assets/en-B39uRFZV.js",
+    "name": "en",
+    "src": "../locales/js/en.js",
+    "isDynamicEntry": true
+  },
+  "../locales/js/en_US.js": {
+    "file": "assets/en_US-CnwdojTq.js",
+    "name": "en_US",
+    "src": "../locales/js/en_US.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.ts"
+    ]
+  },
+  "../locales/js/zh_CN.js": {
+    "file": "assets/zh_CN-6Rh29nhn.js",
+    "name": "zh_CN",
+    "src": "../locales/js/zh_CN.js",
+    "isDynamicEntry": true
+  },
+  "../src/components/Button/Button.vue": {
+    "file": "assets/Button-Bat3gXJX.js",
+    "name": "Button",
+    "src": "../src/components/Button/Button.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-CM57Npqo.js",
+      "index.ts"
+    ]
+  },
+  "../src/components/Footer/Footer.vue": {
+    "file": "assets/Footer-DVULFVJ-.js",
+    "name": "Footer",
+    "src": "../src/components/Footer/Footer.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.ts",
+      "__plugin-vue_export-helper-CM57Npqo.js"
+    ]
+  },
+  "__plugin-vue_export-helper-CM57Npqo.js": {
+    "file": "assets/_plugin-vue_export-helper-CM57Npqo.js",
+    "name": "_plugin-vue_export-helper",
+    "imports": [
+      "index.ts"
+    ]
+  },
+  "index.ts": {
+    "file": "assets/index-g-3_U5zw.js",
+    "name": "index",
+    "src": "index.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "../src/components/Button/Button.vue",
+      "../src/components/Footer/Footer.vue",
+      "../locales/js/en.js",
+      "../locales/js/en_US.js",
+      "../locales/js/zh_CN.js"
+    ]
+  },
+  "style.css": {
+    "file": "assets/style.0bTmUwMj.css",
+    "src": "style.css"
+  }
+}

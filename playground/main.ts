@@ -2,8 +2,8 @@ import 'virtual:uno.css'
 import 'ant-design-vue/dist/reset.css'
 import './index.less'
 // polyfill
-import '@/polyfill/event-target'
-import '@/polyfill/request-idle'
+import '@/polyfill/event-target.js'
+import '@/polyfill/request-idle.js'
 
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'

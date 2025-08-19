@@ -28,6 +28,24 @@ export const useConfig = defineStore(() => {
 
   async function fetchUserInfo() {
     try {
+      // 在 playground 环境中，使用模拟数据而不是真实 API 调用
+      if (import.meta.env.DEV) {
+        userInfo.value = {
+          userName: 'Playground User',
+          userInfo: {
+            name: 'Playground User',
+            email: 'playground@example.com',
+            avatar: ''
+          },
+          _userSetting: {
+            theme: theme.value,
+            locale: locale.value,
+            direction: direction.value
+          }
+        }
+        return
+      }
+      
       const { code, data } = await commonInstance.post('/v1/user/overview/userinfo')
       if (code === '00000') {
         const { userInfo: originUserInfo } = data
@@ -37,7 +55,10 @@ export const useConfig = defineStore(() => {
           _userSetting: data
         }
       }
-    } catch {}
+    } catch (error) {
+      // 静默处理错误，避免控制台报错
+      console.debug('User info fetch failed:', error)
+    }
   }
 
   watchEffect(() => {
