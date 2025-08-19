@@ -1,40 +1,47 @@
-# Micro Components —— 跨栈微组件系统（单文档版）
+# Micro Components —— 跨栈微组件系统
 
-一个以 Vue 3 为内核，支持在 Vue 2、Vue 3 与 React 中统一复用的微组件系统。本文是整合并优化后的唯一 README，完整阐述项目结构、运行原理、全链路流转过程与使用方法。
+一个以 Vue 3 为内核，支持在 Vue 2、Vue 3 与 React 中统一复用的微组件系统。通过统一的运行时调度、跨框架事件桥与样式系统，实现"一次开发，三端可用"的微前端组件解决方案。
 
-—— 你可以把它理解为：一次开发（Vue3 语法），通过构建生成三端包装器（Vue2/Vue3/React），再由运行时（Runtime）统一完成挂载、通信、状态与样式管理。
-
+**核心理念**：你可以把它理解为一次开发（Vue3 语法），通过构建生成三端包装器（Vue2/Vue3/React），再由运行时（Runtime）统一完成挂载、通信、状态与样式管理。
 
 ## 目录
-- 特性速览
-- 项目结构
-- 核心概念
-- 组件配置系统
-- 运行原理
-- 快速开始与用法
-- 构建与产物
-- 调试与性能观测
-- 常见问题
-
+- [特性速览](#特性速览)
+- [项目结构](#项目结构)
+- [核心概念](#核心概念)
+- [组件配置系统](#组件配置系统)
+- [运行原理](#运行原理)
+- [快速开始与用法](#快速开始与用法)
+- [构建与产物](#构建与产物)
+- [样式系统与一致性保证](#样式系统与一致性保证)
+- [组件加载与调度优化](#组件加载与调度优化)
+- [事件通信与调试](#事件通信与调试)
+- [调试与性能观测](#调试与性能观测)
+- [常见问题](#常见问题)
 
 ## 特性速览
-- 跨栈复用：一次开发，三端可用（Vue2/Vue3/React）
-- 按需加载：组件、样式、语言包与数据并行加载
-- 事件通信：统一事件桥，跨框架一致的事件语义
-- 国际化：运行时语言切换与 SSR 语言包
-- 主题与样式：统一的样式注入与就绪检测
-- 任务队列：基于优先级的组件调度与并发管理
-- 稳定性：超时保护、降级对象与完善卸载
-- 可观测：内置调试日志与性能指标事件
+- **跨栈复用**：一次开发，三端可用（Vue2/Vue3/React）
+- **按需加载**：组件、样式、语言包与数据并行加载
+- **事件通信**：统一事件桥，跨框架一致的事件语义
+- **国际化**：运行时语言切换与 SSR 语言包
+- **主题与样式**：统一的样式注入、UnoCSS集成与就绪检测
+- **智能调度**：基于优先级的组件调度与并发管理，优化多组件场景
+- **稳定性**：超时保护、降级对象与完善卸载
+- **可观测**：内置调试日志与性能指标事件
 
+## 项目结构
 
-## 项目结构（关键目录）
-- runtime/ 运行时核心（容器、调度、i18n、配置）
-- src/components/* 业务组件（统一以 Vue3 语法实现）
-- scripts/ 构建脚本（为三端生成包装器与运行时产物）
-- template/{vue|vue2|react} 三端包装器模板
-- locales/ 国际化资源
-- dist/ 构建产物（runtime 与各端组件）
+### 核心目录
+```
+runtime/              # 运行时核心（容器、调度、i18n、配置）
+src/components/*      # 业务组件（统一以 Vue3 语法实现）
+scripts/              # 构建脚本（为三端生成包装器与运行时产物）
+template/             # 三端包装器模板
+├── vue/              # Vue3 包装器模板
+├── vue2/             # Vue2 包装器模板  
+└── react/            # React 包装器模板
+locales/              # 国际化资源
+dist/                 # 构建产物（runtime 与各端组件）
+```
 
 ### 开发与测试环境
 - **playground/** - 快速开发调试环境，提供简单的 HTML 页面用于测试单个组件的基本功能和样式
@@ -43,12 +50,12 @@
 
 
 ## 核心概念
-- 组件（Component）：以 Vue3 语法实现的业务组件，如 Footer
-- 包装器（Wrapper）：面向不同宿主框架的外层适配（Vue2/Vue3/React）
-- 运行时（Runtime）：统一的调度与渲染中枢，负责组件创建、样式注入、事件桥与资源加载
-- 任务（Task）：一次组件创建过程的抽象，带有优先级、状态与生命周期
-- 配置系统（Config System）：多层次的配置合并机制，支持默认配置、基础配置和用户自定义配置的智能合并
-
+- **组件（Component）**：以 Vue3 语法实现的业务组件，如 Footer、Button
+- **包装器（Wrapper）**：面向不同宿主框架的外层适配（Vue2/Vue3/React）
+- **运行时（Runtime）**：统一的调度与渲染中枢，负责组件创建、样式注入、事件桥与资源加载
+- **任务（Task）**：一次组件创建过程的抽象，带有优先级、状态与生命周期
+- **配置系统（Config System）**：多层次的配置合并机制，支持默认配置、基础配置和用户自定义配置的智能合并
+- **实例标识（Instance ID）**：确保每个组件实例唯一性的标识符，解决多实例场景下的冲突问题
 
 ## 组件配置系统
 
@@ -73,8 +80,6 @@
 
 ### 配置合并策略
 
-配置合并遵循以下规则：
-
 ```javascript
 // 合并优先级：用户配置 > 基础配置 > 默认配置
 finalConfig = { ...defaultConfig, ...sourceConfig, ...targetConfig }
@@ -84,273 +89,430 @@ finalConfig = { ...defaultConfig, ...sourceConfig, ...targetConfig }
 productLinks = targetConfig.productLinks || sourceConfig.productLinks || defaultConfig.productLinks
 ```
 
-### 配置示例
-
-以 Footer 组件为例：
-
-```javascript
-// 1. 默认配置
-const defaultConfig = {
-  brandName: 'MicroApp',
-  slogan: 'Simple & Powerful',
-  copyright: '© 2025 MicroApp. All rights reserved.',
-  i18nEnabled: true,
-  direction: 'ltr',
-  directionSwitchEnabled: false,
-  productLinks: [
-    { title: 'Features', url: '/features', target: '_self' },
-    { title: 'Pricing', url: '/pricing', target: '_self' }
-  ],
-  supportLinks: [
-    { title: 'Help Center', url: '/help', target: '_self' },
-    { title: 'Contact Us', url: '/contact', target: '_self' }
-  ],
-  socialLinks: [
-    { name: 'twitter', title: 'Follow us on Twitter', url: 'https://twitter.com/microapp' }
-  ],
-  languages: [
-    { locale: 'en', languageKey: 'en_US', languageName: 'English' },
-    { locale: 'zh-CN', languageKey: 'zh_CN', languageName: '简体中文' }
-  ]
-}
-
-// 2. 基础配置（来自 ConfigProvider 或全局设置）
-const sourceConfig = {
-  brandName: 'MyCompany',
-  direction: 'rtl',
-  project: 'main'
-}
-
-// 3. 用户配置（组件实例传入）
-const targetConfig = {
-  brandName: 'CustomBrand',
-  slogan: '自定义标语 - 创新科技，引领未来',
-  copyright: '© 2024 CustomBrand. 保留所有权利。',
-  directionSwitchEnabled: true,
-  productLinks: [
-    { title: '产品介绍', url: '/products', target: '_self' },
-    { title: '解决方案', url: '/solutions', target: '_self' }
-  ]
-}
-
-// 4. 最终合并结果
-const finalConfig = {
-  brandName: 'CustomBrand',           // 来自用户配置
-  slogan: '自定义标语 - 创新科技，引领未来', // 来自用户配置
-  copyright: '© 2024 CustomBrand. 保留所有权利。', // 来自用户配置
-  i18nEnabled: true,                  // 来自默认配置
-  direction: 'rtl',                   // 来自基础配置
-  directionSwitchEnabled: true,       // 来自用户配置
-  project: 'main',                    // 来自基础配置
-  productLinks: [                     // 来自用户配置（完全替换）
-    { title: '产品介绍', url: '/products', target: '_self' },
-    { title: '解决方案', url: '/solutions', target: '_self' }
-  ],
-  supportLinks: [                     // 来自默认配置（未被覆盖）
-    { title: 'Help Center', url: '/help', target: '_self' },
-    { title: 'Contact Us', url: '/contact', target: '_self' }
-  ],
-  socialLinks: [                      // 来自默认配置（未被覆盖）
-    { name: 'twitter', title: 'Follow us on Twitter', url: 'https://twitter.com/microapp' }
-  ],
-  languages: [                        // 来自默认配置（未被覆盖）
-    { locale: 'en', languageKey: 'en_US', languageName: 'English' },
-    { locale: 'zh-CN', languageKey: 'zh_CN', languageName: '简体中文' }
-  ]
-}
-```
-
-### 组件属性说明
-
-#### 方向控制属性
+### 方向控制属性
 
 组件支持完整的方向控制功能：
-
 - `direction: 'ltr' | 'rtl'` - 控制组件布局方向（默认为 `'ltr'`）
 - `directionSwitchEnabled: boolean` - 是否显示方向切换开关（默认为 `false`）
 
-**使用示例：**
+## 运行原理
 
+### 跨框架抹平机制
+
+#### 1. 统一协议层
+不论在 Vue2/Vue3 还是 React 中使用，包装器都会把外部传入的参数转换为统一对象：
 ```javascript
-// Vue 3
-<MicroFooter 
-  :direction="'rtl'" 
-  :directionSwitchEnabled="true"
-  @direction-change="handleDirectionChange"
-/>
-
-// React
-<MicroFooter 
-  direction="rtl"
-  directionSwitchEnabled={true}
-  onDirectionChange={handleDirectionChange}
-/>
+{
+  type: 'Footer',           // 组件类型
+  props: { ... },           // 可序列化的数据
+  el: HTMLElement,          // 真实 DOM 容器
+  on: { onXxx: Function }   // 统一的事件回调
+}
 ```
 
-### 配置验证
+#### 2. 事件桥（Event Bridge）
+- Vue3 的 `@click`、Vue2 的 `$listeners`、React 的 `onClick` 统一转换为 `onXxx` 回调
+- 组件内部只需要 `emit("xxx", payload)` 即可跨框架工作
+- 运行时自动处理事件类型转换和参数传递
 
-系统内置配置验证机制，确保配置的正确性：
+#### 3. 渲染与 Teleport
+- 运行时基于 Vue3 作为"统一渲染内核"
+- 通过 Vue3 的 Teleport，把组件的真实 DOM 渲染到外部提供的容器中
+- 外部框架只需提供一个 DOM 容器，无需关心内部实现
 
-- **必填字段检查**：验证关键配置项是否存在
-- **类型验证**：确保配置项类型正确（如数组类型的 links）
-- **格式验证**：检查链接格式、语言配置等是否符合规范
-- **警告提示**：对可能的配置问题给出友好提示
+### 完整流转流程
 
-配置验证会在组件初始化时自动执行，开发模式下会在控制台输出详细的验证结果。
+```mermaid
+graph TD
+    A[宿主调用] --> B[包装器转换]
+    B --> C[运行时接收]
+    C --> D[任务入队]
+    D --> E[并行拉取资源]
+    E --> F[组件渲染]
+    F --> G[事件桥接]
+    G --> H[属性更新]
+    H --> I[卸载清理]
+```
 
-
-## 运行原理
-以下按"从调用到渲染完成"的时间线展开，展示一次组件完整流转。
-
-1) 宿主侧调用
-- Vue2/Vue3/React 宿主通过对应包装器使用组件（或直接通过全局 MicroRuntime#createComponent 调用）
-- 包装器只做一件事：把宿主的 props/事件，映射为统一协议，交给运行时
-
-2) 运行时准备
-- 首次使用时创建并挂载一个隐藏的 Vue3 应用（Runtime 容器）
-- 初始化国际化（i18n）、运行配置与事件中心
-- 暴露 window.MicroRuntime 供外部直接调度
-
-3) 任务入队（优先级调度）
-- 每次创建组件会生成 Task：包含 type、props、挂载目标 el、优先级等
-- 调度器会按优先级与并发策略出队执行，避免大量组件同时竞争资源
-
-4) 并行拉取资源
-- 并发执行：
-  - 动态加载组件代码（基于 import/chunk）
-  - 加载/合并语言包（locales）
-  - 预取数据（按组件 config.prefetch 策略）
-  - 注入并等待样式就绪（runtime.css/组件样式）
-- 具备缓存策略：已加载的组件与样式二次复用，避免重复网络请求
-
-5) 容器与 Teleport 渲染
-- Runtime.vue 内部为每个组件分配稳定的容器节点
-- 使用 Vue Teleport 将真实 DOM 渲染到宿主给定的 el 上
-- 这使得"跨框架挂载"成为可能：外壳可以是 React/Vue2，但真实渲染由 Runtime 控制
-
-6) 事件桥与双向通信
-- 运行时为每个组件建立事件总线（EventEmitter）
-- 组件内部 emit('eventName', payload) 后，包装器在宿主侧以统一命名派发
-  - Vue3：onXxx 回调
-  - Vue2：$listeners
-  - React：onXxx props
-
-7) 属性更新与重渲染
-- 包装器监听宿主 props 变化，调用组件实例的 updateProps 进行增量更新
-- 运行时负责最小化重渲染与状态保持（可配置 keepAlive）
-
-8) 卸载与清理
-- removeComponent 会等待 Vue 完整卸载
-- 清理容器 DOM 属性、类名与事件监听，防止泄漏
-
-9) 稳定性与超时保护
-- 所有关键阶段都带有超时（例如 30s）与 AbortController 中断
-- 失败则返回降级对象 { updateProps: () => {} }，宿主不崩溃
-
-10) 可观测与性能指标
-- 若开启调试（localStorage.MICRO_COMPONENT:DEBUG=true），会输出各阶段耗时
-- 并通过浏览器事件 MicroRuntime:Metric 发送指标，便于外部采集
-
-### 运行原理（图解版）
-
-这套体系的目标：让"不同技术栈（Vue2/Vue3/React）的宿主项目"，都能像使用本地组件一样使用 micro-component 提供的统一组件，不需要关心内部实现用的是什么框架。
-
-1) 我们如何抹平各技术栈差异
-- 统一协议层：不论你在 Vue2/Vue3 还是 React 中使用，包装器都会把外部传入的参数转换为一个统一对象：{ type, props, el, on }。
-  - type：要创建的组件类型（例如 Footer）。
-  - props：普通、可序列化的数据（对象/数组/字符串/数字/布尔/日期字符串等）。
-  - el：一个真实 DOM 容器（包装器会拿到真实 DOM，交给运行时）。
-  - on：一组回调，统一表现为 onXxx（例如 onClick、onChange）。
-- 事件桥（Event Bridge）：
-  - Vue3 的 @click、Vue2 的 $listeners、React 的 onClick，本质都是"事件回调"。包装器把这些都收敛为统一的 onXxx 回调列表交给运行时；组件内部只需要 emit("xxx", payload) 即可。
-  - 这样组件侧无需知道"外面是 React 还是 Vue"，事件照常工作。
-- 生命周期对齐：
-  - 宿主侧只有三件事：mount（创建）、update（属性变化）、unmount（卸载）。
-  - Vue2/Vue3/React 包装器都把各自的生命周期映射为这三步，并调用运行时对应的 API。
-- 插槽/children：
-  - 在需要插槽/children 的场景，包装器把它们转换为"可序列化数据或渲染描述"，统一作为 props 传入；组件内部按约定渲染。
-- 样式与主题：
-  - 运行时负责把组件的样式（CSS）注入到页面中，并做去重；不依赖宿主使用什么打包器。
-
-2) 浏览器实际是怎么解析/执行的
-- 模块解析：
-  - 你在宿主里写 import { Footer } from 'micro-components/react/Footer'（或 Vue2/Vue3 对应路径），打包器会把它编译成对"包装器代码"的引用。
-  - 运行时在创建组件时，会使用动态 import 去加载真正的组件实现（按需加载）。
-- 网络加载与并发：
-  - 浏览器并行发起请求：组件 JS、样式、i18n 语言包、可能的预取数据。
-  - 命中缓存会快速返回；运行时内部也会做二级缓存，避免重复注入样式或重复 import。
-- 渲染与 Teleport：
-  - 运行时基于 Vue3 作为"统一渲染内核"。
-  - 通过 Vue3 的 Teleport，把组件的真实 DOM 渲染到你传进来的 el 里。这样外部不管是 React、Vue2 还是 Vue3，最终都只是提供一个 DOM 容器而已。
-- 事件循环与回调：
-  - 组件内部 emit 事件后，运行时经由事件桥把它派发给包装器，包装器再触发宿主提供的 onXxx 回调（或 @xxx / $listeners）。
-- 更新与卸载：
-  - props 变化时，包装器做浅比较并调用实例的 updateProps；运行时按需最小重渲染，支持 keepAlive 保持内部状态。
-  - 卸载时，等待 Vue 完整卸载，移除样式与事件，保证不泄漏。
-- 可观测与稳定性：
-  - 每个阶段都有超时/降级策略；并用 CustomEvent("MicroRuntime:Metric") 上报关键耗时指标，方便你在宿主侧统一采集。
-
-3) 图解
-- 架构总览（包装器 → 统一协议 → 运行时）：
-
-  ![Architecture](./docs/architecture.svg)
-
-- 全链路生命周期（从创建到卸载）：
-
-  ![Lifecycle](./docs/lifecycle.svg)
-
+1. **宿主侧调用** - Vue2/Vue3/React 通过对应包装器使用组件
+2. **运行时准备** - 创建并挂载隐藏的 Vue3 应用作为 Runtime 容器
+3. **智能调度** - 按优先级和实例唯一性管理组件创建队列
+4. **并行资源加载** - 并发加载组件代码、样式、语言包和预取数据
+5. **Teleport 渲染** - 使用 Vue Teleport 将真实 DOM 渲染到宿主容器
+6. **事件通信** - 建立双向事件桥，处理跨框架事件传递
+7. **生命周期管理** - 属性更新、重渲染与完善的卸载清理
 
 ## 快速开始与用法
-1) 安装与构建
-- pnpm i
-- pnpm run build 或 pnpm run build:client（构建 runtime 与三端组件包装器）
-- 可选：pnpm run build:ssr（生成 SSR 相关产物：server-app、server-locales、server-locale-modules）
 
-2) 在 Vue 3 使用
-- import { MicroFooter } from 'micro-components/vue/Footer'
-- 以常规组件方式传入 props，并通过 @xxx 监听事件
+### 1. 安装与构建
+```bash
+pnpm i
+pnpm run build          # 构建 runtime 与三端组件包装器
+# 可选：pnpm run build:ssr  # 生成 SSR 相关产物
+```
 
-3) 在 Vue 2 使用
-- import MicroFooter from 'micro-components/vue2/Footer'
-- 通过 props 与 $listeners 使用
+### 2. 在 Vue 3 使用
+```vue
+<template>
+  <MicroFooter 
+    :direction="'rtl'" 
+    :directionSwitchEnabled="true"
+    @direction-change="handleDirectionChange"
+    @language-change="handleLanguageChange"
+  />
+</template>
 
-4) 在 React 使用
-- import { Footer } from 'micro-components/react/Footer'
-- 以 JSX props 传参，以 onXxx 回调接收事件
+<script setup>
+import { MicroFooter } from 'micro-components/vue/Footer'
 
-5) 直接使用运行时 API（进阶）
-- window.MicroRuntime.createComponent({ type, props, el })
-- 返回组件实例，支持 updateProps 与 remove
+const handleDirectionChange = (direction) => {
+  console.log('Direction changed:', direction)
+}
+</script>
+```
 
+### 3. 在 Vue 2 使用
+```vue
+<template>
+  <MicroFooter 
+    :direction="direction"
+    :directionSwitchEnabled="true"
+    @direction-change="handleDirectionChange"
+  />
+</template>
+
+<script>
+import MicroFooter from 'micro-components/vue2/Footer'
+
+export default {
+  components: { MicroFooter },
+  data() {
+    return { direction: 'ltr' }
+  },
+  methods: {
+    handleDirectionChange(direction) {
+      this.direction = direction
+    }
+  }
+}
+</script>
+```
+
+### 4. 在 React 使用
+```jsx
+import React from 'react'
+import { Footer } from 'micro-components/react/Footer'
+
+function App() {
+  const handleDirectionChange = (direction) => {
+    console.log('Direction changed:', direction)
+  }
+
+  return (
+    <Footer 
+      direction="rtl"
+      directionSwitchEnabled={true}
+      onDirectionChange={handleDirectionChange}
+    />
+  )
+}
+```
+
+### 5. 直接使用运行时 API（进阶）
+```javascript
+const component = await window.MicroRuntime.createComponent({
+  type: 'Footer',
+  props: { theme: 'dark' },
+  el: document.getElementById('footer-container')
+})
+
+// 更新属性
+component.updateProps({ theme: 'light' })
+
+// 卸载组件
+component.remove()
+```
 
 ## 构建与产物
-- 核心脚本：
-  - scripts/build-runtime.ts：构建运行时（runtime.js/css）
-  - scripts/build-vue3.ts / build-vue2.ts / build-react.ts：为每个组件生成三端包装器
-  - scripts/build-server-locales.ts：生成 SSR 语言产物（可选，通过 pnpm run build:ssr 调用）
-- 产物结构（dist/）：
-  - runtime/：runtime.js、runtime.css
-  - components/vue|vue2|react：各端组件入口与类型
-  - 可选 SSR 产物：
-    - server-app/：各组件的 SSR 构建产物
-    - server-locales/：按语言生成的 HTML 片段（ESM 导出）
-    - server-locale-modules/：按语言生成的 HTML 片段（ESM/CJS 双格式）
 
+### 核心脚本
+- `scripts/build-runtime.ts`：构建运行时（runtime.js/css）
+- `scripts/build-vue3.ts / build-vue2.ts / build-react.ts`：为每个组件生成三端包装器
+- `scripts/build-server-locales.ts`：生成 SSR 语言产物
+- `scripts/create-component.ts`：基于模板创建新组件
+
+### 产物结构
+```
+dist/
+├── runtime/                    # 运行时核心
+│   ├── runtime.js             # 调度与渲染逻辑
+│   └── runtime.css            # 基础样式
+├── components/                 # 各端组件
+│   ├── vue/                   # Vue3 组件包装器
+│   ├── vue2/                  # Vue2 组件包装器
+│   └── react/                 # React 组件包装器
+└── server-locales/             # SSR 语言包（可选）
+```
+
+## 样式系统与一致性保证
+
+### UnoCSS 集成方案
+
+为了确保所有测试环境中的组件样式完全一致，项目采用了统一的 UnoCSS 集成方案：
+
+#### 1. Playground 环境（标准配置）
+```typescript
+// 完整的 UnoCSS 支持 + CSS 前缀处理
+plugins: [vue(), UnoCss()],
+css: {
+  postcss: {
+    plugins: [
+      prefixer({ prefix: '.micro' })  // CSS 前缀处理
+    ]
+  }
+}
+```
+
+#### 2. Test-projects 环境（统一配置）
+为所有 test-projects（Vue3/Vue2/React）添加了 UnoCSS 支持：
+
+**Vue3 项目**：
+```typescript
+// vite.config.ts
+plugins: [vue(), microRuntimePlugin(), UnoCss()]
+
+// uno.config.ts  
+export default defineConfig({
+  presets: [presetUno(), presetAttributify()],
+  theme: {
+    colors: {
+      primaryText: 'var(--color-primary-text)',
+      secondaryText: 'var(--color-secondary-text)',
+      bg: 'var(--color-bg)',
+      line: 'var(--color-line)',
+    }
+  }
+})
+```
+
+**Vue2 项目**：
+由于 webpack 兼容性，采用手动 CSS 文件方式：
+```css
+/* src/uno.css - 手动创建的 UnoCSS 样式 */
+.mx-auto { margin-left: auto; margin-right: auto; }
+.max-w-1200px { max-width: 1200px; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+/* ... 更多原子化样式 */
+```
+
+**React 项目**：
+```typescript
+// 与 Vue3 相同的 UnoCSS 配置
+plugins: [react(), UnoCss()]
+```
+
+### 样式特性支持
+
+#### 完整的 Footer 组件样式支持
+- ✅ **布局类**：`mx-auto`, `max-w-1200px`, `px-4`, `py-8`
+- ✅ **网格布局**：`grid`, `grid-cols-1`, `md:grid-cols-3`, `gap-8`
+- ✅ **颜色映射**：`text-primaryText`, `text-secondaryText`, `border-line`
+- ✅ **响应式设计**：`flex`, `md:flex-row`, `md:grid-cols-3`
+- ✅ **交互效果**：`hover:text-primaryText`, `transition-colors`
+
+#### 设计系统变量
+```css
+:root {
+  --color-primary-text: #1a202c;
+  --color-secondary-text: #718096;
+  --color-bg: #ffffff;
+  --color-line: #e2e8f0;
+}
+```
+
+### 样式一致性验证
+
+可通过以下方式验证样式一致性：
+1. **启动所有测试环境**：Vue3 (5174)、React (5171)、Vue2 (5172)
+2. **UnoCSS Inspector**：访问 `/__unocss/` 检查样式生成
+3. **视觉对比**：确认 Footer 组件在不同环境中的外观一致性
+
+## 组件加载与调度优化
+
+### 多组件实例管理
+
+#### 实例唯一性保证
+```typescript
+// 新增 instanceId 字段确保组件实例唯一性
+export interface Component {
+  microId?: string
+  elementId: string
+  instanceId?: string    // 新增：实例唯一标识
+  type: string
+  props?: Record<string, any>
+  // ...其他字段
+}
+```
+
+#### 可靠的 ID 生成策略
+```typescript
+// 全局计数器，确保 ID 的唯一性
+let globalCounter = 0
+
+export function generateUniqueId(prefix: string = 'id'): string {
+  globalCounter++
+  const timestamp = Date.now()
+  const random = Math.random().toString(36).substr(2, 9)
+  return `${prefix}_${timestamp}_${globalCounter}_${random}`
+}
+
+export function generateComponentInstanceId(type: string, elementId?: string): string {
+  const baseId = elementId || 'element'
+  return generateUniqueId(`${type}_${baseId}`)
+}
+```
+
+#### React Key 优化
+```typescript
+// React 组件中使用组合 key 确保唯一性
+const microId = useRef(generateUniqueId(`${type}_${elementId}`))
+const instanceId = useRef(generateComponentInstanceId(type, elementId))
+
+// 组合 key 防止重复
+key={generateReactKey(microId.current, instanceId.current)}
+```
+
+### 简化的优先级系统
+
+移除了复杂的任务队列管理，简化为两种优先级：
+- `priority: 0` - 立即加载（仅用于真正需要优先加载的组件）
+- `priority: 1` - 正常加载（默认值）
+
+```typescript
+// 简化的优先级逻辑
+if (config.priority === 0) {
+  // 立即加载逻辑
+} else {
+  // 正常加载逻辑
+}
+```
+
+### 优化效果
+
+1. **解决重复 Key 问题** ✅ - 每个组件实例都有唯一的 `instanceId`
+2. **简化加载逻辑** ✅ - 移除复杂的任务队列管理
+3. **提高性能** ✅ - 减少不必要的队列操作
+4. **向后兼容性** ✅ - 保持原有 API 接口不变
+
+## 事件通信与调试
+
+### 事件传递流程
+
+#### 1. Vue 组件内部事件处理
+```typescript
+// Button.vue
+const handleClick = (clickEvent: MouseEvent) => {
+  if (config.value?.disabled) return
+  event.emit('click', clickEvent)  // 触发内部事件
+}
+
+// 监听内部事件并转发给父组件
+on('click', (clickEvent: MouseEvent) => {
+  emit('click', clickEvent)  // 转发给 Vue 父组件
+})
+```
+
+#### 2. 跨框架事件桥接
+```typescript
+// React 组件模板中的事件监听
+component.current?.on?.('event', (eventName: string, ...args: any[]) => {
+  const currentProps = propsRef.current
+  if (currentProps && typeof currentProps[eventName] === 'function') {
+    currentProps[eventName](...args)
+  }
+})
+```
+
+### 事件调试策略
+
+#### 1. 启用调试模式
+```typescript
+localStorage.setItem('MICRO_COMPONENT:DEBUG', 'true')
+```
+
+#### 2. 事件处理函数类型匹配
+```typescript
+// React 组件中的事件处理
+interface ButtonProps {
+  text?: string
+  color?: string
+  disabled?: boolean
+  onClick?: (event: MouseEvent) => void  // 明确的事件类型
+}
+```
+
+#### 3. 常见问题排查
+- **事件没有触发**：检查 Vue 组件是否正确调用了 `event.emit`
+- **事件参数错误**：验证事件参数类型是否匹配
+- **事件处理函数未找到**：检查 props 传递和函数名称是否正确
 
 ## 调试与性能观测
-- 启用调试：localStorage.setItem('MICRO_COMPONENT:DEBUG', 'true')
-- 监听性能指标：window.addEventListener('MicroRuntime:Metric', e => console.log(e.detail))
-- 常见日志：fetchMs/prefetchMs/styleReadyMs/mountedMs/keepAliveMs
 
+### 调试功能
+```javascript
+// 启用调试
+localStorage.setItem('MICRO_COMPONENT:DEBUG', 'true')
 
-## 常见问题（FAQ）
-- Q: 为什么要 Teleport？
-  A: 让 Runtime 统一控制渲染，天然跨框架，宿主只需提供挂载点。
-- Q: 事件如何统一？
-  A: 组件内部只关心 emit，包装器按宿主框架约定转换为 onXxx 或 $listeners。
-- Q: 运行时 CSS/JS 如何注入？
-  A: 构建后由运行时按需注入并等待就绪，防止"先渲染后样式"的闪烁。
-- Q: 如何保证稳定？
-  A: 超时/中断/降级对象三重保障，任何阶段失败都不影响宿主可用性。
+// 监听性能指标
+window.addEventListener('MicroRuntime:Metric', e => {
+  console.log('性能指标:', e.detail)
+})
+```
 
-—— 若需深入实现，请阅读 runtime/runtime.ts、runtime/Runtime.vue 与 scripts/*。这三者正对应本文的"调度/渲染/构建"三大职责。
+### 性能指标
+- `fetchMs` - 组件代码加载耗时
+- `prefetchMs` - 数据预取耗时  
+- `styleReadyMs` - 样式就绪耗时
+- `mountedMs` - 组件挂载耗时
+- `keepAliveMs` - 缓存命中耗时
+
+### 调试日志格式
+```
+[MicroComponent] Footer: 开始加载组件
+[MicroComponent] Footer: 组件代码加载完成 (150ms)
+[MicroComponent] Footer: 样式注入完成 (50ms)
+[MicroComponent] Footer: 组件挂载完成 (200ms)
+```
+
+## 常见问题
+
+### Q: 为什么要使用 Teleport？
+**A**: 让 Runtime 统一控制渲染，实现天然的跨框架支持，宿主只需提供挂载点。
+
+### Q: 事件如何统一处理？
+**A**: 组件内部只关心 `emit`，包装器按宿主框架约定转换为 `onXxx` 或 `$listeners`。
+
+### Q: 运行时 CSS/JS 如何注入？
+**A**: 构建后由运行时按需注入并等待就绪，防止"先渲染后样式"的闪烁。
+
+### Q: 如何保证系统稳定性？
+**A**: 超时/中断/降级对象三重保障，任何阶段失败都不影响宿主可用性。
+
+### Q: 如何处理多个相同组件实例？
+**A**: 使用 `instanceId` 确保每个实例的唯一性，避免 React key 重复警告。
+
+### Q: 样式在不同环境中不一致怎么办？
+**A**: 确保所有测试环境都正确配置了 UnoCSS，并引入了统一的 CSS 变量系统。
+
+### Q: 如何调试事件传递问题？
+**A**: 启用调试模式，检查控制台事件日志，验证事件处理函数类型和参数匹配。
+
+---
+
+**深入实现细节**，请参考：
+- `runtime/runtime.ts` - 核心调度逻辑
+- `runtime/Runtime.vue` - Vue3 渲染容器  
+- `scripts/*` - 构建与代码生成
+- `template/*` - 跨框架包装器模板
+
+这四个模块正对应本文档的"调度/渲染/构建/适配"四大职责。
