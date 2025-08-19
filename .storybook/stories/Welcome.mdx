@@ -194,74 +194,478 @@ import { Meta } from '@storybook/blocks';
     margin: '0 0 2rem 0',
     textAlign: 'center',
     color: '#2c3e50'
-  }}>🔬 工作原理</h2>
+  }}>🔬 工作原理与架构设计</h2>
   
   <div style={{
+    textAlign: 'center',
+    margin: '3rem 0',
+    background: 'white',
+    borderRadius: '12px',
+    padding: '2rem',
+    border: '1px solid #e9ecef'
+  }}>
+    <h3 style={{
+      fontSize: '1.8rem',
+      fontWeight: '600',
+      margin: '0 0 1.5rem 0',
+      color: '#2c3e50'
+    }}>📐 系统架构图</h3>
+    <img src="../../docs/architecture.svg" alt="微组件系统架构图" style={{
+      maxWidth: '100%',
+      height: 'auto',
+      border: '1px solid #e9ecef',
+      borderRadius: '8px',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+    }} />
+    <p style={{
+      color: '#666',
+      fontSize: '0.95rem',
+      margin: '1rem 0 0 0',
+      fontStyle: 'italic'
+    }}>微组件系统通过统一协议层和运行时内核，实现跨前端框架的组件复用</p>
+  </div>
+
+  <div style={{
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
     gap: '2rem',
-    margin: '2rem 0'
+    margin: '3rem 0'
   }}>
     
     <div style={{
       background: 'white',
       borderRadius: '12px',
-      padding: '2rem',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+      padding: '2.5rem',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
       border: '1px solid #e9ecef'
     }}>
       <h4 style={{
-        fontSize: '1.3rem',
+        fontSize: '1.4rem',
         fontWeight: '600',
-        margin: '0 0 1rem 0',
-        color: '#2c3e50'
-      }}>🏗️ 统一抽象层</h4>
+        margin: '0 0 1.5rem 0',
+        color: '#2c3e50',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem'
+      }}>
+        <span style={{ fontSize: '1.5rem' }}>🏗️</span>
+        统一抽象层
+      </h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0 0 1rem 0'
+      }}>
+        微组件系统的核心是<strong>统一协议层</strong>，它将不同框架的组件接口抽象为一致的形式：
+      </p>
+      <ul style={{
+        color: '#666',
+        lineHeight: '1.6',
+        paddingLeft: '1.5rem',
+        margin: '0 0 1rem 0'
+      }}>
+        <li><code>Props</code> - 扁平化、可序列化的属性传递</li>
+        <li><code>Events</code> - 统一的 onXxx/$listeners 事件机制</li>
+        <li><code>Lifecycle</code> - 标准化的 mount/update/unmount 生命周期</li>
+        <li><code>Context</code> - 跨框架的状态共享与依赖注入</li>
+      </ul>
       <p style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0'
-      }}>通过统一的组件接口和事件系统，屏蔽不同框架的差异，提供一致的开发体验。组件内部使用 Vue 3 Composition API 实现，通过适配器模式支持多框架。</p>
+      }}>
+        通过<strong>适配器模式</strong>，各框架的包装器将原生 API 转换为统一协议，屏蔽框架差异。
+      </p>
     </div>
     
     <div style={{
-      background: 'rgba(255,255,255,0.1)',
+      background: 'white',
       borderRadius: '12px',
-      padding: '2rem',
-      backdropFilter: 'blur(10px)'
+      padding: '2.5rem',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+      border: '1px solid #e9ecef'
     }}>
       <h4 style={{
-        fontSize: '1.3rem',
+        fontSize: '1.4rem',
         fontWeight: '600',
-        margin: '0 0 1rem 0',
-        color: '#2c3e50'
-      }}>⚡ 智能加载</h4>
+        margin: '0 0 1.5rem 0',
+        color: '#2c3e50',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem'
+      }}>
+        <span style={{ fontSize: '1.5rem' }}>⚡</span>
+        智能运行时调度
+      </h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0 0 1rem 0'
+      }}>
+        <strong>MicroRuntime</strong> 是基于 Vue 3 构建的统一渲染内核，提供：
+      </p>
+      <ul style={{
+        color: '#666',
+        lineHeight: '1.6',
+        paddingLeft: '1.5rem',
+        margin: '0 0 1rem 0'
+      }}>
+        <li><strong>任务调度</strong> - 优先级队列、超时控制、降级策略</li>
+        <li><strong>资源管理</strong> - 动态 import、CSS 去重、缓存优化</li>
+        <li><strong>Teleport 渲染</strong> - 跨 DOM 树挂载，支持 SSR</li>
+        <li><strong>实例复用</strong> - 单例模式，避免重复初始化</li>
+      </ul>
       <p style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0'
-      }}>采用动态导入和资源预加载策略，根据组件使用情况智能加载所需资源。支持组件级别的代码分割和缓存策略。</p>
+      }}>
+        运行时采用<strong>并行加载策略</strong>，组件 JS、CSS、i18n 资源同时获取，显著提升加载性能。
+      </p>
     </div>
     
     <div style={{
-      background: 'rgba(255,255,255,0.1)',
+      background: 'white',
       borderRadius: '12px',
-      padding: '2rem',
-      backdropFilter: 'blur(10px)'
+      padding: '2.5rem',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+      border: '1px solid #e9ecef'
     }}>
       <h4 style={{
-        fontSize: '1.3rem',
+        fontSize: '1.4rem',
         fontWeight: '600',
-        margin: '0 0 1rem 0',
+        margin: '0 0 1.5rem 0',
+        color: '#2c3e50',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem'
+      }}>
+        <span style={{ fontSize: '1.5rem' }}>🌉</span>
+        跨框架事件桥
+      </h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0 0 1rem 0'
+      }}>
+        事件通信采用<strong>双向桥接机制</strong>：
+      </p>
+      <div style={{
+        background: '#f8f9fa',
+        padding: '1rem',
+        borderRadius: '6px',
+        margin: '1rem 0',
+        fontSize: '0.9rem',
+        fontFamily: 'Monaco, Consolas, monospace',
         color: '#2c3e50'
-      }}>🌉 事件桥接</h4>
+      }}>
+        组件内部 emit → Runtime 分发 → 包装器转换 → 宿主回调
+      </div>
+      <ul style={{
+        color: '#666',
+        lineHeight: '1.6',
+        paddingLeft: '1.5rem',
+        margin: '0 0 1rem 0'
+      }}>
+        <li><strong>事件归一化</strong> - Vue/React 事件统一为 onXxx 格式</li>
+        <li><strong>类型安全</strong> - TypeScript 完整的事件类型推导</li>
+        <li><strong>防抖节流</strong> - 内置高频事件优化策略</li>
+        <li><strong>错误隔离</strong> - 事件回调异常不影响组件运行</li>
+      </ul>
+    </div>
+    
+    <div style={{
+      background: 'white',
+      borderRadius: '12px',
+      padding: '2.5rem',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+      border: '1px solid #e9ecef'
+    }}>
+      <h4 style={{
+        fontSize: '1.4rem',
+        fontWeight: '600',
+        margin: '0 0 1.5rem 0',
+        color: '#2c3e50',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem'
+      }}>
+        <span style={{ fontSize: '1.5rem' }}>🎨</span>
+        样式一致性保证
+      </h4>
+      <p style={{
+        color: '#666',
+        lineHeight: '1.6',
+        margin: '0 0 1rem 0'
+      }}>
+        通过<strong>UnoCSS + CSS-in-JS</strong> 混合方案确保样式一致：
+      </p>
+      <ul style={{
+        color: '#666',
+        lineHeight: '1.6',
+        paddingLeft: '1.5rem',
+        margin: '0 0 1rem 0'
+      }}>
+        <li><strong>原子化 CSS</strong> - UnoCSS 提供基础样式类</li>
+        <li><strong>组件样式</strong> - CSS-in-JS 实现组件级样式隔离</li>
+        <li><strong>主题变量</strong> - CSS Custom Properties 支持动态主题</li>
+        <li><strong>去重优化</strong> - 运行时自动合并重复样式</li>
+      </ul>
       <p style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0'
-      }}>建立统一的事件通信机制，支持组件间的数据传递和状态同步。通过事件总线实现跨框架的组件通信。</p>
+      }}>
+        无论在哪个框架中使用，组件样式保持完全一致的视觉表现。
+      </p>
     </div>
     
   </div>
+
+  <div style={{
+    textAlign: 'center',
+    margin: '4rem 0',
+    background: 'white',
+    borderRadius: '12px',
+    padding: '2rem',
+    border: '1px solid #e9ecef'
+  }}>
+    <h3 style={{
+      fontSize: '1.8rem',
+      fontWeight: '600',
+      margin: '0 0 1.5rem 0',
+      color: '#2c3e50'
+    }}>🔄 组件生命周期流程</h3>
+    <img src="../../docs/lifecycle.svg" alt="微组件生命周期流程图" style={{
+      maxWidth: '100%',
+      height: 'auto',
+      border: '1px solid #e9ecef',
+      borderRadius: '8px',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+    }} />
+    <p style={{
+      color: '#666',
+      fontSize: '0.95rem',
+      margin: '1rem 0 0 0',
+      fontStyle: 'italic'
+    }}>从宿主调用到组件渲染的完整生命周期，展示了任务调度、资源加载、事件通信的详细流程</p>
+  </div>
+
+  <div style={{
+    background: 'white',
+    borderRadius: '12px',
+    padding: '2.5rem',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+    border: '1px solid #e9ecef',
+    margin: '3rem 0'
+  }}>
+    <h3 style={{
+      fontSize: '1.6rem',
+      fontWeight: '600',
+      margin: '0 0 2rem 0',
+      color: '#2c3e50',
+      textAlign: 'center'
+    }}>📊 性能优化策略</h3>
+    
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: '1.5rem'
+    }}>
+      
+      <div style={{
+        background: '#f8f9fa',
+        padding: '1.5rem',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef'
+      }}>
+        <h4 style={{
+          fontSize: '1.1rem',
+          fontWeight: '600',
+          margin: '0 0 1rem 0',
+          color: '#2c3e50'
+        }}>⚡ 加载优化</h4>
+        <ul style={{
+          color: '#666',
+          lineHeight: '1.5',
+          paddingLeft: '1.2rem',
+          margin: '0',
+          fontSize: '0.9rem'
+        }}>
+          <li>动态 import + 代码分割</li>
+          <li>资源并行加载</li>
+          <li>智能缓存策略</li>
+          <li>预加载与懒加载</li>
+        </ul>
+      </div>
+      
+      <div style={{
+        background: '#f8f9fa',
+        padding: '1.5rem',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef'
+      }}>
+        <h4 style={{
+          fontSize: '1.1rem',
+          fontWeight: '600',
+          margin: '0 0 1rem 0',
+          color: '#2c3e50'
+        }}>🎯 渲染优化</h4>
+        <ul style={{
+          color: '#666',
+          lineHeight: '1.5',
+          paddingLeft: '1.2rem',
+          margin: '0',
+          fontSize: '0.9rem'
+        }}>
+          <li>虚拟 DOM diff 优化</li>
+          <li>组件实例复用</li>
+          <li>最小化重渲染</li>
+          <li>Teleport 高效挂载</li>
+        </ul>
+      </div>
+      
+      <div style={{
+        background: '#f8f9fa',
+        padding: '1.5rem',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef'
+      }}>
+        <h4 style={{
+          fontSize: '1.1rem',
+          fontWeight: '600',
+          margin: '0 0 1rem 0',
+          color: '#2c3e50'
+        }}>💾 内存优化</h4>
+        <ul style={{
+          color: '#666',
+          lineHeight: '1.5',
+          paddingLeft: '1.2rem',
+          margin: '0',
+          fontSize: '0.9rem'
+        }}>
+          <li>自动垃圾回收</li>
+          <li>事件监听器清理</li>
+          <li>WeakMap 弱引用</li>
+          <li>组件卸载优化</li>
+        </ul>
+      </div>
+      
+    </div>
+  </div>
+
+  <div style={{
+    background: 'white',
+    borderRadius: '12px',
+    padding: '2.5rem',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+    border: '1px solid #e9ecef',
+    margin: '3rem 0'
+  }}>
+    <h3 style={{
+      fontSize: '1.6rem',
+      fontWeight: '600',
+      margin: '0 0 2rem 0',
+      color: '#2c3e50',
+      textAlign: 'center'
+    }}>🔍 可观测性与调试</h3>
+    
+    <p style={{
+      color: '#666',
+      lineHeight: '1.6',
+      margin: '0 0 2rem 0',
+      textAlign: 'center'
+    }}>
+      微组件系统内置完善的监控和调试能力，帮助开发者快速定位问题和优化性能：
+    </p>
+    
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '2rem',
+      margin: '2rem 0'
+    }}>
+      
+      <div>
+        <h4 style={{
+          fontSize: '1.2rem',
+          fontWeight: '600',
+          margin: '0 0 1rem 0',
+          color: '#2c3e50'
+        }}>📈 性能指标</h4>
+        <ul style={{
+          color: '#666',
+          lineHeight: '1.6',
+          paddingLeft: '1.5rem',
+          margin: '0'
+        }}>
+          <li><strong>组件加载时间</strong> - 从调用到首次渲染的耗时</li>
+          <li><strong>资源下载时间</strong> - JS/CSS/i18n 各资源的加载耗时</li>
+          <li><strong>内存使用情况</strong> - 组件实例和缓存的内存占用</li>
+          <li><strong>事件响应时间</strong> - 事件从触发到回调的延迟</li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 style={{
+          fontSize: '1.2rem',
+          fontWeight: '600',
+          margin: '0 0 1rem 0',
+          color: '#2c3e50'
+        }}>🐛 调试工具</h4>
+        <ul style={{
+          color: '#666',
+          lineHeight: '1.6',
+          paddingLeft: '1.5rem',
+          margin: '0'
+        }}>
+          <li><strong>运行时日志</strong> - 详细的组件生命周期日志</li>
+          <li><strong>错误边界</strong> - 组件异常捕获和降级处理</li>
+          <li><strong>DevTools 扩展</strong> - Vue DevTools 集成支持</li>
+          <li><strong>性能面板</strong> - 实时性能监控面板</li>
+        </ul>
+      </div>
+      
+    </div>
+    
+    <div style={{
+      background: '#f8f9fa',
+      padding: '1.5rem',
+      borderRadius: '8px',
+      margin: '2rem 0',
+      border: '1px solid #e9ecef'
+    }}>
+      <h5 style={{
+        fontSize: '1rem',
+        fontWeight: '600',
+        margin: '0 0 1rem 0',
+        color: '#2c3e50'
+      }}>监控事件示例：</h5>
+      <pre style={{
+        background: '#ffffff',
+        padding: '1rem',
+        borderRadius: '6px',
+        fontSize: '0.85rem',
+        margin: '0',
+        overflow: 'auto',
+        border: '1px solid #e9ecef',
+        color: '#2c3e50'
+      }}>{`// 监听组件性能指标
+window.addEventListener('MicroRuntime:Metric', (event) => {
+  const { componentType, loadTime, memoryUsage, errorCount } = event.detail
+  
+  // 发送到监控系统
+  analytics.track('ComponentPerformance', {
+    type: componentType,
+    loadTime,
+    memoryUsage,
+    errorCount
+  })
+})`}</pre>
+    </div>
+    
+  </div>
+  
 </div>
 
 <div style={{
