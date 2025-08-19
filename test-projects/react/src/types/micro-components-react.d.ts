@@ -26,7 +26,9 @@ declare module 'micro-components/react/Button' {
     text?: string
     color?: string
     size?: 'small' | 'medium' | 'large'
-    onClick?: () => void
+    type?: 'primary' | 'secondary' | 'danger'
+    disabled?: boolean
+    onClick?: (event: MouseEvent) => void
     [key: string]: any
   }
   
