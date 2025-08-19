@@ -1,4 +1,6 @@
 import { Meta } from '@storybook/blocks';
+import archUrl from '../../docs/architecture.svg?url'
+import lifeUrl from '../../docs/lifecycle.svg?url'
 
 <Meta title="Welcome" />
 
@@ -210,7 +212,7 @@ import { Meta } from '@storybook/blocks';
       margin: '0 0 1.5rem 0',
       color: '#2c3e50'
     }}>📐 系统架构图</h3>
-    <img src="../../docs/architecture.svg" alt="微组件系统架构图" style={{
+    <img src={archUrl} alt="微组件系统架构图" style={{
       maxWidth: '100%',
       height: 'auto',
       border: '1px solid #e9ecef',
@@ -436,7 +438,7 @@ import { Meta } from '@storybook/blocks';
       margin: '0 0 1.5rem 0',
       color: '#2c3e50'
     }}>🔄 组件生命周期流程</h3>
-    <img src="../../docs/lifecycle.svg" alt="微组件生命周期流程图" style={{
+    <img src={lifeUrl} alt="微组件生命周期流程图" style={{
       maxWidth: '100%',
       height: 'auto',
       border: '1px solid #e9ecef',
