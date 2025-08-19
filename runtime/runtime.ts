@@ -1,6 +1,6 @@
 import { ref, markRaw, nextTick } from 'vue'
 import { LocaleMessageValue } from 'vue-i18n'
-import { clearElementChild, isApp, nextMacroTask, wait } from '@/utils'
+import { clearElementChild, isApp, nextMacroTask, wait, generateUniqueId, generateComponentInstanceId, generateMicroId } from '@/utils'
 import { defaultLanguageList } from '@/utils/config'
 import { getLanguageKey } from '@/utils/locale'
 import { i18n } from './i18n'
@@ -17,6 +17,7 @@ export interface Component {
   key?: string
   container?: HTMLElement
   el?: HTMLElement
+  instanceId?: string // 新增：实例唯一标识
 }
 
 export interface Task {
@@ -72,7 +73,14 @@ export const createComponent = async (component: Component) => {
     }
   }
 
+  // 为每个组件实例生成唯一的instanceId
+  if (!component.instanceId) {
+    component.instanceId = generateComponentInstanceId(component.type, component.elementId)
+  }
+
+  // 检查是否已经加载过该类型的组件
   const isLoaded = componentTasks.some((item) => item.component.type === component.type)
+  
   if (isLoaded) {
     try {
       const inst = await _createComponent(component)
@@ -88,40 +96,8 @@ export const createComponent = async (component: Component) => {
     }
   }
   
-  // 添加到任务队列 - 修复内存泄漏问题
-  const abortController = new AbortController()
-  const task: Task = {
-    priority: config.priority,
-    component,
-    status: 'wait',
-    promise: new Promise<void>((resolve, reject) => {
-      const handleComponentLoaded = (e: CustomEvent) => {
-        if (e?.detail === component.type) {
-          task.status = 'complete'
-          resolve()
-          if (isDebug) {
-            console.log(`[MicroRuntime] componentLoaded(event): ${component.type} ${(performance.now() - start).toFixed(1)}ms`)
-          }
-        }
-      }
-      window.addEventListener(`MicroRuntime:ComponentLoaded`, handleComponentLoaded, {
-        signal: abortController.signal,
-        once: true
-      })
-      const timeoutId = setTimeout(() => {
-        abortController.abort()
-        reject(new Error(`Component ${component.type} load timeout`))
-      }, 30000)
-      abortController.signal.addEventListener('abort', () => {
-        clearTimeout(timeoutId)
-      })
-    })
-  }
-  componentTasks.push(task)
-
-  // 最高优先级立即加载
+  // 简化的优先级逻辑：只有明确指定priority=0的组件才立即加载
   if (config.priority === 0) {
-    task.status = 'run'
     try {
       const inst = await _createComponent(component)
       if (isDebug) {
@@ -135,48 +111,23 @@ export const createComponent = async (component: Component) => {
       }
     }
   }
-  if (!componentTasks.length && componentTasks.every((item) => item.priority !== 0)) {
-    await wait(600)
-  }
-  if (componentTasks.every((item) => item.status !== 'run')) {
-    task.status = 'run'
-    try {
-      const inst = await _createComponent(component)
-      if (isDebug) {
-        console.log(`[MicroRuntime] createComponent(end-idle): ${component.type} ${(performance.now() - start).toFixed(1)}ms`)
-      }
-      return inst
-    } catch (e) {
-      console.error(`[MicroRuntime] create component failed (idle): ${component.type}`, e)
-      return {
-        updateProps: () => {}
-      }
-    }
-  }
-  const latestTask = componentTasks[componentTasks.length - 2]
-  if (latestTask?.promise) {
-    try {
-      await latestTask.promise
-    } catch (e) {
-      console.warn('[MicroRuntime] previous task ended with error:', e)
-    }
-  }
-  task.status = 'run'
+
+  // 其他组件正常加载，不需要复杂的队列管理
   try {
     const inst = await _createComponent(component)
     if (isDebug) {
-      console.log(`[MicroRuntime] createComponent(end-queued): ${component.type} ${(performance.now() - start).toFixed(1)}ms`)
+      console.log(`[MicroRuntime] createComponent(end-normal): ${component.type} ${(performance.now() - start).toFixed(1)}ms`)
     }
     return inst
   } catch (e) {
-    console.error(`[MicroRuntime] create component failed (queued): ${component.type}`, e)
+    console.error(`[MicroRuntime] create component failed (normal): ${component.type}`, e)
     return {
       updateProps: () => {}
     }
   }
 }
 
-export const _createComponent = async ({ el, elementId, microId, type, props }: Component) => {
+export const _createComponent = async ({ el, elementId, microId, type, props, instanceId }: Component) => {
   const config = getConfig(type)
 
   // APP 不加载某些组件
@@ -222,16 +173,12 @@ export const _createComponent = async ({ el, elementId, microId, type, props }: 
   const element = el || document.getElementById(elementId)
   if (!element) return
 
-  // 查找已有实例，尽量少做find操作
-  const existsComp = el ? getComponent({ type }) : getComponent({ elementId })
+  // 查找已有实例，使用instanceId确保唯一性
+  const existsComp = el ? getComponent({ type, instanceId }) : getComponent({ elementId, instanceId })
 
   // 初始化 microId 和标识
   if (!microId) {
-    microId =
-      existsComp?.microId ||
-      Math.floor(Date.now() * Math.random())
-        .toString()
-        .substr(4)
+    microId = existsComp?.microId || generateMicroId(type, instanceId || generateComponentInstanceId(type, elementId))
     element.dataset.microType = type
     element.classList.add('micro')
     if (props?.theme) {
@@ -268,6 +215,7 @@ export const _createComponent = async ({ el, elementId, microId, type, props }: 
     elementId,
     microId,
     type,
+    instanceId,
     component: markRaw(comp),
     props: props || {}
   }

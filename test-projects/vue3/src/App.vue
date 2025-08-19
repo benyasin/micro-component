@@ -113,7 +113,7 @@ export default defineComponent({
     const addTestResult = (result: any) => {
       testResults.value.push({
         ...result,
-        id: Date.now().toString()
+        id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       })
     }
 

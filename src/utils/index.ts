@@ -1,5 +1,6 @@
 export * from './store'
 export * from './component'
+export * from './id'
 
 // 在浏览器环境下安全判断是否为客户端
 export const isClient = typeof window !== 'undefined' && typeof document !== 'undefined'

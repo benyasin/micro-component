@@ -16,7 +16,7 @@ function App() {
   const addTestResult = (result: Omit<TestResult, 'id'>) => {
     setTestResults(prev => [...prev, {
       ...result,
-      id: Date.now().toString()
+      id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     }])
   }
 
@@ -88,7 +88,6 @@ function App() {
           <div className="component-demo">
             <MicroFooter
               theme="light"
-      
               languages={languages}
               onThemeChange={handleThemeChange}
               onLanguageChange={handleLanguageChange}

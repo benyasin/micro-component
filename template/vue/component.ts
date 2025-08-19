@@ -20,13 +20,18 @@ let serverHTML = ''
 export default defineComponent({
   inheritAttrs: false,
   data() {
+    // 使用更可靠的唯一ID生成方式
+    const microId = this.$attrs.microId || 
+      `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    
+    // 为每个组件实例生成唯一的instanceId
+    const instanceId = this.$attrs.instanceId || 
+      `instance_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    
     return {
       component: null,
-      microId:
-        this.$attrs.microId ||
-        Math.floor(Date.now() * Math.random())
-          .toString()
-          .substr(4)
+      microId,
+      instanceId
     }
   },
   methods: {
@@ -41,6 +46,7 @@ export default defineComponent({
       const microRuntime = await getMicroRutime()
       const comp = await microRuntime.createComponent({
         microId: this.microId,
+        instanceId: this.instanceId,
         type,
         props: this.$attrs,
         el: this.$el
@@ -97,12 +103,13 @@ export default defineComponent({
 
     return h('div', {
       innerHTML: serverHTML,
-      key: this.microId,
+      key: `${this.microId}_${this.instanceId}`,
       class: {
         micro: true,
         [themeClass]: true
       },
-      'data-micro-type': type
+      'data-micro-type': type,
+      'data-micro-instance-id': this.instanceId
     })
   }
 })
