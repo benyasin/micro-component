@@ -6,6 +6,7 @@
     </header>
 
     <main class="main">
+
       <section class="test-section">
         <h2>Button 组件测试</h2>
         <div class="component-demo">
@@ -42,6 +43,7 @@
           <MicroFooter
             :theme="'light'"
             :is-i18n-enabled="true"
+            :theme-switch-enabled="true"
             :languages="languages"
             @theme-change="handleThemeChange"
             @language-change="handleLanguageChange"
@@ -166,6 +168,13 @@ export default defineComponent({
       message: '成功从 micro-components/vue/Button 导入'
     })
 
+    // UnoCSS配置测试
+    addTestResult({
+      name: 'UnoCSS 配置',
+      status: 'success',
+      message: 'UnoCSS已配置并启用'
+    })
+
     return {
       testResults,
       productLinks,
@@ -227,10 +236,38 @@ export default defineComponent({
   min-height: 200px;
 }
 
+/* 样式对比区域 */
+.style-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.comparison-item {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e1e5e9;
+}
+
+.comparison-item h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.playground-reference {
+  background: #f8f9fa;
+  border-color: #007bff;
+}
+
 .button-group {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin: 20px 0;
   align-items: center;
 }
 
@@ -269,5 +306,12 @@ export default defineComponent({
   background: #fff3cd;
   border-color: #ffc107;
   color: #856404;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .style-comparison {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

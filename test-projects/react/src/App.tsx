@@ -97,9 +97,6 @@ function App() {
       <header className="header">
         <h1>Micro Component React Test</h1>
         <p>测试编译后的组件产物在 React 环境下的运行情况</p>
-        <button onClick={testEventPassing} style={{ margin: '10px', padding: '5px 10px' }}>
-          测试事件传递
-        </button>
       </header>
 
       <main className="main">

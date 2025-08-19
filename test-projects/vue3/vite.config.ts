@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve, extname } from 'path'
 import fs from 'fs'
+import UnoCss from 'unocss/vite'
 
 function microRuntimePlugin() {
   return {
@@ -41,7 +42,11 @@ function microRuntimePlugin() {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), microRuntimePlugin()],
+  plugins: [
+    vue(), 
+    microRuntimePlugin(),
+    UnoCss()  // 添加UnoCSS插件
+  ],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),

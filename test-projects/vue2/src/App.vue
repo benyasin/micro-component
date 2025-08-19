@@ -94,7 +94,7 @@ export default {
     addTestResult(result) {
       this.testResults.push({
         ...result,
-        id: Date.now().toString()
+        id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       })
     },
     handleThemeChange(theme) {
