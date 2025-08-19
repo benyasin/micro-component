@@ -2,19 +2,17 @@
   <div class="button-demo">
     <h1>Button 组件演示</h1>
     
-    <!-- 基础按钮 -->
+    <!-- 类型（type） -->
     <div class="demo-section">
-      <h2>基础按钮</h2>
+      <h2>按钮类型</h2>
       <div class="button-group">
-        <Button text="Default Button" />
-        <Button text="Primary Button" color="#1890ff" />
-        <Button text="Success Button" color="#52c41a" />
-        <Button text="Warning Button" color="#faad14" />
-        <Button text="Danger Button" color="#ff4d4f" />
+        <Button text="Primary" type="primary" color="#1890ff" />
+        <Button text="Secondary" type="secondary" />
+        <Button text="Danger" type="danger" />
       </div>
     </div>
 
-    <!-- 按钮尺寸 -->
+    <!-- 尺寸（size） -->
     <div class="demo-section">
       <h2>按钮尺寸</h2>
       <div class="button-group">
@@ -24,7 +22,7 @@
       </div>
     </div>
 
-    <!-- 自定义颜色 -->
+    <!-- 颜色（color） -->
     <div class="demo-section">
       <h2>自定义颜色</h2>
       <div class="button-group">
@@ -35,7 +33,25 @@
       </div>
     </div>
 
-    <!-- 点击事件 -->
+    <!-- 禁用（disabled） -->
+    <div class="demo-section">
+      <h2>禁用状态</h2>
+      <div class="button-group">
+        <Button text="Primary Disabled" type="primary" :disabled="true" />
+        <Button text="Secondary Disabled" type="secondary" :disabled="true" />
+        <Button text="Danger Disabled" type="danger" :disabled="true" />
+      </div>
+    </div>
+
+    <!-- 插槽文本（slot） -->
+    <div class="demo-section">
+      <h2>插槽文本</h2>
+      <div class="button-group">
+        <Button color="#1890ff">Slot Button</Button>
+      </div>
+    </div>
+
+    <!-- 点击事件（@click） -->
     <div class="demo-section">
       <h2>点击事件</h2>
       <Button
@@ -50,7 +66,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import Button from '../../src/components/Button/Button.vue'
+import Button from '@/components/Button/Button.vue'
 
 const clickCount = ref(0)
 
@@ -63,7 +79,7 @@ const handleClick = () => {
 <style scoped>
 .button-demo {
   padding: 20px;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 

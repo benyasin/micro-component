@@ -18,7 +18,6 @@ import type { Props, ButtonEmits, ButtonExpose } from './types'
 
 // Props
 const props = withDefaults(defineProps<Props>(), {
-  locale: 'en',
   text: '',
   size: 'medium',
   color: '#1890ff',
@@ -102,7 +101,9 @@ defineExpose({
 }
 
 .micro-button--primary {
-  /* 默认样式已在基础类中定义 */
+  background-color: #1890ff;
+  border-color: #1890ff;
+  color: #fff;
 }
 
 .micro-button--secondary {

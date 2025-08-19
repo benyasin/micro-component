@@ -13,7 +13,9 @@ import ConfigProvider from '@/common/ConfigProvider/ConfigProvider.vue'
 
 createStore()
 
-const defaultProps = withDefaults(defineProps<Props>(), {})
+const defaultProps = withDefaults(defineProps<Props>(), {
+  locale: 'zh_CN'
+})
 const { rootProps, rootExport } = useComponent(defaultProps)
 
 defineExpose(rootExport)

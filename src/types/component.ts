@@ -10,7 +10,8 @@ export interface WebSDK {
 }
 
 export interface BaseProps {
-  locale: string
+  // 组件的显示语言，可不传；各组件应自行提供合理的默认值（如 'en'）
+  locale?: string
   theme?: 'light' | 'dark'
   
   // 是否启用国际化（仅当为 true 时启用，默认不启用）

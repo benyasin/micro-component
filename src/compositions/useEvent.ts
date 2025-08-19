@@ -8,6 +8,11 @@ import { EventEmitter } from 'events'
 export const useEvent = <Events extends Record<string | number | symbol, (...args) => any>>() => {
   const { proxy } = getCurrentInstance()
   const event = new EventEmitter()
+  
+  // 设置最大监听器数量，避免 MaxListenersExceededWarning
+  // 默认是10个，组件复用时可能超过此限制
+  event.setMaxListeners(50)
+  
   const eventEmit = event.emit
   const eventOn = event.on
 
