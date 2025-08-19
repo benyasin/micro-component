@@ -16,7 +16,7 @@ const logEvent = {
 export const useConfig = defineStore(() => {
   const { cache: config, setCache: saveConfig } = useLocalStorage('playground:config', {
     theme: 'light',
-    locale: 'en',
+    locale: 'zh',
     direction: 'ltr',
     isLogin: true
   })

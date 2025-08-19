@@ -24,6 +24,7 @@ export interface Column {
   customRender?: (text: string, record: any, index: number) => any
   sorter?: boolean | ((a: any, b: any) => number)
   filters?: { text: string; value: any }[]
+  __visible?: boolean // 列可见性控制
 }
 
 // 分页配置
@@ -95,7 +96,11 @@ export interface Config {
 }
 
 // Props 接口
-export interface Props extends BaseProps, Config {}
+export interface Props extends BaseProps, Config {
+  // 列配置相关
+  tableKey?: string
+  onColumnConfirm?: () => Promise<void> | void
+}
 
 // 事件定义
 export interface Events {
