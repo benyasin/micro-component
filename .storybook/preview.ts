@@ -10,6 +10,10 @@ import '../playground/index.less'
 import '../src/polyfill/event-target.js'
 import '../src/polyfill/request-idle.js'
 
+// 新增：为所有故事提供 ConfigProvider 包裹与 store 根作用域
+import ConfigProvider from '../src/common/ConfigProvider/ConfigProvider.vue'
+import { createStore } from '../src/utils/store'
+
 // 加载 micro-runtime
 // if (typeof window !== 'undefined') {
 //   const script = document.createElement('script')
@@ -37,6 +41,19 @@ if (typeof document !== 'undefined') {
   document.body.classList.add('global-theme', 'white')
   document.documentElement.classList.add('micro')
 }
+
+// 全局装饰器：确保每个 Story 的根组件都会先调用 createStore()
+export const decorators = [
+  (story) => ({
+    components: { Story: story(), ConfigProvider },
+    setup() {
+      // 为当前 Story 根组件创建 store 作用域
+      createStore()
+      return {}
+    },
+    template: '<ConfigProvider><Story /></ConfigProvider>'
+  })
+]
 
 const preview: Preview = {
   parameters: {
