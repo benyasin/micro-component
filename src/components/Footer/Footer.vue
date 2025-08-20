@@ -15,6 +15,8 @@
               {{ i18nEnabled ? t('footer.slogan') : (config?.slogan || 'Simple & Powerful') }}
             </div>
           </div>
+          
+
         </div>
 
         <!-- 主要内容区域：三列布局 -->
@@ -129,7 +131,12 @@ const defaultProps = withDefaults(defineProps<Props>(), {
 })
 
 const $footer = ref()
-const { config, footerProps, updateProps, event } = useFooter(defaultProps)
+const { 
+  config, 
+  footerProps, 
+  updateProps, 
+  event 
+} = useFooter(defaultProps)
 
 // 计算属性
 const currentTheme = computed(() => footerProps.value.theme || 'light')

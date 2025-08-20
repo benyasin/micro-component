@@ -74,6 +74,8 @@ export const useFooter = defineStore((defaultProps?: Props) => {
   const { formatLocalPath, t, locale } = useI18n()
   const { winWidth } = useSize()
   const config = ref<Config>()
+  
+
 
   const mergeConfig = (source: Partial<Config>, target: Partial<Config>) => {
     const defaultConfig = getDefaultConfig(locale.value)
@@ -96,6 +98,8 @@ export const useFooter = defineStore((defaultProps?: Props) => {
   const initConfig = () => {
     mergeConfig(defaultProps, footerProps.value)
   }
+  
+
 
   // 监听props变化
   watch(

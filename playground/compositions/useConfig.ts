@@ -26,28 +26,6 @@ export const useConfig = defineStore(() => {
   const isLogin = toRef(config.value, 'isLogin')
   const userInfo = ref(null)
 
-  async function fetchUserInfo() {
-    try {
-      const { code, data } = await commonInstance.post('/v1/user/overview/userinfo')
-      if (code === '00000') {
-        const { userInfo: originUserInfo } = data
-        userInfo.value = {
-          ...originUserInfo,
-          userName: data.userName,
-          _userSetting: data
-        }
-      }
-    } catch {}
-  }
-
-  watchEffect(() => {
-    if (isLogin.value) {
-      fetchUserInfo()
-    } else {
-      userInfo.value = null
-    }
-  })
-
   watch([direction, theme, isLogin, locale, config], (newValues, oldValues) => {
     saveConfig(config.value)
   })
@@ -69,6 +47,5 @@ export const useConfig = defineStore(() => {
     logEvent,
     direction,
     isLogin,
-    fetchUserInfo
   }
 })
