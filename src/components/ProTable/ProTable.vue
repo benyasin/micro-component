@@ -359,7 +359,8 @@ const defaultProps = withDefaults(defineProps<Props>(), {
   showSelection: false,
   showSizeChanger: true,
   showFullScreen: true,
-  showColumnConfig: true
+  showColumnConfig: true,
+  mockEnabled: true // 默认开启 Mock
 })
 
 // 使用 ProTable Store

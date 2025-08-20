@@ -99,6 +99,7 @@ export interface Config {
   // 其他配置
   title?: string
   description?: string
+  mockEnabled?: boolean // Mock 数据开关
   rowSelection?: {
     selectedRowKeys?: string[]
     onChange?: (selectedRowKeys: string[], selectedRows: any[]) => void

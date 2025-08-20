@@ -35,7 +35,8 @@ const getDefaultConfig = (): Config => {
     showSelection: false,
     showSizeChanger: true,
     showFullScreen: true,
-    showColumnConfig: true
+    showColumnConfig: true,
+    mockEnabled: true // 默认开启 Mock
   }
 }
 
@@ -58,7 +59,7 @@ export const useProTable = (defaultProps?: Props) => {
   })
   
   // Mock 相关状态
-  const mockEnabled = ref(true)
+  const mockEnabled = ref(defaultProps?.mockEnabled ?? true)
   const mockLoading = ref(false)
 
   // 合并配置
@@ -86,6 +87,7 @@ export const useProTable = (defaultProps?: Props) => {
       showColumnConfig: source.showColumnConfig,
       title: source.title,
       description: source.description,
+      mockEnabled: source.mockEnabled,
       rowSelection: source.rowSelection
     }
     
@@ -109,6 +111,7 @@ export const useProTable = (defaultProps?: Props) => {
       showColumnConfig: target.showColumnConfig,
       title: target.title,
       description: target.description,
+      mockEnabled: target.mockEnabled,
       rowSelection: target.rowSelection
     }
     
@@ -147,6 +150,10 @@ export const useProTable = (defaultProps?: Props) => {
         // 同步分页状态
         if (config.value?.pagination) {
           Object.assign(paginationState, config.value.pagination)
+        }
+        // 同步 Mock 状态
+        if (config.value?.mockEnabled !== undefined) {
+          mockEnabled.value = config.value.mockEnabled
         }
       }
     },
@@ -316,7 +323,12 @@ export const useProTable = (defaultProps?: Props) => {
       } else {
         console.warn('[ProTable] Mock 数据加载失败:', response.message)
       }
-    } catch (error) {
+    } catch (error: any) {
+      // 忽略 AbortError，这是正常的请求取消
+      if (error.name === 'AbortError') {
+        console.log('[ProTable] Mock 数据请求被取消')
+        return
+      }
       console.error('[ProTable] Mock 数据加载错误:', error)
     } finally {
       mockLoading.value = false
