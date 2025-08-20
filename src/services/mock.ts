@@ -59,9 +59,31 @@ export const mockDelay = (delay: number = mockConfig.timeout) => {
 }
 
 // 模拟 API 调用
-export const mockApiCall = async (data: any, delay: number = mockConfig.timeout) => {
-  await mockDelay(delay)
-  return createApiResponse(data)
+export const mockApiCall = async (data: any, delay: number = mockConfig.timeout, signal?: AbortSignal) => {
+  try {
+    // 检查是否被取消
+    if (signal?.aborted) {
+      const abortError = new DOMException('Request aborted', 'AbortError')
+      throw abortError
+    }
+    
+    await mockDelay(delay)
+    
+    // 再次检查是否被取消
+    if (signal?.aborted) {
+      const abortError = new DOMException('Request aborted', 'AbortError')
+      throw abortError
+    }
+    
+    return createApiResponse(data)
+  } catch (error) {
+    // 确保 AbortError 被正确抛出
+    if (signal?.aborted) {
+      const abortError = new DOMException('Request aborted', 'AbortError')
+      throw abortError
+    }
+    throw error
+  }
 }
 
 // 模拟错误响应

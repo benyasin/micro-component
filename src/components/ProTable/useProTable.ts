@@ -61,6 +61,7 @@ export const useProTable = (defaultProps?: Props) => {
   // Mock 相关状态
   const mockEnabled = ref(defaultProps?.mockEnabled ?? true)
   const mockLoading = ref(false)
+  const abortController = ref<AbortController | null>(null)
 
   // 合并配置
   const mergeConfig = (source: Partial<Props>, target: Partial<Props>) => {
@@ -201,12 +202,12 @@ export const useProTable = (defaultProps?: Props) => {
     event.emit('change', pagination, filters, sorter)
   }
 
-  const handleRowClick = (record: any, index: number, event: MouseEvent) => {
-    event.emit('rowClick', record, index, event)
+  const handleRowClick = (record: any, index: number, mouseEvent: MouseEvent) => {
+    event.emit('rowClick', record, index, mouseEvent)
   }
 
-  const handleRowDoubleClick = (record: any, index: number, event: MouseEvent) => {
-    event.emit('rowDoubleClick', record, index, event)
+  const handleRowDoubleClick = (record: any, index: number, mouseEvent: MouseEvent) => {
+    event.emit('rowDoubleClick', record, index, mouseEvent)
   }
 
   // 筛选事件处理
@@ -296,6 +297,14 @@ export const useProTable = (defaultProps?: Props) => {
   const loadMockData = async () => {
     if (!mockEnabled.value) return
     
+    // 取消之前的请求
+    if (abortController.value) {
+      abortController.value.abort()
+    }
+    
+    // 创建新的 AbortController
+    abortController.value = new AbortController()
+    
     try {
       mockLoading.value = true
       loading.value = true
@@ -312,7 +321,7 @@ export const useProTable = (defaultProps?: Props) => {
       
       console.log('[ProTable] 请求参数 (转换后):', params)
       
-      const response = await proTableApi.getTableData(params)
+      const response = await proTableApi.getTableData(params, abortController.value?.signal)
       if (response.code === 200) {
         dataSource.value = response.data.list
         paginationState.total = response.data.total
@@ -324,9 +333,9 @@ export const useProTable = (defaultProps?: Props) => {
         console.warn('[ProTable] Mock 数据加载失败:', response.message)
       }
     } catch (error: any) {
-      // 忽略 AbortError，这是正常的请求取消
-      if (error.name === 'AbortError') {
-        console.log('[ProTable] Mock 数据请求被取消')
+      // 忽略 AbortError 和请求取消错误，这是正常的请求取消
+      if (error.name === 'AbortError' || error.message === 'Request aborted' || error.message?.includes('aborted')) {
+        console.log('[ProTable] Mock 数据请求被取消:', error.message)
         return
       }
       console.error('[ProTable] Mock 数据加载错误:', error)
@@ -355,6 +364,16 @@ export const useProTable = (defaultProps?: Props) => {
     if (mockEnabled.value) {
       loadMockData()
     }
+  }
+  
+  // 添加全局错误处理器来捕获未处理的 AbortError
+  if (typeof window !== 'undefined') {
+    window.addEventListener('unhandledrejection', (event) => {
+      if (event.reason?.name === 'AbortError' || event.reason?.message?.includes('aborted')) {
+        console.log('[ProTable] 捕获到未处理的 AbortError:', event.reason.message)
+        event.preventDefault() // 阻止默认的错误处理
+      }
+    })
   }
 
   // 表格方法

@@ -305,7 +305,7 @@ export const generatePaginationData = (page: number = 1, pageSize: number = 10, 
 // ProTable API 接口
 export const proTableApi = {
   // 获取表格数据
-  getTableData: async (params: any = {}) => {
+  getTableData: async (params: any = {}, signal?: AbortSignal) => {
     const { current = 1, pageSize = 10, _sortField, _sortOrder, ...filters } = params
     const total = 156 // 模拟总数据量
     
@@ -420,7 +420,22 @@ export const proTableApi = {
     console.log('[ProTable Mock] 筛选后数据量:', filteredData.length)
     console.log('[ProTable Mock] 返回数据:', result)
     
-    return await mockApiCall(result)
+    // 检查是否被取消
+    if (signal?.aborted) {
+      const abortError = new DOMException('Request aborted', 'AbortError')
+      throw abortError
+    }
+    
+    try {
+      return await mockApiCall(result, mockConfig.timeout, signal)
+    } catch (error) {
+      // 确保 AbortError 被正确抛出
+      if (signal?.aborted) {
+        const abortError = new DOMException('Request aborted', 'AbortError')
+        throw abortError
+      }
+      throw error
+    }
   },
   
   // 获取筛选选项

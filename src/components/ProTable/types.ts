@@ -114,7 +114,7 @@ export interface Props extends BaseProps, Config {
 }
 
 // 事件定义
-export interface Events {
+export interface Events extends Record<string | number | symbol, (...args: any[]) => void> {
   // 表格事件
   change: (pagination: any, filters: any, sorter: any) => void
   rowClick: (record: any, index: number, event: MouseEvent) => void
@@ -134,9 +134,6 @@ export interface Events {
   refresh: () => void
   fullScreen: (isFullScreen: boolean) => void
   columnConfig: (columns: Column[]) => void
-  
-  // 索引签名
-  [key: string]: (...args: any[]) => void
 }
 
 // 组件暴露的接口
