@@ -76,3 +76,30 @@
     --color-white-text: var(--ds-color-always-white);
   }
 }
+
+// ProTable 自定义筛选样式
+.pro-table-container {
+  .custom-filter-demo {
+    width: 100%;
+  }
+
+  .custom-filter-demo .ant-input-group {
+    width: 100%;
+    display: flex;
+  }
+
+  .custom-filter-demo .ant-input-group .ant-select {
+    flex: 0 0 30%;
+  }
+
+  .custom-filter-demo .ant-input-group .ant-input {
+    flex: 1;
+    border-left: 0;
+  }
+
+  .custom-filter-demo .ant-input-group .ant-select:focus-within,
+  .custom-filter-demo .ant-input-group .ant-input:focus {
+    z-index: 1;
+    border-left-width: 1px;
+  }
+}

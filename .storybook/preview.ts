@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/vue3'
 import { setup } from '@storybook/vue3'
-import { Spin } from 'ant-design-vue'
+import Antd from 'ant-design-vue'
 import { i18n } from '../runtime/i18n'
 import 'virtual:uno.css'
 import 'ant-design-vue/dist/reset.css'
@@ -14,18 +14,11 @@ import '../src/polyfill/request-idle.js'
 import ConfigProvider from '../src/common/ConfigProvider/ConfigProvider.vue'
 import { createStore } from '../src/utils/store'
 
-// 加载 micro-runtime
-// if (typeof window !== 'undefined') {
-//   const script = document.createElement('script')
-//   script.src = '/micro-runtime.js'
-//   script.async = true
-//   document.head.appendChild(script)
-// }
 
 // 安装 vue-i18n 到 Storybook 的 Vue 应用实例
 setup((app) => {
   app.use(i18n)
-  app.use(Spin)
+  app.use(Antd)
   // @ts-ignore
   app.config.globalProperties.$i18n = i18n
   if (typeof window !== 'undefined') {
