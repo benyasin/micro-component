@@ -57,6 +57,12 @@ const preview: Preview = {
         date: /Date$/,
       },
     },
+    docs: {
+      components: {
+        // 将 MDX 中的 p 标签映射为 div，避免嵌套 p 标签的 HTML 验证警告
+        p: 'div'
+      }
+    },
   },
 }
 

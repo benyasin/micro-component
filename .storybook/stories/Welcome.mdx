@@ -27,18 +27,18 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text'
   }}>Micro Components</h1>
-  <p style={{
+  <div style={{
     fontSize: '1.5rem',
     fontWeight: '300',
     margin: '1rem 0 0 0',
     color: '#666'
-  }}>跨框架微组件系统</p>
-  <p style={{
+  }}>跨框架微组件系统</div>
+  <div style={{
     fontSize: '1.1rem',
     color: '#888',
     margin: '0.5rem 0 0 0',
     fontStyle: 'italic'
-  }}>一次开发，三端复用 • Vue 2 • Vue 3 • React</p>
+  }}>一次开发，三端复用 • Vue 2 • Vue 3 • React</div>
 </div>
 
 <div style={{
@@ -65,11 +65,11 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
     margin: '0 0 1rem 0',
     color: '#2c3e50'
   }}>开箱即用</h3>
-  <p style={{
+  <div style={{
     color: '#5a6c7d',
     margin: '0',
     fontSize: '0.95rem'
-  }}>统一的 API 设计，无需学习成本<br/>一套代码，多端运行</p>
+  }}>统一的 API 设计，无需学习成本<br/>一套代码，多端运行</div>
 </div>
 
 <div style={{
@@ -89,11 +89,11 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
     margin: '0 0 1rem 0',
     color: '#2c3e50'
   }}>高性能</h3>
-  <p style={{
+  <div style={{
     color: '#5a6c7d',
     margin: '0',
     fontSize: '0.95rem'
-  }}>按需加载，并行资源获取<br/>智能缓存，极致体验</p>
+  }}>按需加载，并行资源获取<br/>智能缓存，极致体验</div>
 </div>
 
 <div style={{
@@ -113,11 +113,11 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
     margin: '0 0 1rem 0',
     color: '#2c3e50'
   }}>稳定可靠</h3>
-  <p style={{
+  <div style={{
     color: '#5a6c7d',
     margin: '0',
     fontSize: '0.95rem'
-  }}>完善的错误处理机制<br/>生产环境验证</p>
+  }}>完善的错误处理机制<br/>生产环境验证</div>
 </div>
 
 </div>
@@ -219,12 +219,12 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
       borderRadius: '8px',
       boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
     }} />
-    <p style={{
+    <div style={{
       color: '#666',
       fontSize: '0.95rem',
       margin: '1rem 0 0 0',
       fontStyle: 'italic'
-    }}>微组件系统通过统一协议层和运行时内核，实现跨前端框架的组件复用</p>
+    }}>微组件系统通过统一协议层和运行时内核，实现跨前端框架的组件复用</div>
   </div>
 
   <div style={{
@@ -253,13 +253,13 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
         <span style={{ fontSize: '1.5rem' }}>🏗️</span>
         统一抽象层
       </h4>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0 0 1rem 0'
       }}>
         微组件系统的核心是<strong>统一协议层</strong>，它将不同框架的组件接口抽象为一致的形式：
-      </p>
+      </div>
       <ul style={{
         color: '#666',
         lineHeight: '1.6',
@@ -271,13 +271,13 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
         <li><code>Lifecycle</code> - 标准化的 mount/update/unmount 生命周期</li>
         <li><code>Context</code> - 跨框架的状态共享与依赖注入</li>
       </ul>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0'
       }}>
         通过<strong>适配器模式</strong>，各框架的包装器将原生 API 转换为统一协议，屏蔽框架差异。
-      </p>
+      </div>
     </div>
     
     <div style={{
@@ -299,13 +299,13 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
         <span style={{ fontSize: '1.5rem' }}>⚡</span>
         智能运行时调度
       </h4>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0 0 1rem 0'
       }}>
         <strong>MicroRuntime</strong> 是基于 Vue 3 构建的统一渲染内核，提供：
-      </p>
+      </div>
       <ul style={{
         color: '#666',
         lineHeight: '1.6',
@@ -317,13 +317,13 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
         <li><strong>Teleport 渲染</strong> - 跨 DOM 树挂载，支持 SSR</li>
         <li><strong>实例复用</strong> - 单例模式，避免重复初始化</li>
       </ul>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0'
       }}>
         运行时采用<strong>并行加载策略</strong>，组件 JS、CSS、i18n 资源同时获取，显著提升加载性能。
-      </p>
+      </div>
     </div>
     
     <div style={{
@@ -345,13 +345,13 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
         <span style={{ fontSize: '1.5rem' }}>🌉</span>
         跨框架事件桥
       </h4>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0 0 1rem 0'
       }}>
         事件通信采用<strong>双向桥接机制</strong>：
-      </p>
+      </div>
       <div style={{
         background: '#f8f9fa',
         padding: '1rem',
@@ -395,13 +395,13 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
         <span style={{ fontSize: '1.5rem' }}>🎨</span>
         样式一致性保证
       </h4>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0 0 1rem 0'
       }}>
         通过<strong>UnoCSS + CSS-in-JS</strong> 混合方案确保样式一致：
-      </p>
+      </div>
       <ul style={{
         color: '#666',
         lineHeight: '1.6',
@@ -413,13 +413,13 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
         <li><strong>主题变量</strong> - CSS Custom Properties 支持动态主题</li>
         <li><strong>去重优化</strong> - 运行时自动合并重复样式</li>
       </ul>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0'
       }}>
         无论在哪个框架中使用，组件样式保持完全一致的视觉表现。
-      </p>
+      </div>
     </div>
     
   </div>
@@ -445,12 +445,12 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
       borderRadius: '8px',
       boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
     }} />
-    <p style={{
+    <div style={{
       color: '#666',
       fontSize: '0.95rem',
       margin: '1rem 0 0 0',
       fontStyle: 'italic'
-    }}>从宿主调用到组件渲染的完整生命周期，展示了任务调度、资源加载、事件通信的详细流程</p>
+    }}>从宿主调用到组件渲染的完整生命周期，展示了任务调度、资源加载、事件通信的详细流程</div>
   </div>
 
   <div style={{
@@ -572,14 +572,14 @@ import lifeUrl from '../../docs/lifecycle.svg?url'
       textAlign: 'center'
     }}>🔍 可观测性与调试</h3>
     
-    <p style={{
+    <div style={{
       color: '#666',
       lineHeight: '1.6',
       margin: '0 0 2rem 0',
       textAlign: 'center'
     }}>
       微组件系统内置完善的监控和调试能力，帮助开发者快速定位问题和优化性能：
-    </p>
+    </div>
     
     <div style={{
       display: 'grid',
@@ -1014,11 +1014,11 @@ export default App`}</pre>
         margin: '0 0 1rem 0',
         color: '#2c3e50'
       }}>📦 按需引入</h4>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0 0 1rem 0'
-      }}>只引入需要的组件，减少包体积：</p>
+      }}>只引入需要的组件，减少包体积：</div>
       <pre style={{
         background: '#f1f5f9',
         padding: '1rem',
@@ -1043,11 +1043,11 @@ import MicroComponents from '@micro-components/vue3'`}</pre>
         margin: '0 0 1rem 0',
         color: '#2c3e50'
       }}>🎨 主题配置</h4>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0 0 1rem 0'
-      }}>统一配置主题变量：</p>
+      }}>统一配置主题变量：</div>
       <pre style={{
         background: '#f1f5f9',
         padding: '1rem',
@@ -1076,11 +1076,11 @@ MicroComponents.config({
         margin: '0 0 1rem 0',
         color: '#2c3e50'
       }}>🌐 国际化</h4>
-      <p style={{
+      <div style={{
         color: '#666',
         lineHeight: '1.6',
         margin: '0 0 1rem 0'
-      }}>配置多语言支持：</p>
+      }}>配置多语言支持：</div>
       <pre style={{
         background: '#f1f5f9',
         padding: '1rem',
@@ -1135,11 +1135,11 @@ MicroComponents.config({
          margin: '0 0 1rem 0',
          color: '#2c3e50'
        }}>Q: 如何在现有项目中集成微组件？</h4>
-       <p style={{
+       <div style={{
          color: '#666',
          lineHeight: '1.6',
          margin: '0'
-       }}>A: 根据你的项目框架选择对应的适配包（@micro-components/vue2、@micro-components/vue3 或 @micro-components/react），然后按照使用示例进行安装和配置即可。</p>
+       }}>A: 根据你的项目框架选择对应的适配包（@micro-components/vue2、@micro-components/vue3 或 @micro-components/react），然后按照使用示例进行安装和配置即可。</div>
      </div>
      
      <div style={{
@@ -1155,11 +1155,11 @@ MicroComponents.config({
          margin: '0 0 1rem 0',
          color: '#2c3e50'
        }}>Q: 微组件支持哪些浏览器？</h4>
-       <p style={{
+       <div style={{
          color: '#666',
          lineHeight: '1.6',
          margin: '0'
-       }}>A: 支持所有现代浏览器，包括 Chrome 60+、Firefox 55+、Safari 12+、Edge 79+。对于旧版浏览器，我们提供了相应的 polyfill 支持。</p>
+       }}>A: 支持所有现代浏览器，包括 Chrome 60+、Firefox 55+、Safari 12+、Edge 79+。对于旧版浏览器，我们提供了相应的 polyfill 支持。</div>
      </div>
      
      <div style={{
@@ -1175,11 +1175,11 @@ MicroComponents.config({
          margin: '0 0 1rem 0',
          color: '#2c3e50'
        }}>Q: 如何自定义组件样式？</h4>
-       <p style={{
+       <div style={{
          color: '#666',
          lineHeight: '1.6',
          margin: '0'
-       }}>A: 可以通过 CSS 变量覆盖默认样式，或者使用 MicroComponents.config() 方法进行全局主题配置。每个组件都支持 className 和 style 属性进行个性化定制。</p>
+       }}>A: 可以通过 CSS 变量覆盖默认样式，或者使用 MicroComponents.config() 方法进行全局主题配置。每个组件都支持 className 和 style 属性进行个性化定制。</div>
      </div>
      
      <div style={{
@@ -1195,11 +1195,11 @@ MicroComponents.config({
          margin: '0 0 1rem 0',
          color: '#2c3e50'
        }}>Q: 组件的性能如何？</h4>
-       <p style={{
+       <div style={{
          color: '#666',
          lineHeight: '1.6',
          margin: '0'
-       }}>A: 采用按需加载和智能缓存策略，单个组件平均加载时间 < 100ms，内存占用 < 2MB。支持 Tree Shaking，只打包使用到的组件代码。</p>
+       }}>A: 采用按需加载和智能缓存策略，单个组件平均加载时间 小于 100ms，内存占用 小于 2MB。支持 Tree Shaking，只打包使用到的组件代码。</div>
      </div>
      
    </div>
@@ -1219,10 +1219,10 @@ MicroComponents.config({
      margin: '0 0 1rem 0',
      color: '#2c3e50'
    }}>探索更多</h3>
-  <p style={{
+  <div style={{
     color: '#666',
     margin: '0 0 1.5rem 0'
-  }}>查看组件文档，了解详细用法和最佳实践</p>
+  }}>查看组件文档，了解详细用法和最佳实践</div>
   <div style={{
     display: 'flex',
     justifyContent: 'center',
