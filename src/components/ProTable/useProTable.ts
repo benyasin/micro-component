@@ -18,6 +18,10 @@ const getDefaultConfig = (): Config => {
     },
     filters: [],
     showFilter: true,
+    needExpand: false, // 默认不启用展开收起功能
+    isExpand: false, // 默认收起
+    labelWidth: '100%',
+    formSize: 'middle',
     pagination: {
       current: 1,
       pageSize: 10,
@@ -63,6 +67,10 @@ export const useProTable = (defaultProps?: Props) => {
       tableConfig: source.tableConfig,
       filters: source.filters,
       showFilter: source.showFilter,
+      needExpand: source.needExpand,
+      isExpand: source.isExpand,
+      labelWidth: source.labelWidth,
+      formSize: source.formSize,
       pagination: source.pagination,
       showPagination: source.showPagination,
       request: source.request,
@@ -82,6 +90,10 @@ export const useProTable = (defaultProps?: Props) => {
       tableConfig: target.tableConfig,
       filters: target.filters,
       showFilter: target.showFilter,
+      needExpand: target.needExpand,
+      isExpand: target.isExpand,
+      labelWidth: target.labelWidth,
+      formSize: target.formSize,
       pagination: target.pagination,
       showPagination: target.showPagination,
       request: target.request,

@@ -4,13 +4,17 @@ import { BaseProps } from '@/types/component'
 export interface FilterItem {
   key: string
   label?: string
-  component?: 'input' | 'select' | 'date' | 'custom'
+  component?: 'input' | 'select' | 'cascader' | 'datePicker' | 'rangePicker' | 'custom'
   placeholder?: string
   width?: string
-  options?: { label: string; value: any }[]
+  span?: number // 动态布局支持
+  options?: Array<{ label: string; value: any; children?: Array<{ label: string; value: any }> }> | (() => Array<{ label: string; value: any; children?: Array<{ label: string; value: any }> }>)
   props?: Record<string, any>
   defaultValue?: any
+  clearDefaultValue?: boolean // 重置时是否清除默认值
   allowClear?: boolean
+  rules?: any[] // 表单验证规则
+  slotName?: string // 自定义插槽名称
 }
 
 // 表格列定义
@@ -35,6 +39,8 @@ export interface Pagination {
   showSizeChanger?: boolean
   showQuickJumper?: boolean
   showTotal?: (total: number, range: [number, number]) => string
+  pageSizeOptions?: string[] // 每页条数选项
+  style?: string // 自定义样式
 }
 
 // 表格配置
@@ -69,6 +75,10 @@ export interface Config {
   // 筛选配置
   filters?: FilterItem[]
   showFilter?: boolean
+  needExpand?: boolean // 是否需要展开收起功能
+  isExpand?: boolean // 默认是否展开
+  labelWidth?: string // 标签宽度
+  formSize?: 'small' | 'middle' | 'large' // 表单尺寸
   
   // 分页配置
   pagination?: Pagination

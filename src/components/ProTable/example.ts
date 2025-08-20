@@ -236,21 +236,27 @@ export const comprehensiveExample: Props = {
   
   // 筛选配置
   showFilter: true,
+  needExpand: true, // 启用展开收起功能
+  isExpand: false, // 默认收起
+  labelWidth: '100%',
+  formSize: 'middle',
   filters: [
     {
       key: 'name',
       label: '姓名',
       component: 'input',
       placeholder: '请输入姓名',
-      width: '200px',
-      allowClear: true
+      span: 6,
+      allowClear: true,
+      defaultValue: '',
+      rules: [{ required: false, message: '请输入姓名' }]
     },
     {
       key: 'department',
       label: '部门',
       component: 'select',
       placeholder: '请选择部门',
-      width: '150px',
+      span: 6,
       options: [
         { label: '技术部', value: '技术部' },
         { label: '产品部', value: '产品部' },
@@ -264,7 +270,7 @@ export const comprehensiveExample: Props = {
       label: '状态',
       component: 'select',
       placeholder: '请选择状态',
-      width: '120px',
+      span: 6,
       options: [
         { label: '在职', value: '在职' },
         { label: '离职', value: '离职' }
@@ -276,12 +282,94 @@ export const comprehensiveExample: Props = {
       label: '年龄范围',
       component: 'input',
       placeholder: '请输入年龄',
-      width: '120px',
+      span: 6,
       props: {
         type: 'number',
         min: 18,
         max: 65
       }
+    },
+    {
+      key: 'createTime',
+      label: '创建时间',
+      component: 'datePicker',
+      placeholder: '请选择日期',
+      span: 6,
+      allowClear: true
+    },
+    {
+      key: 'region',
+      label: '地区',
+      component: 'cascader',
+      placeholder: '请选择地区',
+      span: 6,
+      options: [
+        {
+          label: '北京',
+          value: 'beijing',
+          children: [
+            { label: '朝阳区', value: 'chaoyang' },
+            { label: '海淀区', value: 'haidian' }
+          ]
+        },
+        {
+          label: '上海',
+          value: 'shanghai',
+          children: [
+            { label: '浦东新区', value: 'pudong' },
+            { label: '黄浦区', value: 'huangpu' }
+          ]
+        }
+      ],
+      allowClear: true
+    },
+    {
+      key: 'custom',
+      label: '自定义',
+      component: 'custom',
+      span: 6,
+      slotName: 'custom-filter'
+    },
+    {
+      key: 'salary',
+      label: '薪资范围',
+      component: 'input',
+      placeholder: '请输入薪资',
+      span: 6,
+      props: {
+        type: 'number',
+        min: 0
+      }
+    },
+    {
+      key: 'education',
+      label: '学历',
+      component: 'select',
+      placeholder: '请选择学历',
+      span: 6,
+      options: [
+        { label: '高中', value: '高中' },
+        { label: '大专', value: '大专' },
+        { label: '本科', value: '本科' },
+        { label: '硕士', value: '硕士' },
+        { label: '博士', value: '博士' }
+      ],
+      allowClear: true
+    },
+    {
+      key: 'experience',
+      label: '工作经验',
+      component: 'select',
+      placeholder: '请选择经验',
+      span: 6,
+      options: [
+        { label: '1年以下', value: '1年以下' },
+        { label: '1-3年', value: '1-3年' },
+        { label: '3-5年', value: '3-5年' },
+        { label: '5-10年', value: '5-10年' },
+        { label: '10年以上', value: '10年以上' }
+      ],
+      allowClear: true
     }
   ],
   
@@ -293,6 +381,8 @@ export const comprehensiveExample: Props = {
     total: 7,
     showSizeChanger: true,
     showQuickJumper: true,
+    pageSizeOptions: ['10', '20', '50', '100'],
+    style: 'text-align: right; margin-top: 16px;',
     showTotal: (total: number, range: [number, number]) => 
       `第 ${range[0]}-${range[1]} 条，共 ${total} 条记录`
   },

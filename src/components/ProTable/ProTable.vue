@@ -13,54 +13,135 @@
 
       <!-- 筛选区域 -->
       <div v-if="config?.showFilter && config?.filters?.length" class="pro-table-filter">
-        <a-form layout="inline" :model="filterValues" @finish="handleSearch">
-          <a-form-item
-            v-for="filter in config.filters"
-            :key="filter.key"
-            :label="filter.label"
-            :name="filter.key"
-          >
-            <!-- 输入框 -->
-            <a-input
-              v-if="filter.component === 'input'"
-              v-model:value="filterValues[filter.key]"
-              :placeholder="filter.placeholder"
-              :allow-clear="filter.allowClear"
-              style="width: 200px"
-            />
-            
-            <!-- 选择框 -->
-            <a-select
-              v-else-if="filter.component === 'select'"
-              v-model:value="filterValues[filter.key]"
-              :placeholder="filter.placeholder"
-              :allow-clear="filter.allowClear"
-              style="width: 200px"
-            >
-              <a-select-option
-                v-for="option in filter.options"
-                :key="option.value"
-                :value="option.value"
+        <a-form
+          layout="vertical"
+          :size="config?.formSize || 'middle'"
+          :label-col="{ style: { width: config?.labelWidth || '100%' } }"
+          :label-wrap="true"
+          @submit.prevent="handleSearch"
+          class="search-wrap"
+          ref="formRef"
+          :model="filterValues"
+        >
+          <template v-if="config?.filters && config.filters.length">
+            <a-row :gutter="16" class="filter-row">
+              <a-col
+                class="search-filter-item"
+                v-for="(item, index) in config.filters"
+                v-show="!config?.needExpand || filterExpand || index < getFirstLineFilterNum"
+                :key="`${item.key}-${index}`"
+                :span="item.span || 6"
               >
-                {{ option.label }}
-              </a-select-option>
-            </a-select>
-            
-            <!-- 自定义插槽 -->
-            <slot v-else-if="filter.component === 'custom'" :name="`filter-${filter.key}`" />
-          </a-form-item>
-          
-          <!-- 操作按钮 -->
-          <a-form-item>
-            <a-space>
-              <a-button type="primary" html-type="submit">
-                搜索
-              </a-button>
-              <a-button @click="handleReset">
-                重置
-              </a-button>
-            </a-space>
-          </a-form-item>
+                <a-form-item
+                  :key="`${item.key}-${index}`"
+                  :label="item.label || ''"
+                  :name="item.component === 'custom' ? undefined : item.key"
+                  :rules="item.component === 'custom' ? undefined : item.rules"
+                >
+                  <!-- 输入框 -->
+                  <a-input
+                    v-if="item.component === 'input'"
+                    v-model:value="filterValues[item.key]"
+                    :placeholder="getPlaceholder(item)"
+                    :allowClear="item.allowClear === undefined ? true : item.allowClear"
+                    v-bind="item.props"
+                    @pressEnter="handleSearch"
+                  />
+                  
+                  <!-- 选择框 -->
+                  <a-select
+                    v-else-if="item.component === 'select'"
+                    v-model:value="filterValues[item.key]"
+                    :placeholder="getPlaceholder(item)"
+                    :allowClear="item.allowClear === undefined ? true : item.allowClear"
+                    :options="getOptions(item)"
+                    v-bind="item.props"
+                    :filterOption="
+                      (input: string, option: any) =>
+                        option.label.toLowerCase().includes(input.toLowerCase())
+                    "
+                    :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
+                  />
+                  
+                  <!-- 级联选择器 -->
+                  <a-cascader
+                    v-else-if="item.component === 'cascader'"
+                    v-model:value="filterValues[item.key]"
+                    :placeholder="getPlaceholder(item)"
+                    :allowClear="item.allowClear === undefined ? true : item.allowClear"
+                    :options="item.options"
+                    v-bind="item.props"
+                    :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
+                  />
+                  
+                  <!-- 日期选择器 -->
+                  <a-date-picker
+                    v-else-if="item.component === 'datePicker'"
+                    v-model:value="filterValues[item.key]"
+                    :placeholder="getPlaceholder(item)"
+                    :allowClear="item.allowClear === undefined ? true : item.allowClear"
+                    v-bind="item.props"
+                    :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
+                  />
+                  
+                  <!-- 范围日期选择器 -->
+                  <a-range-picker
+                    v-else-if="item.component === 'rangePicker'"
+                    v-model:value="filterValues[item.key]"
+                    :placeholder="getPlaceholder(item)"
+                    :allowClear="item.allowClear === undefined ? true : item.allowClear"
+                    v-bind="item.props"
+                    :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
+                  />
+                  
+                  <!-- 默认输入框 -->
+                  <a-input
+                    v-else-if="item.component !== 'custom'"
+                    v-model:value="filterValues[item.key]"
+                    :placeholder="getPlaceholder(item)"
+                    :allowClear="item.allowClear === undefined ? true : item.allowClear"
+                    v-bind="item.props"
+                    @pressEnter="handleSearch"
+                  />
+                  <template v-else>
+                    <!-- 自定义搜索条件插槽 -->
+                    <slot :name="item.slotName"></slot>
+                  </template>
+                </a-form-item>
+              </a-col>
+            </a-row>
+
+            <a-form-item label="">
+              <div class="search-bar-btns">
+                <slot name="filterExtra"></slot>
+
+                <a-button type="primary" class="mr-8" :size="config?.formSize || 'middle'" :disabled="loading" @click="handleSearch">
+                  查询
+                </a-button>
+
+                <a-button
+                  type="default"
+                  class="mr-0"
+                  :size="config?.formSize || 'middle'"
+                  :disabled="loading"
+                  @click="handleReset"
+                >
+                  重置
+                </a-button>
+
+                <slot name="filterAppend"></slot>
+                <a-button
+                  v-if="config?.needExpand && config?.filters && config.filters.length > getFirstLineFilterNum"
+                  class="search-bar-btns-expand"
+                  type="link"
+                  @click="onFilterExpand"
+                >
+                  <span v-if="filterExpand"><UpOutlined /> 收起</span>
+                  <span v-else><DownOutlined /> 更多</span>
+                </a-button>
+              </div>
+            </a-form-item>
+          </template>
         </a-form>
       </div>
 
@@ -225,7 +306,12 @@ import {
   MenuItem as AMenuItem,
   ConfigProvider,
   Modal as AModal,
-  Checkbox as ACheckbox
+  Checkbox as ACheckbox,
+  Row as ARow,
+  Col as ACol,
+  Cascader as ACascader,
+  DatePicker as ADatePicker,
+  RangePicker as ARangePicker
 } from 'ant-design-vue'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import {
@@ -234,7 +320,9 @@ import {
   FullscreenExitOutlined,
   ReloadOutlined,
   ColumnHeightOutlined,
-  HolderOutlined
+  HolderOutlined,
+  DownOutlined,
+  UpOutlined
 } from '@ant-design/icons-vue'
 
 createStore()
@@ -285,6 +373,19 @@ const {
 const isFullScreen = ref(false)
 const isRtl = ref(false)
 const columnConfigVisible = ref(false)
+const filterExpand = ref(false)
+const formRef = ref<any>(null)
+
+// 监听配置变化，同步 filterExpand 状态
+watch(
+  () => config.value?.isExpand,
+  (newValue) => {
+    if (newValue !== undefined) {
+      filterExpand.value = newValue
+    }
+  },
+  { immediate: true }
+)
 
 // 列配置相关props
 const columnConfigProps = {
@@ -386,6 +487,8 @@ const paginationConfig = computed(() => {
     total: paginationState.total || 0,
     showSizeChanger: config.value?.pagination?.showSizeChanger,
     showQuickJumper: config.value?.pagination?.showQuickJumper,
+    pageSizeOptions: config.value?.pagination?.pageSizeOptions || ['10', '20', '50', '100'],
+    style: config.value?.pagination?.style ? { textAlign: 'right' as const, marginTop: '16px' } : undefined,
     showTotal: config.value?.pagination?.showTotal,
     onChange: handlePageChange,
     onShowSizeChange: handlePageChange
@@ -660,6 +763,60 @@ const handleColumnConfigCancel = () => {
   columnConfigVisible.value = false
 }
 
+// 筛选相关函数
+const getFirstLineFilterNum = computed(() => {
+  let col = 0
+  let count = 0
+  const filters = config.value?.filters || []
+  
+  for (let i = 0; i < filters.length; i++) {
+    const span = Number(filters[i]?.span || 6) // 默认 span 为 6，每行最多 4 个
+    if (col + span > 24) {
+      break
+    }
+    col += span
+    count++
+  }
+  
+  return Math.max(count, 1) // 至少显示一个筛选项
+})
+
+// 动态设置 placeholder
+const getPlaceholder = (filterItem: any) => {
+  if (filterItem.placeholder) {
+    return filterItem.placeholder
+  }
+  if (filterItem.props?.placeholder) {
+    return filterItem.props.placeholder
+  }
+  switch (filterItem.component) {
+    case 'input':
+      return '请输入'
+    case 'select':
+      return '请选择'
+    case 'cascader':
+      return '请选择'
+    case 'datePicker':
+      return '请选择日期'
+    default:
+      return ''
+  }
+}
+
+const getOptions = (filterItem: any) => {
+  if (filterItem?.options) {
+    if (typeof filterItem.options === 'function') {
+      return filterItem.options()
+    }
+    return filterItem.options
+  }
+  return []
+}
+
+const onFilterExpand = () => {
+  filterExpand.value = !filterExpand.value
+}
+
 // 监听全屏状态变化
 const handleFullscreenChange = () => {
   const isFullscreen = !!(document.fullscreenElement || 
@@ -746,6 +903,121 @@ defineExpose<ProTableExpose>({
   background-color: var(--color-card-bg, #f8f9fa);
   border: 1px solid var(--color-line, #e5e5e5);
   border-radius: 6px;
+  
+  .search-wrap {
+    .ant-form-item {
+      margin-bottom: 12px;
+      
+      .ant-form-item-label {
+        padding-bottom: 4px;
+        line-height: 1.4;
+      }
+      
+      .ant-form-item-control {
+        line-height: 1;
+      }
+    }
+  }
+}
+
+.search-wrap {
+  .filter-row {
+    margin-bottom: 16px;
+  }
+
+  .search-filter-item {
+    margin-bottom: 16px;
+    
+    .ant-form-item {
+      width: 100%;
+      margin: 0;
+      
+      .ant-form-item-label {
+        padding-bottom: 6px;
+        line-height: 1.4;
+        font-weight: 500;
+        color: #333;
+      }
+      
+      .ant-form-item-control {
+        line-height: 1;
+        
+        .ant-input,
+        .ant-select,
+        .ant-cascader,
+        .ant-picker {
+          height: 32px;
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .search-bar-btns {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+
+    &-expand {
+      padding: 4px 8px;
+      color: #1677ff;
+    }
+  }
+}
+
+/* 深度覆盖 antd 样式 */
+:deep(.ant-cascader) {
+  /* 限制整体高度 */
+  --height: 28px; /* 根据设计系统调整高度 */
+}
+
+/* 选中标签容器 */
+:deep(.ant-select-selection-overflow) {
+  overflow-x: auto !important; /* 横向滚动 */
+  overflow-y: hidden !important;
+  flex-wrap: nowrap !important; /* 禁止换行 */
+  height: var(--height);
+  padding-bottom: 0px; /* 补偿滚动条高度 */
+
+  /* 隐藏滚动条（可选） */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+}
+
+/* 级联选择器样式优化 */
+:deep(.ant-cascader-picker) {
+  height: var(--height);
+  
+  .ant-cascader-picker-label {
+    height: var(--height);
+    line-height: var(--height);
+    padding: 0 8px;
+  }
+}
+
+/* 日期选择器样式优化 */
+:deep(.ant-picker) {
+  height: var(--height);
+  
+  .ant-picker-input > input {
+    height: var(--height);
+    line-height: var(--height);
+  }
+}
+
+.search-filter-item {
+  margin-bottom: 12px;
+}
+
+.mb-12 {
+  margin-bottom: 12px;
+}
+
+.mr-8 {
+  margin-right: 8px;
 }
 
 .pro-table-operation {
