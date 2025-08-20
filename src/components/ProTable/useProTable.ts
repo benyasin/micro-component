@@ -1,6 +1,7 @@
 import { ref, computed, watch, reactive } from 'vue'
 import { useProps } from '@/compositions/useProps'
 import { useEvent } from '@/compositions/useEvent'
+import { proTableApi, initProTableMock } from '@/services/proTableMock'
 
 import type { Props, Config, Events, FilterItem, Column, Pagination } from './types'
 
@@ -55,6 +56,10 @@ export const useProTable = (defaultProps?: Props) => {
     pageSize: 10,
     total: 0
   })
+  
+  // Mock 相关状态
+  const mockEnabled = ref(true)
+  const mockLoading = ref(false)
 
   // 合并配置
   const mergeConfig = (source: Partial<Props>, target: Partial<Props>) => {
@@ -152,6 +157,40 @@ export const useProTable = (defaultProps?: Props) => {
 
   // 表格事件处理
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+    // 更新分页状态
+    if (pagination) {
+      paginationState.current = pagination.current
+      paginationState.pageSize = pagination.pageSize
+    }
+    
+    // 更新筛选值
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== null && filters[key] !== undefined) {
+          filterValues[key] = filters[key]
+        } else {
+          delete filterValues[key]
+        }
+      })
+    }
+    
+    // 更新排序参数
+    if (sorter && sorter.field) {
+      filterValues._sortField = sorter.field
+      filterValues._sortOrder = sorter.order
+    } else {
+      delete filterValues._sortField
+      delete filterValues._sortOrder
+    }
+    
+    console.log('[ProTable] 表格变化事件:', { pagination, filters, sorter })
+    console.log('[ProTable] 当前筛选值:', filterValues)
+    
+    // 如果启用 Mock，重新加载数据
+    if (mockEnabled.value) {
+      loadMockData()
+    }
+    
     event.emit('change', pagination, filters, sorter)
   }
 
@@ -166,6 +205,15 @@ export const useProTable = (defaultProps?: Props) => {
   // 筛选事件处理
   const handleSearch = (values: any) => {
     Object.assign(filterValues, values)
+    
+    // 重置到第一页
+    paginationState.current = 1
+    
+    // 如果启用 Mock，重新加载数据
+    if (mockEnabled.value) {
+      loadMockData()
+    }
+    
     event.emit('search', values)
   }
 
@@ -173,6 +221,15 @@ export const useProTable = (defaultProps?: Props) => {
     Object.keys(filterValues).forEach(key => {
       delete filterValues[key]
     })
+    
+    // 重置到第一页
+    paginationState.current = 1
+    
+    // 如果启用 Mock，重新加载数据
+    if (mockEnabled.value) {
+      loadMockData()
+    }
+    
     event.emit('reset')
   }
 
@@ -180,6 +237,12 @@ export const useProTable = (defaultProps?: Props) => {
   const handlePageChange = (page: number, pageSize: number) => {
     paginationState.current = page
     paginationState.pageSize = pageSize
+    
+    // 如果启用 Mock，重新加载数据
+    if (mockEnabled.value) {
+      loadMockData()
+    }
+    
     event.emit('pageChange', page, pageSize)
   }
 
@@ -197,6 +260,11 @@ export const useProTable = (defaultProps?: Props) => {
 
   // 操作事件处理
   const handleRefresh = () => {
+    // 如果启用 Mock，重新加载数据
+    if (mockEnabled.value) {
+      loadMockData()
+    }
+    
     event.emit('refresh')
   }
 
@@ -206,6 +274,66 @@ export const useProTable = (defaultProps?: Props) => {
 
   const handleColumnConfig = (columns: Column[]) => {
     event.emit('columnConfig', columns)
+  }
+  
+  // Mock 数据加载
+  const loadMockData = async () => {
+    if (!mockEnabled.value) return
+    
+    try {
+      mockLoading.value = true
+      loading.value = true
+      console.log('[ProTable] 开始加载 Mock 数据...')
+      
+      // 将 reactive 对象转换为普通对象，避免 Proxy 问题
+      const plainFilterValues = JSON.parse(JSON.stringify(filterValues))
+      
+      const params = {
+        current: paginationState.current,
+        pageSize: paginationState.pageSize,
+        ...plainFilterValues
+      }
+      
+      console.log('[ProTable] 请求参数 (转换后):', params)
+      
+      const response = await proTableApi.getTableData(params)
+      if (response.code === 200) {
+        dataSource.value = response.data.list
+        paginationState.total = response.data.total
+        paginationState.current = response.data.current
+        paginationState.pageSize = response.data.pageSize
+        
+        console.log('[ProTable] Mock 数据加载成功:', response.data)
+      } else {
+        console.warn('[ProTable] Mock 数据加载失败:', response.message)
+      }
+    } catch (error) {
+      console.error('[ProTable] Mock 数据加载错误:', error)
+    } finally {
+      mockLoading.value = false
+      loading.value = false
+    }
+  }
+  
+  // 切换 Mock 模式
+  const toggleMock = (enabled: boolean) => {
+    mockEnabled.value = enabled
+    if (enabled) {
+      loadMockData()
+    } else {
+      // 恢复到默认数据
+      if (config.value?.dataSource) {
+        dataSource.value = config.value.dataSource
+      }
+    }
+  }
+  
+  // 初始化 Mock
+  const initMock = () => {
+    initProTableMock()
+    if (mockEnabled.value) {
+      loadMockData()
+    }
   }
 
   // 表格方法
@@ -240,8 +368,8 @@ export const useProTable = (defaultProps?: Props) => {
     selectedRows,
     filterValues,
     paginationState,
-    
-
+    mockEnabled,
+    mockLoading,
     
     // 事件处理
     handleTableChange,
@@ -254,6 +382,11 @@ export const useProTable = (defaultProps?: Props) => {
     handleRefresh,
     handleFullScreen,
     handleColumnConfig,
+    
+    // Mock 相关方法
+    loadMockData,
+    toggleMock,
+    initMock,
     
     // 表格方法
     refresh,

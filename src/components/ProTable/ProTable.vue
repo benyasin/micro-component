@@ -3,12 +3,35 @@
     <div class="pro-table-container micro" :class="{ 'rtl': isRtl }">
       <!-- 标题区域 -->
       <div v-if="config?.title || config?.description" class="pro-table-title">
-        <h3 v-if="config?.title" class="pro-table-title-text">
-          {{ config.title }}
-        </h3>
-        <p v-if="config?.description" class="pro-table-description">
-          {{ config.description }}
-        </p>
+        <div class="pro-table-title-content">
+          <div>
+            <h3 v-if="config?.title" class="pro-table-title-text">
+              {{ config.title }}
+            </h3>
+            <p v-if="config?.description" class="pro-table-description">
+              {{ config.description }}
+            </p>
+          </div>
+          
+          <!-- Mock 控制按钮 -->
+          <div class="pro-table-mock-controls">
+            <button
+              @click="toggleMock(!mockEnabled)"
+              class="mock-toggle-btn"
+              :class="mockEnabled ? 'mock-on' : 'mock-off'"
+            >
+              {{ mockEnabled ? 'Mock ON' : 'Mock OFF' }}
+            </button>
+            <button
+              v-if="mockEnabled"
+              @click="loadMockData"
+              :disabled="mockLoading"
+              class="mock-refresh-btn"
+            >
+              {{ mockLoading ? '加载中...' : '刷新数据' }}
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- 筛选区域 -->
@@ -351,6 +374,11 @@ const {
   selectedRows,
   filterValues,
   paginationState,
+  mockEnabled,
+  mockLoading,
+  loadMockData,
+  toggleMock,
+  initMock,
   handleTableChange,
   handleRowClick,
   handleRowDoubleClick,
@@ -837,6 +865,9 @@ const handleFullscreenChange = () => {
     // 初始化列配置
     initLocalColumns()
     
+    // 初始化 Mock
+    initMock()
+    
     // 添加全屏状态监听
     document.addEventListener('fullscreenchange', handleFullscreenChange)
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
@@ -880,8 +911,75 @@ defineExpose<ProTableExpose>({
 
 .pro-table-title {
   margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-line, #e5e5e5);
+  padding: 16px;
+  background-color: var(--color-bg-container, #fff);
+  border: 1px solid var(--color-line, #e5e5e5);
+  border-radius: 6px;
+  
+  .pro-table-title-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .pro-table-mock-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    
+    .mock-toggle-btn {
+      padding: 4px 12px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: 1px solid;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &.mock-on {
+        background-color: #1890ff;
+        color: white;
+        border-color: #1890ff;
+        
+        &:hover {
+          background-color: #40a9ff;
+          border-color: #40a9ff;
+        }
+      }
+      
+      &.mock-off {
+        background-color: #f5f5f5;
+        color: #666;
+        border-color: #d9d9d9;
+        
+        &:hover {
+          background-color: #e6f7ff;
+          color: #1890ff;
+          border-color: #91d5ff;
+        }
+      }
+    }
+    
+    .mock-refresh-btn {
+      padding: 4px 12px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: 1px solid #d9d9d9;
+      background-color: white;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover:not(:disabled) {
+        background-color: #f5f5f5;
+        border-color: #bfbfbf;
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
 }
 
 .pro-table-title-text {
