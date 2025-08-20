@@ -45,7 +45,7 @@ export const useConfig = defineStore(() => {
         }
         return
       }
-      
+
       const { code, data } = await commonInstance.post('/v1/user/overview/userinfo')
       if (code === '00000') {
         const { userInfo: originUserInfo } = data
@@ -90,6 +90,5 @@ export const useConfig = defineStore(() => {
     logEvent,
     direction,
     isLogin,
-    fetchUserInfo
   }
 })
