@@ -232,6 +232,15 @@ export const useProTable = (defaultProps?: Props) => {
     
     event.emit('reset')
   }
+  
+  // 更新筛选值的方法，供自定义插槽使用
+  const updateFilterValue = (key: string, value: any) => {
+    if (value !== null && value !== undefined && value !== '') {
+      filterValues[key] = value
+    } else {
+      delete filterValues[key]
+    }
+  }
 
   // 分页事件处理
   const handlePageChange = (page: number, pageSize: number) => {
@@ -387,6 +396,9 @@ export const useProTable = (defaultProps?: Props) => {
     loadMockData,
     toggleMock,
     initMock,
+    
+    // 筛选相关方法
+    updateFilterValue,
     
     // 表格方法
     refresh,

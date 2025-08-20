@@ -128,7 +128,7 @@
                   />
                   <template v-else>
                     <!-- 自定义搜索条件插槽 -->
-                    <slot :name="item.slotName"></slot>
+                    <slot :name="item.slotName" :filterValues="filterValues" :updateFilter="updateFilterValue"></slot>
                   </template>
                 </a-form-item>
               </a-col>
@@ -379,6 +379,7 @@ const {
   loadMockData,
   toggleMock,
   initMock,
+  updateFilterValue,
   handleTableChange,
   handleRowClick,
   handleRowDoubleClick,
@@ -468,6 +469,7 @@ const initLocalColumns = () => {
   
   // 安全检查 config.value?.columns 是否为数组
   const columns = config.value?.columns
+  console.log('[ProTable] 初始化列配置 - config.value?.columns:', columns)
   if (!Array.isArray(columns)) {
     console.warn('config.value?.columns is not an array:', columns)
     localColumns.value = []
@@ -503,6 +505,8 @@ const initLocalColumns = () => {
       disabled: false
     }
   })
+  
+  console.log('[ProTable] 初始化列配置 - localColumns.value:', localColumns.value)
 }
 
 // 计算属性
@@ -892,7 +896,8 @@ defineExpose<ProTableExpose>({
   refresh,
   reset,
   clearSelection,
-  getSelectedRows
+  getSelectedRows,
+  updateFilterValue
 })
 </script>
 

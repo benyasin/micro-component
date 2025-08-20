@@ -87,9 +87,204 @@ const proTableDataTemplate = {
 
 // 生成 ProTable 数据
 export const generateProTableData = (count: number = 10) => {
-  return Mock.mock({
-    [`list|${count}`]: [proTableDataTemplate.tableData]
+  // 先生成一些固定的测试数据，基于筛选条件创建匹配的数据
+  const fixedData = [
+    {
+      id: '1',
+      name: '潘超',
+      age: 28,
+      email: 'panchao@example.com',
+      phone: '13800138001',
+      address: '北京市朝阳区',
+      department: '技术部',
+      position: '工程师',
+      salary: 15000,
+      status: '在职',
+      joinDate: '2023-01-15',
+      education: '本科',
+      experience: '3-5年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2023-01-15',
+      updateTime: '2024-01-15 10:30:00'
+    },
+    {
+      id: '2',
+      name: '张三',
+      age: 32,
+      email: 'zhangsan@example.com',
+      phone: '13800138002',
+      address: '上海市浦东新区',
+      department: '产品部',
+      position: '产品经理',
+      salary: 20000,
+      status: '在职',
+      joinDate: '2022-06-01',
+      education: '硕士',
+      experience: '5-10年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2022-06-01',
+      updateTime: '2024-01-10 14:20:00'
+    },
+    {
+      id: '3',
+      name: '李四',
+      age: 25,
+      email: 'lisi@example.com',
+      phone: '13800138003',
+      address: '深圳市南山区',
+      department: '设计部',
+      position: '设计师',
+      salary: 12000,
+      status: '试用期',
+      joinDate: '2024-01-01',
+      education: '本科',
+      experience: '1-3年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2024-01-01',
+      updateTime: '2024-01-15 16:45:00'
+    },
+    // 基于筛选条件添加匹配的数据
+    {
+      id: '4',
+      name: '王小明',
+      age: 26,
+      email: 'wangxiaoming@example.com',
+      phone: '13800138004',
+      address: '北京市朝阳区',
+      department: '技术部',
+      position: '前端工程师',
+      salary: 10000,
+      status: '在职',
+      joinDate: '2023-03-15',
+      education: '大专',
+      experience: '1-3年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2023-03-15',
+      updateTime: '2024-01-12 09:15:00'
+    },
+    {
+      id: '5',
+      name: '刘小红',
+      age: 29,
+      email: 'liuxiaohong@example.com',
+      phone: '13800138005',
+      address: '北京市朝阳区',
+      department: '产品部',
+      position: '产品专员',
+      salary: 12000,
+      status: '在职',
+      joinDate: '2023-05-20',
+      education: '大专',
+      experience: '1-3年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2023-05-20',
+      updateTime: '2024-01-08 16:45:00'
+    },
+    {
+      id: '6',
+      name: '陈小华',
+      age: 31,
+      email: 'chenxiaohua@example.com',
+      phone: '13800138006',
+      address: '北京市朝阳区',
+      department: '设计部',
+      position: 'UI设计师',
+      salary: 11000,
+      status: '在职',
+      joinDate: '2023-07-10',
+      education: '大专',
+      experience: '1-3年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2023-07-10',
+      updateTime: '2024-01-05 13:20:00'
+    },
+    {
+      id: '7',
+      name: '赵小强',
+      age: 27,
+      email: 'zhaoxiaoqiang@example.com',
+      phone: '13800138007',
+      address: '北京市朝阳区',
+      department: '市场部',
+      position: '市场专员',
+      salary: 9500,
+      status: '在职',
+      joinDate: '2023-09-05',
+      education: '大专',
+      experience: '1-3年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2023-09-05',
+      updateTime: '2024-01-03 11:30:00'
+    },
+    {
+      id: '8',
+      name: '孙小美',
+      age: 24,
+      email: 'sunxiaomei@example.com',
+      phone: '13800138008',
+      address: '北京市朝阳区',
+      department: '人事部',
+      position: 'HR专员',
+      salary: 9000,
+      status: '在职',
+      joinDate: '2023-11-12',
+      education: '大专',
+      experience: '1-3年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2023-11-12',
+      updateTime: '2024-01-01 14:15:00'
+    },
+    // 添加更多数据以确保有足够的字段覆盖
+    {
+      id: '9',
+      name: '吴小军',
+      age: 33,
+      email: 'wuxiaojun@example.com',
+      phone: '13800138009',
+      address: '北京市海淀区',
+      department: '技术部',
+      position: '后端工程师',
+      salary: 18000,
+      status: '在职',
+      joinDate: '2022-08-15',
+      education: '本科',
+      experience: '5-10年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2022-08-15',
+      updateTime: '2024-01-20 10:30:00'
+    },
+    {
+      id: '10',
+      name: '周小丽',
+      age: 28,
+      email: 'zhouxiaoli@example.com',
+      phone: '13800138010',
+      address: '上海市浦东新区',
+      department: '产品部',
+      position: '产品经理',
+      salary: 22000,
+      status: '在职',
+      joinDate: '2022-12-01',
+      education: '硕士',
+      experience: '3-5年',
+      avatar: 'https://via.placeholder.com/100x100',
+      createTime: '2022-12-01',
+      updateTime: '2024-01-18 14:25:00'
+    }
+  ]
+  
+  // 如果需要的数量少于固定数据，直接返回固定数据
+  if (count <= fixedData.length) {
+    return fixedData.slice(0, count)
+  }
+  
+  // 否则先添加固定数据，再生成随机数据
+  const randomCount = count - fixedData.length
+  const randomData = Mock.mock({
+    [`list|${randomCount}`]: [proTableDataTemplate.tableData]
   }).list
+  
+  return [...fixedData, ...randomData]
 }
 
 // 生成分页数据
@@ -129,6 +324,18 @@ export const proTableApi = {
       )
       console.log('[ProTable Mock] 姓名筛选后数据量:', filteredData.length)
     }
+    if (filters.email) {
+      filteredData = filteredData.filter((item: any) => 
+        item.email.includes(filters.email)
+      )
+      console.log('[ProTable Mock] 邮箱筛选后数据量:', filteredData.length)
+    }
+    if (filters.phone) {
+      filteredData = filteredData.filter((item: any) => 
+        item.phone.includes(filters.phone)
+      )
+      console.log('[ProTable Mock] 电话筛选后数据量:', filteredData.length)
+    }
     if (filters.department) {
       // 处理数组形式的部门筛选
       const departments = Array.isArray(filters.department) ? filters.department : [filters.department]
@@ -150,6 +357,28 @@ export const proTableApi = {
         item.age >= parseInt(filters.age)
       )
       console.log('[ProTable Mock] 年龄筛选后数据量:', filteredData.length)
+    }
+    if (filters.salary) {
+      filteredData = filteredData.filter((item: any) => 
+        item.salary >= parseInt(filters.salary)
+      )
+      console.log('[ProTable Mock] 薪资筛选后数据量:', filteredData.length)
+    }
+    if (filters.education) {
+      // 处理数组形式的教育筛选
+      const educations = Array.isArray(filters.education) ? filters.education : [filters.education]
+      filteredData = filteredData.filter((item: any) => 
+        educations.includes(item.education)
+      )
+      console.log('[ProTable Mock] 学历筛选后数据量:', filteredData.length, '筛选学历:', educations)
+    }
+    if (filters.experience) {
+      // 处理数组形式的经验筛选
+      const experiences = Array.isArray(filters.experience) ? filters.experience : [filters.experience]
+      filteredData = filteredData.filter((item: any) => 
+        experiences.includes(item.experience)
+      )
+      console.log('[ProTable Mock] 经验筛选后数据量:', filteredData.length, '筛选经验:', experiences)
     }
     
     // 模拟排序逻辑

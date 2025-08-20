@@ -8,8 +8,12 @@ export const mockData = [
     name: '张三',
     age: 25,
     email: 'zhangsan@example.com',
+    phone: '13800138001',
     department: '技术部',
     status: '在职',
+    salary: 15000,
+    education: '本科',
+    experience: '3-5年',
     createTime: '2023-01-15'
   },
   {
@@ -17,8 +21,12 @@ export const mockData = [
     name: '李四',
     age: 30,
     email: 'lisi@example.com',
+    phone: '13800138002',
     department: '产品部',
     status: '在职',
+    salary: 18000,
+    education: '硕士',
+    experience: '5-10年',
     createTime: '2023-02-20'
   },
   {
@@ -26,8 +34,12 @@ export const mockData = [
     name: '王五',
     age: 28,
     email: 'wangwu@example.com',
+    phone: '13800138003',
     department: '设计部',
     status: '离职',
+    salary: 12000,
+    education: '本科',
+    experience: '3-5年',
     createTime: '2023-03-10'
   },
   {
@@ -35,8 +47,12 @@ export const mockData = [
     name: '赵六',
     age: 32,
     email: 'zhaoliu@example.com',
+    phone: '13800138004',
     department: '技术部',
     status: '在职',
+    salary: 20000,
+    education: '硕士',
+    experience: '5-10年',
     createTime: '2023-04-05'
   },
   {
@@ -44,8 +60,12 @@ export const mockData = [
     name: '钱七',
     age: 27,
     email: 'qianqi@example.com',
+    phone: '13800138005',
     department: '市场部',
     status: '在职',
+    salary: 14000,
+    education: '大专',
+    experience: '1-3年',
     createTime: '2023-05-12'
   }
 ]
@@ -157,6 +177,13 @@ export const comprehensiveExample: Props = {
       ellipsis: true
     },
     {
+      title: '电话',
+      dataIndex: 'phone',
+      key: 'phone',
+      width: 120,
+      ellipsis: true
+    },
+    {
       title: '部门',
       dataIndex: 'department',
       key: 'department',
@@ -177,6 +204,43 @@ export const comprehensiveExample: Props = {
         const color = text === '在职' ? '#52c41a' : '#ff4d4f'
         return h('span', { style: { color, fontWeight: 'bold' } }, text)
       }
+    },
+    {
+      title: '薪资',
+      dataIndex: 'salary',
+      key: 'salary',
+      width: 100,
+      sorter: true,
+      customRender: (text: string) => {
+        const numValue = parseInt(text) || 0
+        return h('span', { style: { color: '#1890ff', fontWeight: 'bold' } }, `¥${numValue.toLocaleString()}`)
+      }
+    },
+    {
+      title: '学历',
+      dataIndex: 'education',
+      key: 'education',
+      width: 100,
+      filters: [
+        { text: '高中', value: '高中' },
+        { text: '大专', value: '大专' },
+        { text: '本科', value: '本科' },
+        { text: '硕士', value: '硕士' },
+        { text: '博士', value: '博士' }
+      ]
+    },
+    {
+      title: '工作经验',
+      dataIndex: 'experience',
+      key: 'experience',
+      width: 120,
+      filters: [
+        { text: '应届生', value: '应届生' },
+        { text: '1-3年', value: '1-3年' },
+        { text: '3-5年', value: '3-5年' },
+        { text: '5-10年', value: '5-10年' },
+        { text: '10年以上', value: '10年以上' }
+      ]
     },
     {
       title: '创建时间',
@@ -208,8 +272,12 @@ export const comprehensiveExample: Props = {
       name: '孙八',
       age: 29,
       email: 'sunba@example.com',
+      phone: '13800138006',
       department: '技术部',
       status: '在职',
+      salary: 16000,
+      education: '本科',
+      experience: '3-5年',
       createTime: '2023-06-18'
     },
     {
@@ -217,8 +285,12 @@ export const comprehensiveExample: Props = {
       name: '周九',
       age: 31,
       email: 'zhoujiu@example.com',
+      phone: '13800138007',
       department: '产品部',
       status: '离职',
+      salary: 22000,
+      education: '硕士',
+      experience: '5-10年',
       createTime: '2023-07-22'
     }
   ],
