@@ -18,6 +18,10 @@ async function getRootPackageConfig() {
 async function overrideVueVersion(append: boolean) {
   const packageConfig = await getRootPackageConfig();
 
+  // 兼容：当 package.json 中没有 pnpm 或 overrides 字段时，先初始化
+  packageConfig.pnpm = packageConfig.pnpm || {};
+  packageConfig.pnpm.overrides = packageConfig.pnpm.overrides || {};
+
   if (append && packageConfig.pnpm.overrides.vue) return;
   if (!append && !packageConfig.pnpm.overrides.vue) return;
 

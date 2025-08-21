@@ -218,6 +218,17 @@ function App() {
     sticky: true
   }
 
+ // 自定义请求参数（用于验证 params 传递）
+ const extraParams = React.useMemo(() => ({ from: 'react-test', fixedFlag: true }), [])
+
+ // 请求前参数二次处理（验证 beforeRequest）
+ const beforeRequestHook = React.useCallback((params: any) => {
+   console.log('[React beforeRequest] 入参:', params)
+   const merged = { ...params, envTag: 'dev' }
+   addTestResult('React beforeRequest 调用', 'success', JSON.stringify(merged))
+   return merged
+ }, [])
+
   const onComponentChange = (component: string) => {
     setSelectedComponent(component)
     addTestResult('组件切换', 'success', `切换到 ${component} 组件`)
@@ -398,6 +409,8 @@ function App() {
                 showColumnConfig={true}
                 rowSelection={proTableRowSelection}
                 tableConfig={proTableConfig}
+               params={extraParams}
+               beforeRequest={beforeRequestHook}
                 onSearch={handleProTableSearch}
                 onReset={handleProTableReset}
                 onSelectionChange={handleProTableSelectionChange}

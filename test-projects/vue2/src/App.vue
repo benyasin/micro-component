@@ -73,6 +73,7 @@
         <h2>ProTable 组件测试</h2>
         <div class="component-demo">
           <MicroProTable
+            ref="proTableRef"
             title="员工管理系统"
             description="这是一个全面的 ProTable 示例，展示了所有可用的功能和属性"
             :columns="proTableColumns"
@@ -91,6 +92,8 @@
             :showColumnConfig="true"
             :rowSelection="proTableRowSelection"
             :tableConfig="proTableConfig"
+            :params="extraParams"
+            :beforeRequest="beforeRequestHook"
             @search="handleProTableSearch"
             @reset="handleProTableReset"
             @selectionChange="handleProTableSelectionChange"
@@ -173,6 +176,11 @@ export default {
         { locale: 'en', languageName: 'English' },
         { locale: 'zh', languageName: '中文' }
       ],
+     // 自定义请求参数（用于验证 params 传递）
+      extraParams: {
+       from: 'vue2-test',
+       fixedFlag: true
+      },
       // ProTable 配置
       proTableColumns: [
         {
@@ -405,9 +413,16 @@ export default {
     },
     handleProTableSelectionChange(selectedRowKeys, selectedRows) {
       this.addTestResult('ProTable 选择变化', 'success', `选中了 ${selectedRowKeys.length} 行数据`)
+    },
+    // 用于请求前参数二次处理的钩子（验证 beforeRequest）
+    beforeRequestHook(params) {
+      console.log('[Vue2 beforeRequest] 入参:', params)
+      const merged = { ...params, envTag: 'dev' }
+      this.addTestResult('Vue2 beforeRequest 调用', 'success', JSON.stringify(merged))
+      return merged
     }
-  }
-}
+   }
+ }
 </script>
 
 <style scoped>

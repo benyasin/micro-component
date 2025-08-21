@@ -49,12 +49,6 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
-  "pnpm": {
-    "overrides": {
-      "vue-template-compiler": "2.6.14",
-      "vue": "2.6.14"
-    }
-  },
   "devDependencies": {
     "@divriots/jampack": "^0.28.0",
     "@rollup/plugin-terser": "^0.4.4",
@@ -126,5 +120,8 @@
     "vuedraggable": "^4.1.0",
     "@types/mockjs": "^1.0.10",
     "mockjs": "^1.1.0"
+  },
+  "pnpm": {
+    "overrides": {}
   }
 }
