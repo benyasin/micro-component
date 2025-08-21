@@ -106,11 +106,34 @@ export interface Config {
   }
 }
 
+// 自定义筛选渲染配置
+export interface CustomFilterRenderConfig {
+  type: 'select' | 'input' | 'cascader' | 'dateRange' | 'inputGroup'
+  placeholder?: string
+  style?: Record<string, any>
+  options?: Array<{label: string, value: any, children?: Array<{label: string, value: any}>}>
+  allowClear?: boolean
+  size?: 'small' | 'middle' | 'large'
+  // 输入组合配置（用于类型选择 + 输入框的组合）
+  inputGroup?: {
+    selectConfig: Omit<CustomFilterRenderConfig, 'inputGroup'>
+    inputConfig: Omit<CustomFilterRenderConfig, 'inputGroup'>
+    selectWidth?: string
+    inputWidth?: string
+  }
+}
+
 // Props 接口
 export interface Props extends BaseProps, Config {
   // 列配置相关
   tableKey?: string
   onColumnConfirm?: () => Promise<void> | void
+  // 自定义插槽组件（保留兼容性）
+  customSlot?: any
+  // 自定义筛选渲染配置（新方案）
+  customFilterRender?: CustomFilterRenderConfig
+  // 自定义筛选值变化回调
+  onCustomFilterChange?: (key: string, value: any) => void
 }
 
 // 事件定义

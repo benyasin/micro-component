@@ -3,7 +3,8 @@ import { useI18n } from '@/compositions/useI18n'
 import { BaseProps } from '@/types/component'
 
 export function useProps<T extends BaseProps>(defaultProps?: T) {
-  const { proxy } = getCurrentInstance()
+  const instance = getCurrentInstance()
+  const { proxy } = instance || {}
   const { changeLocale } = useI18n()
   const props = ref<T>(
     Object.assign(

@@ -11,8 +11,10 @@ function createContext() {
     const el = document.createElement('div')
     const app = createApp({
       setup() {
-        const vm = getCurrentInstance()!
-        resolve(vm.appContext)
+        const vm = getCurrentInstance()
+        if (vm) {
+          resolve(vm.appContext)
+        }
       },
       render() {
         return h(ConfigProvider)

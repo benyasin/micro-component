@@ -6,7 +6,8 @@ import { EventEmitter } from 'events'
  * 并且会根据传入的泛型自动解析类型
  */
 export const useEvent = <Events extends Record<string | number | symbol, (...args) => any>>() => {
-  const { proxy } = getCurrentInstance()
+  const instance = getCurrentInstance()
+  const { proxy } = instance || {}
   const event = new EventEmitter()
   
   // 设置最大监听器数量，避免 MaxListenersExceededWarning
@@ -47,7 +48,7 @@ export const useEvent = <Events extends Record<string | number | symbol, (...arg
     if (import.meta.env.DEV) {
       console.log(`[Event] ${eventName.toString()}`, args.map(arg => typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg))
       // playground emit
-      proxy.$emit(eventName as string, ...args)
+      proxy?.$emit(eventName as string, ...args)
     }
     const emitEvent = () => {
       // 额外触发一个event事件，以便通过on('event')监听到所有事件

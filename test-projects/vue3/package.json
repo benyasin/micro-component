@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@vue/runtime-core": "^3.4.0",
+    "ant-design-vue": "^4.0.0",
     "micro-components": "link:../..",
     "vue": "^3.4.0"
   },

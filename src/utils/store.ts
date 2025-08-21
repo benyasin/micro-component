@@ -23,13 +23,17 @@ function findRoot(vm: ComponentInternalInstance): ComponentInternalInstance {
  */
 export function createStore() {
   const vm: any = getCurrentInstance()
-  vm.microStore = vm.microStore || {}
+  if (vm) {
+    vm.microStore = vm.microStore || {}
+  }
   // 组件卸载时，清除作用域下所有hook
-  onUnmounted(() => {
-    for (const [_, store] of Object.entries(vm.microStore as MicroStore)) {
-      store?.scope?.stop?.()
-    }
-  })
+  if (vm) {
+    onUnmounted(() => {
+      for (const [_, store] of Object.entries(vm.microStore as MicroStore)) {
+        store?.scope?.stop?.()
+      }
+    })
+  }
 }
 
 export function defineStore<T extends (...args) => unknown>(
@@ -41,7 +45,7 @@ export function defineStore<T extends (...args) => unknown>(
 
   return function (...args) {
     const vm = getCurrentInstance()
-    let root = isGlobal ? globalRoot : findRoot(vm)
+    let root = isGlobal ? globalRoot : (vm ? findRoot(vm) : null)
 
     if (!root) {
       throw new Error(

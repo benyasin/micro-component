@@ -128,7 +128,46 @@
                   />
                   <template v-else>
                     <!-- 自定义搜索条件插槽 -->
-                    <slot :name="item.slotName" :filterValues="filterValues" :updateFilter="updateFilterValue"></slot>
+                    <template v-if="customFilterRender">
+                      <!-- 基于配置的渲染 -->
+                      <template v-if="customFilterRender.type === 'inputGroup' && customFilterRender.inputGroup">
+                        <!-- 输入组合：选择器 + 输入框 -->
+                        <a-input-group compact>
+                          <a-select
+                            :style="{ width: customFilterRender.inputGroup.selectWidth || '30%' }"
+                            :placeholder="customFilterRender.inputGroup.selectConfig?.placeholder || '类型'"
+                            :size="customFilterRender.inputGroup.selectConfig?.size || 'middle'"
+                            :options="customFilterRender.inputGroup.selectConfig?.options || []"
+                            :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
+                            @update:value="(val) => handleCustomFilterRenderChange({ type: 'select', value: val })"
+                          />
+                          <a-input
+                            :style="{ width: customFilterRender.inputGroup.inputWidth || '70%' }"
+                            :placeholder="customFilterRender.inputGroup.inputConfig?.placeholder || '请输入搜索内容'"
+                            :size="customFilterRender.inputGroup.inputConfig?.size || 'middle'"
+                            :allowClear="customFilterRender.inputGroup.inputConfig?.allowClear !== false"
+                            @update:value="(val) => handleCustomFilterRenderChange({ type: 'input', value: val })"
+                            @pressEnter="handleSearch"
+                          />
+                        </a-input-group>
+                      </template>
+                      <template v-else>
+                        <!-- 单一组件渲染 -->
+                        <component 
+                          :is="getCustomFilterComponent()" 
+                          v-bind="getCustomFilterProps()"
+                          @update:value="handleCustomFilterRenderChange"
+                          @change="handleCustomFilterRenderChange"
+                        />
+                      </template>
+                    </template>
+                    <template v-else>
+                      <!-- 传统插槽方式 -->
+                      <slot name="custom-filter" :filterValues="filterValues" :updateFilter="updateFilterValue">
+                        <!-- 默认内容 -->
+                        <a-input placeholder="自定义筛选" disabled />
+                      </slot>
+                    </template>
                   </template>
                 </a-form-item>
               </a-col>
@@ -321,6 +360,7 @@ import {
   Form as AForm,
   FormItem as AFormItem,
   Input as AInput,
+  InputGroup as AInputGroup,
   Select as ASelect,
   SelectOption as ASelectOption,
   Space as ASpace,
@@ -848,6 +888,66 @@ const getOptions = (filterItem: any) => {
 
 const onFilterExpand = () => {
   filterExpand.value = !filterExpand.value
+}
+
+// 自定义筛选渲染相关方法
+const getCustomFilterComponent = () => {
+  const renderConfig = proTableProps.value.customFilterRender
+  if (!renderConfig) return 'a-input'
+  
+  switch (renderConfig.type) {
+    case 'select':
+      return 'a-select'
+    case 'cascader':
+      return 'a-cascader'
+    case 'dateRange':
+      return 'a-range-picker'
+    case 'inputGroup':
+      return 'div' // 使用 div 包装复合组件
+    default:
+      return 'a-input'
+  }
+}
+
+const getCustomFilterProps = () => {
+  const renderConfig = proTableProps.value.customFilterRender
+  if (!renderConfig) return {}
+  
+  const baseProps = {
+    placeholder: renderConfig.placeholder || '请输入',
+    size: renderConfig.size || 'middle',
+    allowClear: renderConfig.allowClear !== false,
+    style: renderConfig.style || {}
+  }
+  
+  if (renderConfig.type === 'select' && renderConfig.options) {
+    return {
+      ...baseProps,
+      options: renderConfig.options,
+      getPopupContainer: (triggerNode: any) => triggerNode?.parentNode
+    }
+  }
+  
+  if (renderConfig.type === 'cascader' && renderConfig.options) {
+    return {
+      ...baseProps,
+      options: renderConfig.options,
+      getPopupContainer: (triggerNode: any) => triggerNode?.parentNode
+    }
+  }
+  
+  if (renderConfig.type === 'inputGroup' && renderConfig.inputGroup) {
+    // 返回空对象，inputGroup 需要特殊处理
+    return {}
+  }
+  
+  return baseProps
+}
+
+const handleCustomFilterRenderChange = (value: any) => {
+  if (proTableProps.value.onCustomFilterChange) {
+    proTableProps.value.onCustomFilterChange('custom', value)
+  }
 }
 
 // 监听全屏状态变化

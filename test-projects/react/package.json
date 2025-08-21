@@ -11,6 +11,7 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "antd": "^5.0.0",
     "micro-components": "file:../..",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

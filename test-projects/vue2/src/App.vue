@@ -3,24 +3,27 @@
     <header class="header">
       <h1>Micro Component Vue2 Test</h1>
       <p>测试编译后的组件产物在 Vue2 环境下的运行情况</p>
+      
+      <!-- 组件选择器 -->
+      <div class="component-selector">
+        <span>Components:</span>
+        <a-select
+          v-model="selectedComponent"
+          class="component-select"
+          placeholder="选择组件"
+          show-search
+          @change="onComponentChange"
+        >
+          <a-select-option v-for="component in components" :key="component.value" :value="component.value">
+            {{ component.label }}
+          </a-select-option>
+        </a-select>
+      </div>
     </header>
 
     <main class="main">
-      <section class="test-section">
-        <h2>Footer 组件（从 micro-components 包导入）</h2>
-        <div class="component-demo">
-          <MicroFooter 
-            :theme="'light'"
-            :is-i18n-enabled="true"
-            :languages="languages"
-            @theme-change="handleThemeChange"
-            @language-change="handleLanguageChange"
-            @push="handlePush"
-          />
-        </div>
-      </section>
-
-      <section class="test-section">
+      <!-- Button 组件 -->
+      <section v-if="selectedComponent === 'button'" class="test-section">
         <h2>Button 组件测试</h2>
         <div class="component-demo">
           <div class="button-group">
@@ -50,6 +53,78 @@
         </div>
       </section>
 
+      <!-- Footer 组件 -->
+      <section v-if="selectedComponent === 'footer'" class="test-section">
+        <h2>Footer 组件测试</h2>
+        <div class="component-demo">
+          <MicroFooter 
+            :theme="'light'"
+            :is-i18n-enabled="true"
+            :languages="languages"
+            @theme-change="handleThemeChange"
+            @language-change="handleLanguageChange"
+            @push="handlePush"
+          />
+        </div>
+      </section>
+
+      <!-- ProTable 组件 -->
+      <section v-if="selectedComponent === 'protable'" class="test-section">
+        <h2>ProTable 组件测试</h2>
+        <div class="component-demo">
+          <MicroProTable
+            title="员工管理系统"
+            description="这是一个全面的 ProTable 示例，展示了所有可用的功能和属性"
+            :columns="proTableColumns"
+            :dataSource="proTableData"
+            :showFilter="true"
+            :needExpand="true"
+            :isExpand="false"
+            :labelWidth="'100%'"
+            :formSize="'middle'"
+            :filters="proTableFilters"
+            :showPagination="true"
+            :pagination="proTablePagination"
+            :showSelection="true"
+            :showOperation="true"
+            :showFullScreen="true"
+            :showColumnConfig="true"
+            :rowSelection="proTableRowSelection"
+            :tableConfig="proTableConfig"
+            @search="handleProTableSearch"
+            @reset="handleProTableReset"
+            @selectionChange="handleProTableSelectionChange"
+          >
+            <template v-slot:custom-filter="{ filterValues, updateFilter }">
+              <div style="width: 100%;">
+                <a-input-group compact>
+                  <a-select 
+                    v-model="customFilterType" 
+                    style="width: 30%"
+                    placeholder="类型"
+                    size="middle"
+                  >
+                    <a-select-option value="name">姓名</a-select-option>
+                    <a-select-option value="email">邮箱</a-select-option>
+                    <a-select-option value="phone">电话</a-select-option>
+                  </a-select>
+                  <a-input 
+                    v-model="customFilterValue"
+                    style="width: 70%"
+                    placeholder="请输入搜索内容" 
+                    :allowClear="true"
+                    size="middle"
+                    @change="() => handleCustomFilterChange(updateFilter)"
+                    @pressEnter="() => handleCustomFilterChange(updateFilter)"
+                  />
+                </a-input-group>
+              </div>
+            </template>
+          </MicroProTable>
+        </div>
+      </section>
+
+      <!-- 测试结果 -->
       <section class="test-section">
         <h2>测试结果</h2>
         <div class="test-results">
@@ -74,57 +149,262 @@
 <script>
 const MicroFooter = require('micro-components/vue2/Footer')
 const MicroButton = require('micro-components/vue2/Button')
+const MicroProTable = require('micro-components/vue2/ProTable')
 
 export default {
   name: 'App',
   components: {
     MicroFooter,
-    MicroButton
+    MicroButton,
+    MicroProTable
   },
   data() {
     return {
+      selectedComponent: 'button',
       testResults: [],
+      customFilterType: 'name',
+      customFilterValue: '',
+      components: [
+        { label: 'Button', value: 'button' },
+        { label: 'Footer', value: 'footer' },
+        { label: 'ProTable', value: 'protable' }
+      ],
       languages: [
-        { locale: 'en', languageKey: 'en_US', languageType: 0, languageName: 'English' },
-        { locale: 'zh-CN', languageKey: 'zh_CN', languageType: 1, languageName: '简体中文' }
-      ]
+        { locale: 'en', languageName: 'English' },
+        { locale: 'zh', languageName: '中文' }
+      ],
+      // ProTable 配置
+      proTableColumns: [
+        {
+          title: '姓名',
+          dataIndex: 'name',
+          key: 'name',
+          width: 120
+        },
+        {
+          title: '年龄',
+          dataIndex: 'age',
+          key: 'age',
+          width: 80
+        },
+        {
+          title: '部门',
+          dataIndex: 'department',
+          key: 'department',
+          width: 120
+        },
+        {
+          title: '状态',
+          dataIndex: 'status',
+          key: 'status',
+          width: 100
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'createTime',
+          key: 'createTime',
+          width: 120
+        },
+        {
+          title: '薪资',
+          dataIndex: 'salary',
+          key: 'salary',
+          width: 100,
+          sorter: true
+        },
+        {
+          title: '学历',
+          dataIndex: 'education',
+          key: 'education',
+          width: 100
+        }
+      ],
+      proTableData: [
+        {
+          id: '1',
+          name: '张三',
+          age: 25,
+          department: '技术部',
+          status: '在职',
+          createTime: '2023-01-15',
+          salary: 15000,
+          education: '本科'
+        },
+        {
+          id: '2',
+          name: '李四',
+          age: 30,
+          department: '产品部',
+          status: '在职',
+          createTime: '2023-02-20',
+          salary: 18000,
+          education: '硕士'
+        },
+        {
+          id: '3',
+          name: '王五',
+          age: 28,
+          department: '设计部',
+          status: '离职',
+          createTime: '2023-03-10',
+          salary: 12000,
+          education: '本科'
+        },
+        {
+          id: '4',
+          name: '赵六',
+          age: 32,
+          department: '技术部',
+          status: '在职',
+          createTime: '2023-04-05',
+          salary: 20000,
+          education: '硕士'
+        },
+        {
+          id: '5',
+          name: '钱七',
+          age: 27,
+          department: '市场部',
+          status: '在职',
+          createTime: '2023-05-12',
+          salary: 14000,
+          education: '大专'
+        }
+      ],
+      proTableFilters: [
+        {
+          key: 'name',
+          label: '姓名',
+          component: 'input',
+          placeholder: '请输入姓名',
+          span: 6,
+          allowClear: true
+        },
+        {
+          key: 'department',
+          label: '部门',
+          component: 'select',
+          placeholder: '请选择部门',
+          span: 6,
+          options: [
+            { label: '技术部', value: '技术部' },
+            { label: '产品部', value: '产品部' },
+            { label: '设计部', value: '设计部' },
+            { label: '市场部', value: '市场部' }
+          ],
+          allowClear: true
+        },
+        {
+          key: 'status',
+          label: '状态',
+          component: 'select',
+          placeholder: '请选择状态',
+          span: 6,
+          options: [
+            { label: '在职', value: '在职' },
+            { label: '离职', value: '离职' }
+          ],
+          allowClear: true
+        },
+        {
+          key: 'custom',
+          label: '自定义',
+          component: 'custom',
+          span: 6,
+          slotName: 'custom-filter'
+        }
+      ],
+      proTablePagination: {
+        current: 1,
+        pageSize: 10,
+        total: 5,
+        showSizeChanger: true,
+        showQuickJumper: true,
+        pageSizeOptions: ['10', '20', '50', '100'],
+        showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条记录`
+      },
+      proTableRowSelection: {
+        selectedRowKeys: ['1'],
+        onChange: (selectedRowKeys, selectedRows) => {
+          console.log('选中的行:', selectedRowKeys, selectedRows)
+          this.addTestResult('ProTable 行选择', 'success', `选中了 ${selectedRowKeys.length} 行数据`)
+        }
+      },
+      proTableConfig: {
+        rowKey: 'id',
+        loading: false,
+        bordered: true,
+        size: 'middle',
+        scroll: { x: 1000, y: 400 },
+        showHeader: true,
+        sticky: true
+      }
     }
   },
   methods: {
-    addTestResult(result) {
+    onComponentChange(component) {
+      this.selectedComponent = component
+      this.addTestResult('组件切换', 'success', `切换到 ${component} 组件`)
+    },
+    addTestResult(name, status, message) {
       this.testResults.push({
-        ...result,
-        id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        id: Date.now().toString(),
+        name,
+        status,
+        message
       })
     },
     handleThemeChange(theme) {
-      this.addTestResult({
-        name: '主题变更',
-        status: 'success',
-        message: `主题切换为 ${theme}`
-      })
+      this.addTestResult('Footer 主题切换', 'success', `主题切换到: ${theme}`)
     },
-    handleLanguageChange(language) {
-      this.addTestResult({
-        name: '语言切换',
-        status: 'success',
-        message: `${(language && language.locale) || ''}`
-      })
+    handleLanguageChange(locale) {
+      this.addTestResult('Footer 语言切换', 'success', `语言切换到: ${locale}`)
     },
-    handlePush(url, target) {
-      this.addTestResult({
-        name: '链接跳转',
-        status: 'success',
-        message: `${url} (${target})`
-      })
+    handlePush(link) {
+      this.addTestResult('Footer 链接点击', 'success', `点击链接: ${link.title}`)
     },
-    handleButtonClick(type) {
-      console.log('Button clicked:', type)
-      this.addTestResult({
-        name: '按钮点击',
-        status: 'success',
-        message: `${type} 按钮被点击`
-      })
+    handleButtonClick() {
+      this.addTestResult('Button 点击', 'success', '按钮点击事件触发成功')
+    },
+    handleCustomFilterChange(updateFilterFn) {
+      console.log('自定义筛选变化:', this.customFilterType, this.customFilterValue)
+      
+      // 根据选择的类型更新对应的筛选值
+      if (this.customFilterValue && this.customFilterValue.trim()) {
+        // 使用插槽传递的 updateFilter 方法
+        if (typeof updateFilterFn === 'function') {
+          updateFilterFn(this.customFilterType, this.customFilterValue.trim())
+        } else {
+          // 备用方案：直接访问 ProTable 组件实例的方法
+          const proTableInstance = this.$refs.proTableRef
+          if (proTableInstance && proTableInstance.updateFilterValue) {
+            proTableInstance.updateFilterValue(this.customFilterType, this.customFilterValue.trim())
+          }
+        }
+      } else {
+        // 如果值为空，清除对应的筛选值
+        if (typeof updateFilterFn === 'function') {
+          updateFilterFn(this.customFilterType, null)
+        } else {
+          const proTableInstance = this.$refs.proTableRef
+          if (proTableInstance && proTableInstance.updateFilterValue) {
+            proTableInstance.updateFilterValue(this.customFilterType, null)
+          }
+        }
+      }
+      
+      this.addTestResult('ProTable 自定义筛选', 'success', `筛选类型: ${this.customFilterType}, 值: ${this.customFilterValue}`)
+    },
+    handleProTableSearch(values) {
+      this.addTestResult('ProTable 搜索', 'success', `搜索参数: ${JSON.stringify(values)}`)
+    },
+    handleProTableReset() {
+      this.addTestResult('ProTable 重置', 'success', '筛选条件已重置')
+      this.customFilterType = 'name'
+      this.customFilterValue = ''
+    },
+    handleProTableSelectionChange(selectedRowKeys, selectedRows) {
+      this.addTestResult('ProTable 选择变化', 'success', `选中了 ${selectedRowKeys.length} 行数据`)
     }
   }
 }
@@ -132,107 +412,76 @@ export default {
 
 <style scoped>
 .header {
-  text-align: center;
-  padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  margin-bottom: 2rem;
+  background: #f5f5f5;
+  padding: 20px;
+  border-bottom: 1px solid #e8e8e8;
 }
 
-.header h1 {
-  margin: 0 0 1rem 0;
-  font-size: 2.5rem;
+.component-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-.header p {
-  margin: 0;
-  opacity: 0.9;
+.component-select {
+  width: 200px;
 }
 
 .main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  padding: 20px;
 }
 
 .test-section {
-  margin-bottom: 3rem;
-  padding: 2rem;
-  border: 1px solid #e1e5e9;
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #e8e8e8;
   border-radius: 8px;
-  background: #f8f9fa;
-}
-
-.test-section h2 {
-  margin-top: 0;
-  color: #2c3e50;
+  background: white;
 }
 
 .component-demo {
-  padding: 2rem;
-  border: 2px dashed #ddd;
-  border-radius: 8px;
-  background: white;
-  min-height: 200px;
+  margin-top: 15px;
 }
 
 .button-group {
+  margin-bottom: 15px;
   display: flex;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 16px;
 }
 
 .test-results {
-  background: white;
-  border-radius: 8px;
-  padding: 1rem;
-}
-
-.no-results {
-  text-align: center;
-  color: #666;
-  padding: 2rem;
+  margin-top: 15px;
 }
 
 .test-result {
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.5rem;
+  padding: 8px 12px;
+  margin-bottom: 8px;
   border-radius: 4px;
   border-left: 4px solid;
 }
 
 .test-result.success {
-  background: #d4edda;
-  border-color: #28a745;
-  color: #155724;
+  background: #f6ffed;
+  border-left-color: #52c41a;
+  color: #52c41a;
 }
 
 .test-result.error {
-  background: #f8d7da;
-  border-color: #dc3545;
-  color: #721c24;
+  background: #fff2f0;
+  border-left-color: #ff4d4f;
+  color: #ff4d4f;
 }
 
 .test-result.pending {
-  background: #fff3cd;
-  border-color: #ffc107;
-  color: #856404;
+  background: #fffbe6;
+  border-left-color: #faad14;
+  color: #faad14;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .main {
-    padding: 0 1rem;
-  }
-  
-  .test-section {
-    padding: 1rem;
-  }
-  
-  .header h1 {
-    font-size: 2rem;
-  }
+.no-results {
+  color: #999;
+  font-style: italic;
 }
 </style>
