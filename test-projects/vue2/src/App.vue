@@ -315,11 +315,78 @@ export default {
           allowClear: true
         },
         {
+          key: 'region',
+          label: '地区',
+          component: 'cascader',
+          placeholder: '请选择地区',
+          span: 6,
+          options: [
+            {
+              label: '北京',
+              value: 'beijing',
+              children: [
+                { label: '朝阳区', value: 'chaoyang' },
+                { label: '海淀区', value: 'haidian' }
+              ]
+            },
+            {
+              label: '上海',
+              value: 'shanghai',
+              children: [
+                { label: '浦东新区', value: 'pudong' },
+                { label: '黄浦区', value: 'huangpu' }
+              ]
+            }
+          ],
+          allowClear: true
+        },
+        {
           key: 'custom',
           label: '自定义',
           component: 'custom',
           span: 6,
           slotName: 'custom-filter'
+        },
+        {
+          key: 'salary',
+          label: '薪资范围',
+          component: 'input',
+          placeholder: '请输入薪资',
+          span: 6,
+          props: {
+            type: 'number',
+            min: 0
+          }
+        },
+        {
+          key: 'education',
+          label: '学历',
+          component: 'select',
+          placeholder: '请选择学历',
+          span: 6,
+          options: [
+            { label: '高中', value: '高中' },
+            { label: '大专', value: '大专' },
+            { label: '本科', value: '本科' },
+            { label: '硕士', value: '硕士' },
+            { label: '博士', value: '博士' }
+          ],
+          allowClear: true
+        },
+        {
+          key: 'experience',
+          label: '工作经验',
+          component: 'select',
+          placeholder: '请选择经验',
+          span: 6,
+          options: [
+            { label: '1年以下', value: '1年以下' },
+            { label: '1-3年', value: '1-3年' },
+            { label: '3-5年', value: '3-5年' },
+            { label: '5-10年', value: '5-10年' },
+            { label: '10年以上', value: '10年以上' }
+          ],
+          allowClear: true
         }
       ],
       proTablePagination: {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Select, Input, Space } from 'antd'
+import { Select } from 'antd'
 import MicroFooter from 'micro-components/react/Footer'
 import MicroButton from 'micro-components/react/Button'
 import MicroProTable from 'micro-components/react/ProTable'
@@ -25,27 +25,34 @@ function App() {
   const [customFilterType, setCustomFilterType] = useState<string>('name')
   const [customFilterValue, setCustomFilterValue] = useState<string>('')
 
+  // 统一记录测试输出
+  // 确保唯一且稳定的 ID，避免 React key 警告
+  const createUniqueId = React.useCallback(() => {
+    // 优先使用 crypto.randomUUID
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+      return (crypto as any).randomUUID()
+    }
+    // 退化方案：时间戳 + 随机 + 高精度时间
+    const rand = Math.random().toString(36).slice(2)
+    const perf = (typeof performance !== 'undefined' ? performance.now() : Math.random()).toString(36)
+    return `${Date.now()}-${rand}-${perf}`
+  }, [])
+
+  const addTestResult = (name: string, status: 'success' | 'error' | 'pending', message: string) => {
+    setTestResults(prev => [{ id: createUniqueId(), name, status, message }, ...prev])
+  }
+
   const components: Component[] = [
     { label: 'Button', value: 'button' },
     { label: 'Footer', value: 'footer' },
     { label: 'ProTable', value: 'protable' }
   ]
 
-  const addTestResult = (name: string, status: 'success' | 'error' | 'pending', message: string) => {
-    setTestResults(prev => [...prev, {
-      id: Date.now().toString(),
-      name,
-      status,
-      message
-    }])
-  }
-
   const languages = [
     { locale: 'en', languageKey: 'en_US', languageType: 0, languageName: 'English' },
-    { locale: 'zh', languageKey: 'zh_CN', languageType: 1, languageName: '中文' }
+    { locale: 'zh-CN', languageKey: 'zh_CN', languageType: 1, languageName: '中文' }
   ]
 
-  // ProTable 配置
   const proTableColumns = [
     {
       title: '姓名',
@@ -181,11 +188,79 @@ function App() {
       allowClear: true
     },
     {
+      key: 'region',
+      label: '地区',
+      component: 'cascader',
+      placeholder: '请选择地区',
+      span: 6,
+      options: [
+        {
+          label: '北京',
+          value: 'beijing',
+          children: [
+            { label: '朝阳区', value: 'chaoyang' },
+            { label: '海淀区', value: 'haidian' }
+          ]
+        },
+        {
+          label: '上海',
+          value: 'shanghai',
+          children: [
+            { label: '浦东新区', value: 'pudong' },
+            { label: '黄浦区', value: 'huangpu' }
+          ]
+        }
+      ],
+      allowClear: true
+    },
+    // 新增：为 React 版与 Vue3 对齐，预留一个自定义筛选占位（由 customFilterRender 渲染）
+    {
       key: 'custom',
       label: '自定义',
       component: 'custom',
+      span: 6
+    },
+    // 删除旧的 slot 自定义筛选项，改为 props + 配置/回调 方案
+    {
+      key: 'salary',
+      label: '薪资范围',
+      component: 'input',
+      placeholder: '请输入薪资',
       span: 6,
-      slotName: 'custom-filter'
+      props: {
+        type: 'number',
+        min: 0
+      }
+    },
+    {
+      key: 'education',
+      label: '学历',
+      component: 'select',
+      placeholder: '请选择学历',
+      span: 6,
+      options: [
+        { label: '高中', value: '高中' },
+        { label: '大专', value: '大专' },
+        { label: '本科', value: '本科' },
+        { label: '硕士', value: '硕士' },
+        { label: '博士', value: '博士' }
+      ],
+      allowClear: true
+    },
+    {
+      key: 'experience',
+      label: '工作经验',
+      component: 'select',
+      placeholder: '请选择经验',
+      span: 6,
+      options: [
+        { label: '1年以下', value: '1年以下' },
+        { label: '1-3年', value: '1-3年' },
+        { label: '3-5年', value: '3-5年' },
+        { label: '5-10年', value: '5-10年' },
+        { label: '10年以上', value: '10年以上' }
+      ],
+      allowClear: true
     }
   ]
 
@@ -238,7 +313,8 @@ function App() {
     addTestResult('Footer 主题切换', 'success', `主题切换到: ${theme}`)
   }
 
-  const handleLanguageChange = (locale: string) => {
+  const handleLanguageChange = (language: any) => {
+    const locale = typeof language === 'string' ? language : language?.locale
     addTestResult('Footer 语言切换', 'success', `语言切换到: ${locale}`)
   }
 
@@ -250,6 +326,41 @@ function App() {
     const buttonText = (event.target as HTMLButtonElement)?.textContent || '未知按钮'
     addTestResult('Button 点击', 'success', `按钮被点击: ${buttonText}`)
   }
+
+  // 自定义筛选渲染配置（替换 slot 方案）
+  const customFilterRenderConfig = React.useMemo(() => ({
+    type: 'inputGroup' as const,
+    inputGroup: {
+      selectConfig: {
+        type: 'select',
+        placeholder: '类型',
+        size: 'middle',
+        options: [
+          { label: '姓名', value: 'name' },
+          { label: '邮箱', value: 'email' },
+          { label: '电话', value: 'phone' }
+        ]
+      },
+      inputConfig: {
+        type: 'input',
+        placeholder: '请输入搜索内容',
+        allowClear: true,
+        size: 'middle'
+      },
+      selectWidth: '30%',
+      inputWidth: '70%'
+    }
+  }), [])
+
+  const handleCustomFilterRenderChange = React.useCallback((key: string, value: any) => {
+    // ProTable 内部已处理 updateFilterValue，这里仅做记录与本地 state 同步
+    if (value?.type === 'select') {
+      setCustomFilterType(String(value.value || 'custom'))
+    } else if (value?.type === 'input') {
+      setCustomFilterValue(String(value.value || ''))
+    }
+    addTestResult('ProTable 自定义筛选渲染', 'success', JSON.stringify({ key, value }))
+  }, [])
 
   const handleCustomFilterChange = () => {
     console.log('自定义筛选变化:', customFilterType, customFilterValue)
@@ -281,33 +392,6 @@ function App() {
       localStorage.setItem('MICRO_COMPONENT:DEBUG', 'true')
     }
   }, [])
-
-  const renderCustomFilter = () => (
-    <div style={{ width: '100%' }}>
-      <Space.Compact style={{ width: '100%' }}>
-        <Select 
-          value={customFilterType} 
-          onChange={setCustomFilterType}
-          style={{ width: '30%' }}
-          placeholder="类型"
-          size="middle"
-        >
-          <Option value="name">姓名</Option>
-          <Option value="email">邮箱</Option>
-          <Option value="phone">电话</Option>
-        </Select>
-        <Input 
-          value={customFilterValue}
-          onChange={(e) => setCustomFilterValue(e.target.value)}
-          style={{ width: '70%' }}
-          placeholder="请输入搜索内容" 
-          allowClear
-          size="middle"
-          onPressEnter={handleCustomFilterChange}
-        />
-      </Space.Compact>
-    </div>
-  )
 
   return (
     <div className="app">
@@ -375,7 +459,7 @@ function App() {
             <div className="component-demo">
               <MicroFooter
                 theme="light"
-                isI18nEnabled={true}
+                i18nEnabled={true}
                 languages={languages}
                 onThemeChange={handleThemeChange}
                 onLanguageChange={handleLanguageChange}
@@ -409,12 +493,14 @@ function App() {
                 showColumnConfig={true}
                 rowSelection={proTableRowSelection}
                 tableConfig={proTableConfig}
-               params={extraParams}
-               beforeRequest={beforeRequestHook}
+                params={extraParams}
+                beforeRequest={beforeRequestHook}
                 onSearch={handleProTableSearch}
                 onReset={handleProTableReset}
                 onSelectionChange={handleProTableSelectionChange}
-                customFilterSlot={renderCustomFilter}
+                // 新的: 通过 props + 配置/回调 定义自定义筛选
+                customFilterRender={customFilterRenderConfig}
+                onCustomFilterChange={handleCustomFilterRenderChange}
               />
             </div>
           </section>

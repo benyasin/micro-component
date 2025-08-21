@@ -35,3 +35,10 @@ declare module 'micro-components/react/Button' {
   const Button: ComponentType<ButtonProps>
   export default Button
 }
+
+// 新增：React ProTable 类型声明，解决测试项目导入时报错
+declare module 'micro-components/react/ProTable' {
+  import { ComponentType } from 'react'
+  const ProTable: ComponentType<any>
+  export default ProTable
+}
