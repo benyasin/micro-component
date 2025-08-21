@@ -944,9 +944,43 @@ const getCustomFilterProps = () => {
   return baseProps
 }
 
-const handleCustomFilterRenderChange = (value: any) => {
+// 记录当前自定义筛选键（用于 inputGroup：select 选择的字段）
+const customFilterKeyRef = ref<string>('custom')
+
+const handleCustomFilterRenderChange = (raw: any) => {
+  // inputGroup：传入形如 { type: 'select' | 'input', value: any }
+  if (raw && typeof raw === 'object' && 'type' in raw && Object.prototype.hasOwnProperty.call(raw, 'value')) {
+    const { type, value } = raw as { type: string; value: any }
+
+    if (type === 'select') {
+      // 选择筛选字段，仅记录当前选择，不直接写入筛选值
+      const v = value?.target?.value ?? value?.value ?? value
+      if (v !== undefined && v !== null && String(v).trim() !== '') {
+        customFilterKeyRef.value = String(v).trim()
+      } else {
+        customFilterKeyRef.value = 'custom'
+      }
+    } else if (type === 'input') {
+      // 更新输入值到内部筛选状态
+      const v = value?.target?.value ?? value?.value ?? value
+      const normalized = v !== undefined && v !== null && String(v).trim() !== '' ? String(v).trim() : null
+      updateFilterValue(customFilterKeyRef.value, normalized)
+    }
+
+    // 对外仍保持原有行为：透传原始对象，key 固定为 'custom'
+    if (proTableProps.value.onCustomFilterChange) {
+      proTableProps.value.onCustomFilterChange('custom', raw)
+    }
+    return
+  }
+
+  // 单一组件/原生事件：提取值并同步
+  const v = raw?.target?.value ?? raw?.value ?? raw
+  const nextVal = v !== undefined && v !== null && String(v).trim() !== '' ? v : null
+  updateFilterValue(customFilterKeyRef.value, nextVal)
+
   if (proTableProps.value.onCustomFilterChange) {
-    proTableProps.value.onCustomFilterChange('custom', value)
+    proTableProps.value.onCustomFilterChange('custom', v)
   }
 }
 
@@ -1048,41 +1082,18 @@ defineExpose<ProTableExpose>({
         
         &:hover {
           background-color: #40a9ff;
-          border-color: #40a9ff;
         }
       }
       
       &.mock-off {
-        background-color: #f5f5f5;
-        color: #666;
+        background-color: #fff;
+        color: #333;
         border-color: #d9d9d9;
         
         &:hover {
-          background-color: #e6f7ff;
+          border-color: #1890ff;
           color: #1890ff;
-          border-color: #91d5ff;
         }
-      }
-    }
-    
-    .mock-refresh-btn {
-      padding: 4px 12px;
-      font-size: 12px;
-      border-radius: 4px;
-      border: 1px solid #d9d9d9;
-      background-color: white;
-      color: #666;
-      cursor: pointer;
-      transition: all 0.2s;
-      
-      &:hover:not(:disabled) {
-        background-color: #f5f5f5;
-        border-color: #bfbfbf;
-      }
-      
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
       }
     }
   }

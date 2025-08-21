@@ -95,6 +95,8 @@
                   :tableConfig="proTableConfig"
                   :customFilterRender="customFilterRenderConfig"
                   :onCustomFilterChange="handleCustomFilterRenderChange"
+                  :params="extraParams"
+                  :beforeRequest="beforeRequestHook"
                   @search="handleProTableSearch"
                   @reset="handleProTableReset"
                   @selectionChange="handleProTableSelectionChange"

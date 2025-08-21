@@ -13,35 +13,13 @@
         <li>表格配置：边框、尺寸、滚动、粘性表头</li>
         <li>请求配置：模拟 API 调用</li>
       </ul>
-      <ProTable v-bind="comprehensiveExample" ref="proTableRef" @reset="handleReset">
-        <!-- 自定义筛选插槽 -->
-        <template #custom-filter="{ filterValues, updateFilter }">
-          <div class="custom-filter-demo">
-            <a-input-group compact>
-              <a-select 
-                v-model:value="customFilterType" 
-                style="width: 30%"
-                placeholder="类型"
-                size="middle"
-                :getPopupContainer="(triggerNode) => triggerNode?.parentNode"
-              >
-                <a-select-option value="name">姓名</a-select-option>
-                <a-select-option value="email">邮箱</a-select-option>
-                <a-select-option value="phone">电话</a-select-option>
-              </a-select>
-              <a-input 
-                v-model:value="customFilterValue"
-                style="width: 70%"
-                placeholder="请输入搜索内容" 
-                :allowClear="true"
-                size="middle"
-                @change="handleCustomFilterChange"
-                @pressEnter="handleCustomFilterChange"
-              />
-            </a-input-group>
-          </div>
-        </template>
-      </ProTable>
+      <ProTable 
+        v-bind="comprehensiveExample" 
+        ref="proTableRef" 
+        @reset="handleReset"
+        :customFilterRender="customFilterRenderConfig"
+        :onCustomFilterChange="handleCustomFilterRenderChange"
+      />
     </div>
   </div>
 </template>
@@ -50,40 +28,62 @@
 import { ref } from 'vue'
 import ProTable from '@/components/ProTable/ProTable.vue'
 import { comprehensiveExample } from '@/components/ProTable/example'
-import {
-  Input as AInput,
-  Select as ASelect,
-  SelectOption as ASelectOption,
-  InputGroup as AInputGroup
-} from 'ant-design-vue'
 
-// 自定义筛选组件的响应式数据
+// 自定义筛选组件的响应式数据（用于记录选择的筛选键和值）
 const customFilterType = ref('name')
 const customFilterValue = ref('')
 const proTableRef = ref()
 
-// 处理自定义筛选变化
-const handleCustomFilterChange = () => {
-  // 直接访问 ProTable 组件实例的方法
+// 使用 props + 配置/回调 的自定义筛选渲染配置
+const customFilterRenderConfig = {
+  type: 'inputGroup' as const,
+  inputGroup: {
+    selectConfig: {
+      type: 'select' as const,
+      placeholder: '类型',
+      size: 'middle' as const,
+      options: [
+        { label: '姓名', value: 'name' },
+        { label: '邮箱', value: 'email' },
+        { label: '电话', value: 'phone' }
+      ]
+    },
+    inputConfig: {
+      type: 'input' as const,
+      placeholder: '请输入搜索内容',
+      size: 'middle' as const,
+      allowClear: true
+    },
+    selectWidth: '30%',
+    inputWidth: '70%'
+  }
+}
+
+// 处理 ProTable 内部自定义筛选渲染的变化回调
+function handleCustomFilterRenderChange(key: string, value: any) {
+  // 这里兼容 inputGroup 的变更对象：{ type: 'select' | 'input', value: any }
+  if (value && typeof value === 'object' && value.type) {
+    if (value.type === 'select') {
+      customFilterType.value = value.value
+    } else if (value.type === 'input') {
+      customFilterValue.value = value.value
+    }
+  }
+
+  // 同步更新到 ProTable 的筛选值（如果有可用实例）
   const proTableInstance = proTableRef.value
   if (proTableInstance && proTableInstance.updateFilterValue) {
-    console.log('[Playground] 自定义筛选变化:', customFilterType.value, customFilterValue.value)
-    
-    // 根据选择的类型更新对应的筛选值
-    if (customFilterValue.value && customFilterValue.value.trim()) {
-      proTableInstance.updateFilterValue(customFilterType.value, customFilterValue.value.trim())
+    if (customFilterValue.value && String(customFilterValue.value).trim()) {
+      proTableInstance.updateFilterValue(customFilterType.value, String(customFilterValue.value).trim())
     } else {
-      // 如果值为空，清除对应的筛选值
+      // 值为空时，清除对应筛选
       proTableInstance.updateFilterValue(customFilterType.value, null)
     }
-  } else {
-    console.warn('[Playground] ProTable 实例或 updateFilterValue 方法不存在')
   }
 }
 
 // 处理重置事件
 const handleReset = () => {
-  console.log('[Playground] 重置事件触发，清空自定义筛选条件')
   // 重置自定义筛选组件的值
   customFilterType.value = 'name'
   customFilterValue.value = ''
@@ -91,40 +91,7 @@ const handleReset = () => {
 </script>
 
 <style scoped>
-.custom-filter-demo {
-  width: 100%;
-}
 </style>
 
 <style>
-/* 自定义筛选组件样式 - 只定义必要的特殊样式 */
-.custom-filter-demo {
-  width: 100%;
-}
-
-.custom-filter-demo .ant-input-group {
-  width: 100%;
-  display: flex;
-}
-
-.custom-filter-demo .ant-input-group .ant-select {
-  flex: 0 0 30%;
-}
-
-.custom-filter-demo .ant-input-group .ant-input {
-  flex: 1;
-  border-left: 0;
-}
-
-.custom-filter-demo .ant-input-group .ant-select:focus-within,
-.custom-filter-demo .ant-input-group .ant-input:focus {
-  z-index: 1;
-  border-left-width: 1px;
-}
-
-.custom-filter-tips {
-  margin-top: 4px;
-  display: flex;
-  gap: 4px;
-}
 </style>

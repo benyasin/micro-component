@@ -313,15 +313,22 @@ export const useProTable = (defaultProps?: Props) => {
       // 将 reactive 对象转换为普通对象，避免 Proxy 问题
       const plainFilterValues = JSON.parse(JSON.stringify(filterValues))
       
-      const params = {
+      // 合并分页、外部自定义参数以及筛选值
+      const baseParams = {
         current: paginationState.current,
         pageSize: paginationState.pageSize,
+        ...(proTableProps.value.params || {}),
         ...plainFilterValues
       }
       
-      console.log('[ProTable] 请求参数 (转换后):', params)
+      // 允许在请求前对参数做进一步处理
+      const finalParams = typeof proTableProps.value.beforeRequest === 'function'
+        ? (proTableProps.value.beforeRequest(baseParams) ?? baseParams)
+        : baseParams
       
-      const response = await proTableApi.getTableData(params, abortController.value?.signal)
+      console.log('[ProTable] 请求参数 (转换后):', finalParams)
+      
+      const response = await proTableApi.getTableData(finalParams, abortController.value?.signal)
       if (response.code === 200) {
         dataSource.value = response.data.list
         paginationState.total = response.data.total

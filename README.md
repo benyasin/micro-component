@@ -19,14 +19,15 @@
 - [常见问题](#常见问题)
 
 ## 特性速览
-- **跨栈复用**：一次开发，三端可用（Vue2/Vue3/React）
+- **跨栈复用**：一次开发，三端可用（Vue2/Vue3/React），通过智能包装器自动处理框架差异
 - **按需加载**：组件、样式、语言包与数据并行加载
-- **事件通信**：统一事件桥，跨框架一致的事件语义
+- **事件通信**：统一事件桥，跨框架一致的事件语义，包装器自动转换事件格式
 - **国际化**：运行时语言切换与 SSR 语言包
 - **主题与样式**：统一的样式注入、UnoCSS集成与就绪检测
 - **智能调度**：基于优先级的组件调度与并发管理，优化多组件场景
 - **稳定性**：超时保护、降级对象与完善卸载
 - **可观测**：内置调试日志与性能指标事件
+- **包装器机制**：自动语法转换、生命周期映射、事件桥接，开发者无需关心跨框架兼容性
 
 ## 项目结构
 
@@ -51,11 +52,13 @@ dist/                 # 构建产物（runtime 与各端组件）
 
 ## 核心概念
 - **组件（Component）**：以 Vue3 语法实现的业务组件，如 Footer、Button
-- **包装器（Wrapper）**：面向不同宿主框架的外层适配（Vue2/Vue3/React）
+- **包装器（Wrapper）**：面向不同宿主框架的外层适配（Vue2/Vue3/React），负责语法转换、事件桥接和生命周期映射
 - **运行时（Runtime）**：统一的调度与渲染中枢，负责组件创建、样式注入、事件桥与资源加载
 - **任务（Task）**：一次组件创建过程的抽象，带有优先级、状态与生命周期
 - **配置系统（Config System）**：多层次的配置合并机制，支持默认配置、基础配置和用户自定义配置的智能合并
 - **实例标识（Instance ID）**：确保每个组件实例唯一性的标识符，解决多实例场景下的冲突问题
+- **Teleport**：Vue3 的内置组件，用于将组件渲染到指定的 DOM 位置，实现跨框架的组件渲染
+- **事件桥（Event Bridge）**：跨框架事件通信机制，统一处理不同框架的事件传递和参数转换
 
 ## 组件配置系统
 
@@ -97,6 +100,85 @@ productLinks = targetConfig.productLinks || sourceConfig.productLinks || default
 
 ## 运行原理
 
+### 核心架构：包装器 + 运行时
+
+微组件系统的核心是**包装器（Wrapper）** + **运行时（Runtime）**的双层架构：
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Vue2 项目     │    │   React 项目    │    │   原生 HTML     │
+│                 │    │                 │    │                 │
+│  <MicroButton>  │    │  <MicroButton>  │    │  <micro-button> │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │   包装器层      │
+                    │  (Wrapper)      │
+                    │                 │
+                    │ Vue2 Wrapper    │
+                    │ React Wrapper   │
+                    │ Native Wrapper  │
+                    └─────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │   运行时层      │
+                    │  (Runtime)      │
+                    │                 │
+                    │ Vue3 内核       │
+                    │ 统一渲染引擎    │
+                    └─────────────────┘
+```
+
+### 为什么需要包装器？
+
+#### 1. 框架差异问题
+不同框架有自己的"语言"和语法规则：
+
+| 特性 | Vue3 | React | Vue2 |
+|------|------|-------|------|
+| 组件语法 | `<MyComponent>` | `<MyComponent>` | `<my-component>` |
+| 属性传递 | `:prop="value"` | `prop={value}` | `:prop="value"` |
+| 事件绑定 | `@click="handler"` | `onClick={handler}` | `@click="handler"` |
+| 生命周期 | `onMounted()` | `useEffect()` | `mounted()` |
+| 状态管理 | `ref()`, `reactive()` | `useState()` | `data()` |
+
+#### 2. 包装器的作用机制
+包装器就像"翻译官"，解决框架间的语言不通问题：
+
+```typescript
+// 外部项目调用（以 React 为例）
+<MicroButton text="点击我" onClick={handleClick} color="#1890ff" />
+
+// 包装器翻译过程
+export function getComponent({ elementId, type }) {
+  return React.forwardRef(function Comp(props, ref) {
+    // 1. 接收外部框架的属性
+    const { text, onClick, color } = props
+    
+    // 2. 转换为 Vue3 能理解的格式
+    const vueProps = {
+      text: text,           // React: text -> Vue3: text
+      color: color,         // React: color -> Vue3: color
+      onClick: onClick      // React: onClick -> Vue3: onClick
+    }
+    
+    // 3. 创建 Vue3 组件实例
+    useEffect(() => {
+      const microRuntime = await getMicroRutime()
+      component.current = await microRuntime.createComponent({
+        type: 'Button',
+        props: vueProps,  // 传递转换后的属性
+        el: el.current
+      })
+    }, [])
+    
+    return <div ref={el} />
+  })
+}
+```
+
 ### 跨框架抹平机制
 
 #### 1. 统一协议层
@@ -112,13 +194,123 @@ productLinks = targetConfig.productLinks || sourceConfig.productLinks || default
 
 #### 2. 事件桥（Event Bridge）
 - Vue3 的 `@click`、Vue2 的 `$listeners`、React 的 `onClick` 统一转换为 `onXxx` 回调
-- 组件内部只需要 `emit("xxx", payload)` 即可跨框架工作
+- 组件内部只需要 `emit("xxx", payload)"` 即可跨框架工作
 - 运行时自动处理事件类型转换和参数传递
 
 #### 3. 渲染与 Teleport
 - 运行时基于 Vue3 作为"统一渲染内核"
 - 通过 Vue3 的 Teleport，把组件的真实 DOM 渲染到外部提供的容器中
 - 外部框架只需提供一个 DOM 容器，无需关心内部实现
+
+### Vue3 Teleport 原理解析
+
+#### 什么是 Teleport？
+Teleport 是 Vue3 的内置组件，作用是把组件渲染到指定的 DOM 位置，而不是组件原本的位置。
+
+#### 在微组件中的作用
+```vue
+<!-- Vue3 组件内部 -->
+<template>
+  <div class="my-component">
+    <h1>我的组件</h1>
+    
+    <!-- 这个弹窗会被"传送"到外部容器 -->
+    <Teleport :to="container">
+      <div class="modal">
+        这是一个弹窗
+      </div>
+    </Teleport>
+  </div>
+</template>
+```
+
+**渲染结果：**
+```html
+<!-- 组件原本的位置 -->
+<div class="my-component">
+  <h1>我的组件</h1>
+</div>
+
+<!-- 弹窗被"传送"到了外部容器 -->
+<div id="external-container">
+  <div class="modal">
+    这是一个弹窗
+  </div>
+</div>
+```
+
+#### 为什么需要 Teleport？
+1. **避免样式冲突**：弹窗、提示框等需要渲染在页面顶层
+2. **避免 z-index 问题**：确保弹窗在最上层显示
+3. **避免父容器 overflow 限制**：弹窗不会被父容器裁剪
+4. **实现跨框架渲染**：把 Vue3 组件渲染到外部框架的容器中
+
+### 包装器生命周期映射
+
+#### Vue3 组件生命周期
+```typescript
+// Vue3 组件内部
+onMounted(() => {
+  console.log('Vue3 组件挂载完成')
+})
+
+onUnmounted(() => {
+  console.log('Vue3 组件卸载')
+})
+```
+
+#### 包装器生命周期映射
+```typescript
+// Vue2 包装器
+export default {
+  mounted() {
+    // Vue2 mounted -> 创建 Vue3 组件
+    this.createComponent()
+  },
+  
+  beforeDestroy() {
+    // Vue2 beforeDestroy -> 销毁 Vue3 组件
+    this.component?.instance?.unmount()
+  }
+}
+
+// React 包装器
+useEffect(() => {
+  // React mount -> 创建 Vue3 组件
+  createComponent()
+  
+  return () => {
+    // React unmount -> 销毁 Vue3 组件
+    component.current?.instance?.unmount()
+  }
+}, [])
+```
+
+### 事件传递机制
+
+#### 完整事件流程
+```typescript
+// 1. Vue3 组件触发事件
+const handleClick = () => {
+  emit('click', { data: 'some data' })
+}
+
+// 2. 运行时的事件总线接收
+eventBus.emit('click', { data: 'some data' })
+
+// 3. 包装器监听并转换
+component.current?.event?.on('event', (eventName, ...args) => {
+  // 转换为外部框架的事件
+  if (props[eventName]) {
+    props[eventName](...args)
+  }
+})
+
+// 4. 外部项目接收到事件
+const handleClick = (data) => {
+  console.log('按钮被点击了！', data)
+}
+```
 
 ### 完整流转流程
 
@@ -134,13 +326,114 @@ graph TD
     H --> I[卸载清理]
 ```
 
+#### 详细执行步骤
+
 1. **宿主侧调用** - Vue2/Vue3/React 通过对应包装器使用组件
-2. **运行时准备** - 创建并挂载隐藏的 Vue3 应用作为 Runtime 容器
-3. **智能调度** - 按优先级和实例唯一性管理组件创建队列
-4. **并行资源加载** - 并发加载组件代码、样式、语言包和预取数据
-5. **Teleport 渲染** - 使用 Vue Teleport 将真实 DOM 渲染到宿主容器
-6. **事件通信** - 建立双向事件桥，处理跨框架事件传递
-7. **生命周期管理** - 属性更新、重渲染与完善的卸载清理
+   ```typescript
+   // React 项目调用
+   <MicroButton text="点击我" onClick={handleClick} />
+   
+   // Vue2 项目调用  
+   <MicroButton text="点击我" @click="handleClick" />
+   
+   // Vue3 项目调用
+   <MicroButton text="点击我" @click="handleClick" />
+   ```
+
+2. **包装器转换** - 包装器接收并转换框架特定的语法
+   ```typescript
+   // 包装器统一转换
+   const unifiedProps = {
+     type: 'Button',
+     props: { text: '点击我', onClick: handleClick },
+     el: containerElement,
+     on: { onClick: handleClick }
+   }
+   ```
+
+3. **运行时接收** - 运行时接收统一格式的组件创建请求
+   ```typescript
+   // 运行时创建组件
+   const component = await microRuntime.createComponent({
+     type: 'Button',
+     props: unifiedProps.props,
+     el: unifiedProps.el
+   })
+   ```
+
+4. **任务入队** - 按优先级和实例唯一性管理组件创建队列
+   ```typescript
+   // 智能调度
+   const task = new Task({
+     priority: 0,  // 优先级
+     instanceId: generateUniqueId(),  // 实例唯一标识
+     componentType: 'Button'
+   })
+   ```
+
+5. **并行拉取资源** - 并发加载组件代码、样式、语言包和预取数据
+   ```typescript
+   // 并行资源加载
+   const [componentCode, styles, locales, data] = await Promise.all([
+     loadComponent('Button'),
+     loadStyles('Button'),
+     loadLocales('zh-CN'),
+     prefetchData('Button')
+   ])
+   ```
+
+6. **组件渲染** - 使用 Vue Teleport 将真实 DOM 渲染到宿主容器
+   ```typescript
+   // Vue3 组件渲染
+   const app = createApp(ButtonComponent, props)
+   app.mount(container)
+   
+   // 使用 Teleport 渲染到外部容器
+   <Teleport :to="externalContainer">
+     <ButtonComponent />
+   </Teleport>
+   ```
+
+7. **事件桥接** - 建立双向事件桥，处理跨框架事件传递
+   ```typescript
+   // 事件桥接
+   component.event.on('click', (data) => {
+     // 转换为外部框架的事件
+     externalFramework.emit('click', data)
+   })
+   ```
+
+8. **属性更新** - 响应外部属性变化，更新组件状态
+   ```typescript
+   // 属性更新
+   component.updateProps({
+     text: '新的文本',
+     color: '#ff0000'
+   })
+   ```
+
+9. **卸载清理** - 完善的组件卸载和资源清理
+   ```typescript
+   // 卸载清理
+   component.remove()
+   app.unmount()
+   cleanupResources()
+   ```
+
+#### 包装器在流程中的关键作用
+
+**包装器是整个流程的起点和终点**：
+
+- **起点**：接收外部框架的调用，转换为统一格式
+- **终点**：接收运行时的事件，转换为外部框架的事件
+
+**包装器解决了以下关键问题**：
+- ✅ **语法差异**：不同框架的属性传递和事件绑定语法
+- ✅ **生命周期差异**：不同框架的组件挂载和卸载时机
+- ✅ **事件系统差异**：不同框架的事件传递机制
+- ✅ **类型系统差异**：不同框架的类型定义和检查
+
+**核心价值**：**一次编写，到处运行** - 开发者只需要写一次 Vue3 组件，包装器自动处理跨框架的兼容性问题。
 
 ## 快速开始与用法
 
