@@ -362,11 +362,6 @@ function App() {
     addTestResult('ProTable 自定义筛选渲染', 'success', JSON.stringify({ key, value }))
   }, [])
 
-  const handleCustomFilterChange = () => {
-    console.log('自定义筛选变化:', customFilterType, customFilterValue)
-    addTestResult('ProTable 自定义筛选', 'success', `筛选类型: ${customFilterType}, 值: ${customFilterValue}`)
-  }
-
   const handleProTableSearch = (values: any) => {
     addTestResult('ProTable 搜索', 'success', `搜索参数: ${JSON.stringify(values)}`)
   }

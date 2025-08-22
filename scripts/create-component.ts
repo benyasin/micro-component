@@ -28,4 +28,12 @@ async function copyTemplate(name: string) {
 }
 
 const name = process.argv[2];
+
+if (!name) {
+  console.error('Error: Component name is required!');
+  console.log('Usage: npm run create-component <ComponentName>');
+  console.log('Example: npm run create-component MyNewComponent');
+  process.exit(1);
+}
+
 copyTemplate(name);

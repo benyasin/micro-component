@@ -6,7 +6,7 @@
 echo "正在检查并杀死占用端口的进程..."
 
 # 获取占用指定端口的进程ID并杀死
-PORTS="5171,5171,5173"
+PORTS="5171,5172,5173"
 PIDS=$(lsof -ti:$PORTS 2>/dev/null)
 
 if [ -n "$PIDS" ]; then
