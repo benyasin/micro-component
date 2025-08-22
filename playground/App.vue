@@ -58,7 +58,8 @@
 
 <script setup lang="ts">
 import { ref, watchEffect, watch } from 'vue'
-import { ConfigProvider, Select, SelectOption, Switch as AntSwitch } from 'ant-design-vue'
+import { Select, SelectOption, Switch as AntSwitch } from 'ant-design-vue'
+import ConfigProvider from '@/common/ConfigProvider/ConfigProvider.vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from '@/compositions/useI18n'
 import { defaultLanguageList } from '@/utils/config'

@@ -9,7 +9,7 @@ import Components from 'unplugin-vue-components/vite'
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
 import prefixer from 'postcss-prefix-selector'
 import postcssRtlcss from 'postcss-rtlcss'
-import replacePostcss from './postcss-replace.js'
+import replacePostcss from './postcss-replace'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { rm } from './utils.js'
 import terser from '@rollup/plugin-terser'
@@ -26,6 +26,15 @@ async function loadManifest() {
     }
   }
   throw new Error('manifest.json not found in dist')
+}
+
+async function fileExists(p: string) {
+  try {
+    await access(p)
+    return true
+  } catch {
+    return false
+  }
 }
 
 async function buildEntry() {
@@ -59,7 +68,7 @@ async function buildEntry() {
 async function getSplitChunks() {
   const makeRegexp = (...names) => [new RegExp(`\/node_modules\/(${names.join('|')})`)]
 
-  const chunks = {
+  const chunks: Record<string, any> = {
     // 将vite的辅助函数打包到一起，避免循环依赖
     vite: [/plugin-vue:export-helper/, /vite/, /___commonjsHelpers__/],
     vue: ['vue', 'vue-i18n'],
@@ -68,7 +77,6 @@ async function getSplitChunks() {
     lodash: makeRegexp('lodash-es'),
     qrcode: makeRegexp('qrcode'),
     swiper: makeRegexp('swiper'),
-    bitkeep: [/\/src\/utils\/bitkeep.js/],
     polyfill: [/\/src\/polyfill/],
     vendor: [/\/node_modules\//],
     common: [/\/src\/(common|services|types|utils|compositions)/, /\/src\/public\/images/]

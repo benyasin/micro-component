@@ -367,7 +367,6 @@ import {
   Dropdown as ADropdown,
   Menu as AMenu,
   MenuItem as AMenuItem,
-  ConfigProvider,
   Modal as AModal,
   Checkbox as ACheckbox,
   Row as ARow,
@@ -376,6 +375,7 @@ import {
   DatePicker as ADatePicker,
   RangePicker as ARangePicker
 } from 'ant-design-vue'
+import ConfigProvider from '@/common/ConfigProvider/ConfigProvider.vue'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import {
   SettingOutlined,
@@ -1120,15 +1120,15 @@ defineExpose<ProTableExpose>({
   border-radius: 6px;
   
   .search-wrap {
-    .ant-form-item {
+    .mc-ant-form-item {
       margin-bottom: 12px;
       
-      .ant-form-item-label {
+      .mc-ant-form-item-label {
         padding-bottom: 4px;
         line-height: 1.4;
       }
       
-      .ant-form-item-control {
+      .mc-ant-form-item-control {
         line-height: 1;
       }
     }
@@ -1143,24 +1143,24 @@ defineExpose<ProTableExpose>({
   .search-filter-item {
     margin-bottom: 16px;
     
-    .ant-form-item {
+    .mc-ant-form-item {
       width: 100%;
       margin: 0;
       
-      .ant-form-item-label {
+      .mc-ant-form-item-label {
         padding-bottom: 6px;
         line-height: 1.4;
         font-weight: 500;
         color: #333;
       }
       
-      .ant-form-item-control {
+      .mc-ant-form-item-control {
         line-height: 1;
         
-        .ant-input,
-        .ant-select,
-        .ant-cascader,
-        .ant-picker {
+        .mc-ant-input,
+        .mc-ant-select,
+        .mc-ant-cascader,
+        .mc-ant-picker {
           height: 32px;
           width: 100%;
         }
@@ -1182,13 +1182,13 @@ defineExpose<ProTableExpose>({
 }
 
 /* 深度覆盖 antd 样式 */
-:deep(.ant-cascader) {
+:deep(.mc-ant-cascader) {
   /* 限制整体高度 */
   --height: 28px; /* 根据设计系统调整高度 */
 }
 
 /* 选中标签容器 */
-:deep(.ant-select-selection-overflow) {
+:deep(.mc-ant-select-selection-overflow) {
   overflow-x: auto !important; /* 横向滚动 */
   overflow-y: hidden !important;
   flex-wrap: nowrap !important; /* 禁止换行 */
@@ -1203,10 +1203,10 @@ defineExpose<ProTableExpose>({
 }
 
 /* 级联选择器样式优化 */
-:deep(.ant-cascader-picker) {
+:deep(.mc-ant-cascader-picker) {
   height: var(--height);
   
-  .ant-cascader-picker-label {
+  .mc-ant-cascader-picker-label {
     height: var(--height);
     line-height: var(--height);
     padding: 0 8px;
@@ -1214,10 +1214,10 @@ defineExpose<ProTableExpose>({
 }
 
 /* 日期选择器样式优化 */
-:deep(.ant-picker) {
+:deep(.mc-ant-picker) {
   height: var(--height);
   
-  .ant-picker-input > input {
+  .mc-ant-picker-input > input {
     height: var(--height);
     line-height: var(--height);
   }

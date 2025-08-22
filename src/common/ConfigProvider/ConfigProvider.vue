@@ -1,11 +1,17 @@
 <template>
-  <ConfigProvider>
+  <ConfigProvider :prefixCls="prefixCls" :iconPrefixCls="iconPrefixCls" v-bind="$attrs">
     <slot v-bind="$attrs" />
   </ConfigProvider>
 </template>
 
 <script setup lang="ts">
 import { ConfigProvider } from 'ant-design-vue'
+import { useAttrs, computed } from 'vue'
+
+const attrs = useAttrs()
+// 默认使用 mc-ant 作为 Ant Design 的类名前缀，允许外部通过 attrs 覆盖
+const prefixCls = computed(() => (attrs.prefixCls as string) || 'mc-ant')
+const iconPrefixCls = computed(() => (attrs.iconPrefixCls as string) || 'mc')
 </script>
 
 <style lang="less">
