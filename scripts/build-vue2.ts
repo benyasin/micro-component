@@ -5,6 +5,7 @@ import postcssRtlcss from 'postcss-rtlcss'
 import { copyTemplate, rm } from './utils.js'
 import terser from '@rollup/plugin-terser'
 
+
 async function buildComponents() {
   const templateFiles = await copyTemplate('vue2', 'temp')
 

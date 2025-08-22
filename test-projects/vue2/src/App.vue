@@ -3,7 +3,7 @@
     <header class="header">
       <h1>Micro Component Vue2 Test</h1>
       <p>测试编译后的组件产物在 Vue2 环境下的运行情况</p>
-      
+
       <!-- 组件选择器 -->
       <div class="component-selector">
         <span>Components:</span>
@@ -14,7 +14,11 @@
           show-search
           @change="onComponentChange"
         >
-          <a-select-option v-for="component in components" :key="component.value" :value="component.value">
+          <a-select-option
+            v-for="component in components"
+            :key="component.value"
+            :value="component.value"
+          >
             {{ component.label }}
           </a-select-option>
         </a-select>
@@ -33,20 +37,20 @@
             <MicroButton text="警告按钮" color="#faad14" @click="handleButtonClick" />
             <MicroButton text="危险按钮" color="#ff4d4f" @click="handleButtonClick" />
           </div>
-          
+
           <div class="button-group">
             <MicroButton text="大按钮" size="large" color="#1890ff" @click="handleButtonClick" />
             <MicroButton text="中按钮" size="medium" color="#1890ff" @click="handleButtonClick" />
             <MicroButton text="小按钮" size="small" color="#1890ff" @click="handleButtonClick" />
           </div>
-          
+
           <div class="button-group">
             <MicroButton text="绿色" color="#52c41a" @click="handleButtonClick" />
             <MicroButton text="橙色" color="#fa8c16" @click="handleButtonClick" />
             <MicroButton text="紫色" color="#722ed1" @click="handleButtonClick" />
             <MicroButton text="粉色" color="#eb2f96" @click="handleButtonClick" />
           </div>
-          
+
           <div class="button-group">
             <MicroButton text="点击我" color="#1890ff" @click="handleButtonClick" />
           </div>
@@ -57,7 +61,7 @@
       <section v-if="selectedComponent === 'footer'" class="test-section">
         <h2>Footer 组件测试</h2>
         <div class="component-demo">
-          <MicroFooter 
+          <MicroFooter
             :theme="'light'"
             :is-i18n-enabled="true"
             :languages="languages"
@@ -99,10 +103,10 @@
             @selectionChange="handleProTableSelectionChange"
           >
             <template v-slot:custom-filter="{ filterValues, updateFilter }">
-              <div style="width: 100%;">
+              <div style="width: 100%">
                 <a-input-group compact>
-                  <a-select 
-                    v-model="customFilterType" 
+                  <a-select
+                    v-model="customFilterType"
                     style="width: 30%"
                     placeholder="类型"
                     size="middle"
@@ -111,10 +115,10 @@
                     <a-select-option value="email">邮箱</a-select-option>
                     <a-select-option value="phone">电话</a-select-option>
                   </a-select>
-                  <a-input 
+                  <a-input
                     v-model="customFilterValue"
                     style="width: 70%"
-                    placeholder="请输入搜索内容" 
+                    placeholder="请输入搜索内容"
                     :allowClear="true"
                     size="middle"
                     @change="() => handleCustomFilterChange(updateFilter)"
@@ -131,16 +135,15 @@
       <section class="test-section">
         <h2>测试结果</h2>
         <div class="test-results">
-          <div v-if="testResults.length === 0" class="no-results">
-            暂无测试结果
-          </div>
+          <div v-if="testResults.length === 0" class="no-results">暂无测试结果</div>
           <div v-else>
-            <div 
-              v-for="result in testResults" 
+            <div
+              v-for="result in testResults"
               :key="result.id"
               :class="['test-result', result.status]"
             >
-              <strong>{{ result.name }}</strong>: {{ result.message }}
+              <strong>{{ result.name }}</strong>
+              : {{ result.message }}
             </div>
           </div>
         </div>
@@ -176,10 +179,10 @@ export default {
         { locale: 'en', languageName: 'English' },
         { locale: 'zh', languageName: '中文' }
       ],
-     // 自定义请求参数（用于验证 params 传递）
+      // 自定义请求参数（用于验证 params 传递）
       extraParams: {
-       from: 'vue2-test',
-       fixedFlag: true
+        from: 'vue2-test',
+        fixedFlag: true
       },
       // ProTable 配置
       proTableColumns: [
@@ -402,7 +405,11 @@ export default {
         selectedRowKeys: ['1'],
         onChange: (selectedRowKeys, selectedRows) => {
           console.log('选中的行:', selectedRowKeys, selectedRows)
-          this.addTestResult('ProTable 行选择', 'success', `选中了 ${selectedRowKeys.length} 行数据`)
+          this.addTestResult(
+            'ProTable 行选择',
+            'success',
+            `选中了 ${selectedRowKeys.length} 行数据`
+          )
         }
       },
       proTableConfig: {
@@ -443,7 +450,7 @@ export default {
     },
     handleCustomFilterChange(updateFilterFn) {
       console.log('自定义筛选变化:', this.customFilterType, this.customFilterValue)
-      
+
       // 根据选择的类型更新对应的筛选值
       if (this.customFilterValue && this.customFilterValue.trim()) {
         // 使用插槽传递的 updateFilter 方法
@@ -467,8 +474,12 @@ export default {
           }
         }
       }
-      
-      this.addTestResult('ProTable 自定义筛选', 'success', `筛选类型: ${this.customFilterType}, 值: ${this.customFilterValue}`)
+
+      this.addTestResult(
+        'ProTable 自定义筛选',
+        'success',
+        `筛选类型: ${this.customFilterType}, 值: ${this.customFilterValue}`
+      )
     },
     handleProTableSearch(values) {
       this.addTestResult('ProTable 搜索', 'success', `搜索参数: ${JSON.stringify(values)}`)
@@ -488,8 +499,8 @@ export default {
       this.addTestResult('Vue2 beforeRequest 调用', 'success', JSON.stringify(merged))
       return merged
     }
-   }
- }
+  }
+}
 </script>
 
 <style scoped>
@@ -508,6 +519,55 @@ export default {
 
 .component-select {
   width: 200px;
+}
+
+/* 确保Ant Design Select组件样式正确显示 */
+.component-selector .ant-select {
+  width: 200px;
+}
+
+.component-selector .ant-select-selection {
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  display: block;
+  font-size: 14px;
+  height: 32px;
+  line-height: 30px;
+  outline: none;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.component-selector .ant-select-selection:hover {
+  border-color: #40a9ff;
+}
+
+.component-selector .ant-select-focused .ant-select-selection {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.component-selector .ant-select-selection__rendered {
+  display: block;
+  line-height: 30px;
+  margin-left: 11px;
+  margin-right: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.component-selector .ant-select-arrow {
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 12px;
+  line-height: 1;
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
 }
 
 .main {
