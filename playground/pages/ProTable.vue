@@ -1,18 +1,34 @@
 <template>
   <div class="p-20px">
+    <!-- 演示头部（从组件内移到页面） -->
+    <div class="mb-12 p-16px border border-$line rounded-6 bg-cardBg text-primaryText flex items-start justify-between" style="position:relative; z-index:1;">
+      <div>
+        <h3 class="m-0 mb-8px font-600" style="font-size: 20px; line-height: 28px;">员工管理系统</h3>
+        <p class="m-0 text-secondaryText" style="font-size: 14px; line-height: 22px;">这是一个全面的 ProTable 示例，展示了所有可用的功能和属性</p>
+      </div>
+      <div class="flex items-center gap-8px">
+        <button
+          type="button"
+          class="px-12px py-4px rounded-4 border border-$line"
+          style="font-size:12px; cursor:pointer;"
+          @click="toggleMockSwitch"
+        >
+          {{ isMockOn ? 'Mock ON' : 'Mock OFF' }}
+        </button>
+        <button
+          type="button"
+          class="px-12px py-4px rounded-4 bg-#1677ff text-white"
+          style="font-size:12px; cursor:pointer; border:1px solid #1677ff;"
+          :disabled="isMockLoading"
+          @click="refreshMockData"
+        >
+          {{ isMockLoading ? '加载中...' : '刷新数据' }}
+        </button>
+      </div>
+    </div>
+
     <!-- 全面示例 -->
     <div class="mb-12">
-      <p class="text-gray-600 mb-4">这个示例展示了 ProTable 的所有功能和属性，包括：</p>
-      <ul class="text-gray-400 font-size-4 mb-6 list-disc list-inside space-y-1">
-        <li>表格基础功能：排序、筛选、固定列、省略号</li>
-        <li>自定义渲染：状态颜色、操作按钮</li>
-        <li>筛选功能：输入框、下拉选择、数字输入</li>
-        <li>分页功能：页码、每页条数、快速跳转、总数显示</li>
-        <li>行选择：多选、选择回调</li>
-        <li>操作栏：刷新、全屏、列配置、尺寸切换</li>
-        <li>表格配置：边框、尺寸、滚动、粘性表头</li>
-        <li>请求配置：模拟 API 调用</li>
-      </ul>
       <ProTable 
         v-bind="comprehensiveExample" 
         ref="proTableRef" 
@@ -25,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import ProTable from '@/components/ProTable/ProTable.vue'
 import { comprehensiveExample } from '@/components/ProTable/example'
 
@@ -33,6 +49,23 @@ import { comprehensiveExample } from '@/components/ProTable/example'
 const customFilterType = ref('name')
 const customFilterValue = ref('')
 const proTableRef = ref()
+// 顶部演示区：按钮方法与状态
+const isMockOn = computed(() => Boolean((proTableRef as any)?.value?.mockEnabled))
+const isMockLoading = computed(() => Boolean((proTableRef as any)?.value?.mockLoading))
+
+function toggleMockSwitch() {
+  const inst: any = (proTableRef as any)?.value
+  if (inst && typeof inst.toggleMock === 'function') {
+    inst.toggleMock(!inst.mockEnabled)
+  }
+}
+
+function refreshMockData() {
+  const inst: any = (proTableRef as any)?.value
+  if (inst && typeof inst.loadMockData === 'function') {
+    inst.loadMockData()
+  }
+}
 
 // 使用 props + 配置/回调 的自定义筛选渲染配置
 const customFilterRenderConfig = {
@@ -89,9 +122,3 @@ const handleReset = () => {
   customFilterValue.value = ''
 }
 </script>
-
-<style scoped>
-</style>
-
-<style>
-</style>

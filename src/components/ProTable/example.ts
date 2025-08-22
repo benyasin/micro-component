@@ -148,10 +148,6 @@ export const mockFilters: FilterItem[] = [
 
 // 全面示例 - 涵盖所有属性
 export const comprehensiveExample: Props = {
-  // 基础信息
-  title: '员工管理系统',
-  description: '这是一个全面的 ProTable 示例，展示了所有可用的功能和属性',
-  
   // 表格配置
   columns: [
     {

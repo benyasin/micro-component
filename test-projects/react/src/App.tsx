@@ -3,6 +3,7 @@ import { Select } from 'antd'
 import MicroFooter from 'micro-components/react/Footer'
 import MicroButton from 'micro-components/react/Button'
 import MicroProTable from 'micro-components/react/ProTable'
+import { comprehensiveExample } from '@/components/ProTable/example'
 import './App.css'
 
 const { Option } = Select
@@ -24,6 +25,8 @@ function App() {
   const [testResults, setTestResults] = useState<TestResult[]>([])
   const [customFilterType, setCustomFilterType] = useState<string>('name')
   const [customFilterValue, setCustomFilterValue] = useState<string>('')
+  const [isMockOn, setIsMockOn] = useState<boolean>(true)
+  const [refreshTick, setRefreshTick] = useState<number>(0)
 
   // 统一记录测试输出
   // 确保唯一且稳定的 ID，避免 React key 警告
@@ -53,245 +56,17 @@ function App() {
     { locale: 'zh-CN', languageKey: 'zh_CN', languageType: 1, languageName: '中文' }
   ]
 
-  const proTableColumns = [
-    {
-      title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
-      width: 120
-    },
-    {
-      title: '年龄',
-      dataIndex: 'age',
-      key: 'age',
-      width: 80
-    },
-    {
-      title: '部门',
-      dataIndex: 'department',
-      key: 'department',
-      width: 120
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      width: 100
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
-      width: 120
-    },
-    {
-      title: '薪资',
-      dataIndex: 'salary',
-      key: 'salary',
-      width: 100,
-      sorter: true
-    },
-    {
-      title: '学历',
-      dataIndex: 'education',
-      key: 'education',
-      width: 100
-    }
-  ]
+  const proTableColumns = comprehensiveExample.columns as any;
 
-  const proTableData = [
-    {
-      id: '1',
-      name: '张三',
-      age: 25,
-      department: '技术部',
-      status: '在职',
-      createTime: '2023-01-15',
-      salary: 15000,
-      education: '本科'
-    },
-    {
-      id: '2',
-      name: '李四',
-      age: 30,
-      department: '产品部',
-      status: '在职',
-      createTime: '2023-02-20',
-      salary: 18000,
-      education: '硕士'
-    },
-    {
-      id: '3',
-      name: '王五',
-      age: 28,
-      department: '设计部',
-      status: '离职',
-      createTime: '2023-03-10',
-      salary: 12000,
-      education: '本科'
-    },
-    {
-      id: '4',
-      name: '赵六',
-      age: 32,
-      department: '技术部',
-      status: '在职',
-      createTime: '2023-04-05',
-      salary: 20000,
-      education: '硕士'
-    },
-    {
-      id: '5',
-      name: '钱七',
-      age: 27,
-      department: '市场部',
-      status: '在职',
-      createTime: '2023-05-12',
-      salary: 14000,
-      education: '大专'
-    }
-  ]
+  const proTableData = comprehensiveExample.dataSource as any;
 
-  const proTableFilters = [
-    {
-      key: 'name',
-      label: '姓名',
-      component: 'input',
-      placeholder: '请输入姓名',
-      span: 6,
-      allowClear: true
-    },
-    {
-      key: 'department',
-      label: '部门',
-      component: 'select',
-      placeholder: '请选择部门',
-      span: 6,
-      options: [
-        { label: '技术部', value: '技术部' },
-        { label: '产品部', value: '产品部' },
-        { label: '设计部', value: '设计部' },
-        { label: '市场部', value: '市场部' }
-      ],
-      allowClear: true
-    },
-    {
-      key: 'status',
-      label: '状态',
-      component: 'select',
-      placeholder: '请选择状态',
-      span: 6,
-      options: [
-        { label: '在职', value: '在职' },
-        { label: '离职', value: '离职' }
-      ],
-      allowClear: true
-    },
-    {
-      key: 'region',
-      label: '地区',
-      component: 'cascader',
-      placeholder: '请选择地区',
-      span: 6,
-      options: [
-        {
-          label: '北京',
-          value: 'beijing',
-          children: [
-            { label: '朝阳区', value: 'chaoyang' },
-            { label: '海淀区', value: 'haidian' }
-          ]
-        },
-        {
-          label: '上海',
-          value: 'shanghai',
-          children: [
-            { label: '浦东新区', value: 'pudong' },
-            { label: '黄浦区', value: 'huangpu' }
-          ]
-        }
-      ],
-      allowClear: true
-    },
-    // 新增：为 React 版与 Vue3 对齐，预留一个自定义筛选占位（由 customFilterRender 渲染）
-    {
-      key: 'custom',
-      label: '自定义',
-      component: 'custom',
-      span: 6
-    },
-    // 删除旧的 slot 自定义筛选项，改为 props + 配置/回调 方案
-    {
-      key: 'salary',
-      label: '薪资范围',
-      component: 'input',
-      placeholder: '请输入薪资',
-      span: 6,
-      props: {
-        type: 'number',
-        min: 0
-      }
-    },
-    {
-      key: 'education',
-      label: '学历',
-      component: 'select',
-      placeholder: '请选择学历',
-      span: 6,
-      options: [
-        { label: '高中', value: '高中' },
-        { label: '大专', value: '大专' },
-        { label: '本科', value: '本科' },
-        { label: '硕士', value: '硕士' },
-        { label: '博士', value: '博士' }
-      ],
-      allowClear: true
-    },
-    {
-      key: 'experience',
-      label: '工作经验',
-      component: 'select',
-      placeholder: '请选择经验',
-      span: 6,
-      options: [
-        { label: '1年以下', value: '1年以下' },
-        { label: '1-3年', value: '1-3年' },
-        { label: '3-5年', value: '3-5年' },
-        { label: '5-10年', value: '5-10年' },
-        { label: '10年以上', value: '10年以上' }
-      ],
-      allowClear: true
-    }
-  ]
+  const proTableFilters = comprehensiveExample.filters as any;
 
-  const proTablePagination = {
-    current: 1,
-    pageSize: 10,
-    total: 5,
-    showSizeChanger: true,
-    showQuickJumper: true,
-    pageSizeOptions: ['10', '20', '50', '100'],
-    showTotal: (total: number, range: [number, number]) => 
-      `第 ${range[0]}-${range[1]} 条，共 ${total} 条记录`
-  }
+  const proTablePagination = comprehensiveExample.pagination as any
 
-  const proTableRowSelection = {
-    selectedRowKeys: ['1'],
-    onChange: (selectedRowKeys: string[], selectedRows: any[]) => {
-      console.log('选中的行:', selectedRowKeys, selectedRows)
-      addTestResult('ProTable 行选择', 'success', `选中了 ${selectedRowKeys.length} 行数据`)
-    }
-  }
+  const proTableRowSelection = comprehensiveExample.rowSelection as any
 
-  const proTableConfig = {
-    rowKey: 'id',
-    loading: false,
-    bordered: true,
-    size: 'middle' as const,
-    scroll: { x: 1000, y: 400 },
-    showHeader: true,
-    sticky: true
-  }
+  const proTableConfig = comprehensiveExample.tableConfig as any
 
  // 自定义请求参数（用于验证 params 传递）
  const extraParams = React.useMemo(() => ({ from: 'react-test', fixedFlag: true }), [])
@@ -320,6 +95,16 @@ function App() {
 
   const handleLinkClick = (link: any) => {
     addTestResult('Footer 链接点击', 'success', `点击链接: ${link.title}`)
+  }
+
+  // 顶部 Mock 控件动作（不依赖内部暴露方法，通过受控 props 驱动）
+  const toggleMockSwitch = () => {
+    setIsMockOn(prev => !prev)
+    addTestResult('Mock 切换', 'success', `切换为: ${!isMockOn ? 'ON' : 'OFF'}`)
+  }
+  const refreshMockData = () => {
+    setRefreshTick(t => t + 1)
+    addTestResult('Mock 刷新', 'success', '已触发刷新')
   }
 
   const handleButtonClick = (event: MouseEvent) => {
@@ -468,12 +253,29 @@ function App() {
         {selectedComponent === 'protable' && (
           <section className="test-section">
             <h2>ProTable 组件测试</h2>
+            {/* 从组件内部移出的演示头部与 Mock 控制 */}
+            <div className="component-demo" style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+              <div>
+                <h3 style={{ margin: '0 0 8px 0' }}>员工管理系统</h3>
+                <p style={{ margin: 0, color: '#666' }}>这是一个全面的 ProTable 示例，展示了所有可用的功能和属性</p>
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button type="button" onClick={toggleMockSwitch} style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, border: '1px solid #d9d9d9', cursor: 'pointer' }}>
+                  {isMockOn ? 'Mock ON' : 'Mock OFF'}
+                </button>
+                <button type="button" onClick={refreshMockData} style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, background: '#1677ff', color: '#fff', border: '1px solid #1677ff', cursor: 'pointer' }}>
+                  刷新数据
+                </button>
+              </div>
+            </div>
             <div className="component-demo">
               <MicroProTable
+                key={`protable-${isMockOn ? 'on' : 'off'}-${refreshTick}`}
                 title="员工管理系统"
                 description="这是一个全面的 ProTable 示例，展示了所有可用的功能和属性"
                 columns={proTableColumns}
                 dataSource={proTableData}
+                mockEnabled={isMockOn}
                 showFilter={true}
                 needExpand={true}
                 isExpand={false}
@@ -488,7 +290,7 @@ function App() {
                 showColumnConfig={true}
                 rowSelection={proTableRowSelection}
                 tableConfig={proTableConfig}
-                params={extraParams}
+                params={{ ...extraParams, _tick: refreshTick }}
                 beforeRequest={beforeRequestHook}
                 onSearch={handleProTableSearch}
                 onReset={handleProTableReset}

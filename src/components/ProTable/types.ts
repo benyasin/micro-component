@@ -174,4 +174,11 @@ export interface ProTableExpose {
   reset: () => void
   clearSelection: () => void
   getSelectedRows: () => any[]
+  // 筛选辅助
+  updateFilterValue?: (key: string, value: any) => void
+  // Mock 能力暴露给外层演示
+  loadMockData?: () => Promise<void> | void
+  toggleMock?: (enabled: boolean) => void
+  mockEnabled?: boolean
+  mockLoading?: boolean
 }

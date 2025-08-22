@@ -49,8 +49,10 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
-      '@root': resolve(__dirname, '../../src'),
+      // 将 @ 指向仓库根的 src，以便直接使用 '@/components/ProTable/example'
+      '@': resolve(__dirname, '../../src'),
+      // 应用自身源码使用 @app
+      '@app': resolve(__dirname, './src'),
       'micro-components/vue': resolve(__dirname, '../../dist/components/vue')
     }
   },

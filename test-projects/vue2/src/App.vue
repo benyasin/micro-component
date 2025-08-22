@@ -75,13 +75,30 @@
       <!-- ProTable 组件 -->
       <section v-if="selectedComponent === 'protable'" class="test-section">
         <h2>ProTable 组件测试</h2>
+        <!-- 从组件内部移出的演示头部与 Mock 控制 -->
+        <div class="component-demo" style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; position:relative; z-index:1;">
+          <div>
+            <h3 style="margin:0 0 8px 0; font-size:20px; line-height:28px;">员工管理系统</h3>
+            <p style="margin:0; color:#666; font-size:14px; line-height:22px;">这是一个全面的 ProTable 示例，展示了所有可用的功能和属性</p>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button type="button" @click="toggleMockSwitch" style="padding:4px 12px; font-size:12px; border-radius:4px; border:1px solid #d9d9d9; cursor:pointer;">
+              {{ isMockOn ? 'Mock ON' : 'Mock OFF' }}
+            </button>
+            <button type="button" @click="refreshMockData" style="padding:4px 12px; font-size:12px; border-radius:4px; background:#1677ff; color:#fff; border:1px solid #1677ff; cursor:pointer;">
+              刷新数据
+            </button>
+          </div>
+        </div>
         <div class="component-demo">
           <MicroProTable
+            :key="'protable-' + (isMockOn ? 'on' : 'off') + '-' + refreshTick"
             ref="proTableRef"
             title="员工管理系统"
             description="这是一个全面的 ProTable 示例，展示了所有可用的功能和属性"
             :columns="proTableColumns"
             :dataSource="proTableData"
+            :mockEnabled="isMockOn"
             :showFilter="true"
             :needExpand="true"
             :isExpand="false"
@@ -96,7 +113,7 @@
             :showColumnConfig="true"
             :rowSelection="proTableRowSelection"
             :tableConfig="proTableConfig"
-            :params="extraParams"
+            :params="{ ...extraParams, _tick: refreshTick }"
             :beforeRequest="beforeRequestHook"
             @search="handleProTableSearch"
             @reset="handleProTableReset"
@@ -156,6 +173,7 @@
 const MicroFooter = require('micro-components/vue2/Footer')
 const MicroButton = require('micro-components/vue2/Button')
 const MicroProTable = require('micro-components/vue2/ProTable')
+const { comprehensiveExample } = require('@/components/ProTable/example')
 
 export default {
   name: 'App',
@@ -170,6 +188,8 @@ export default {
       testResults: [],
       customFilterType: 'name',
       customFilterValue: '',
+      isMockOn: true,
+      refreshTick: 0,
       components: [
         { label: 'Button', value: 'button' },
         { label: 'Footer', value: 'footer' },
@@ -184,246 +204,29 @@ export default {
         from: 'vue2-test',
         fixedFlag: true
       },
-      // ProTable 配置
-      proTableColumns: [
-        {
-          title: '姓名',
-          dataIndex: 'name',
-          key: 'name',
-          width: 120
-        },
-        {
-          title: '年龄',
-          dataIndex: 'age',
-          key: 'age',
-          width: 80
-        },
-        {
-          title: '部门',
-          dataIndex: 'department',
-          key: 'department',
-          width: 120
-        },
-        {
-          title: '状态',
-          dataIndex: 'status',
-          key: 'status',
-          width: 100
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'createTime',
-          key: 'createTime',
-          width: 120
-        },
-        {
-          title: '薪资',
-          dataIndex: 'salary',
-          key: 'salary',
-          width: 100,
-          sorter: true
-        },
-        {
-          title: '学历',
-          dataIndex: 'education',
-          key: 'education',
-          width: 100
-        }
-      ],
-      proTableData: [
-        {
-          id: '1',
-          name: '张三',
-          age: 25,
-          department: '技术部',
-          status: '在职',
-          createTime: '2023-01-15',
-          salary: 15000,
-          education: '本科'
-        },
-        {
-          id: '2',
-          name: '李四',
-          age: 30,
-          department: '产品部',
-          status: '在职',
-          createTime: '2023-02-20',
-          salary: 18000,
-          education: '硕士'
-        },
-        {
-          id: '3',
-          name: '王五',
-          age: 28,
-          department: '设计部',
-          status: '离职',
-          createTime: '2023-03-10',
-          salary: 12000,
-          education: '本科'
-        },
-        {
-          id: '4',
-          name: '赵六',
-          age: 32,
-          department: '技术部',
-          status: '在职',
-          createTime: '2023-04-05',
-          salary: 20000,
-          education: '硕士'
-        },
-        {
-          id: '5',
-          name: '钱七',
-          age: 27,
-          department: '市场部',
-          status: '在职',
-          createTime: '2023-05-12',
-          salary: 14000,
-          education: '大专'
-        }
-      ],
-      proTableFilters: [
-        {
-          key: 'name',
-          label: '姓名',
-          component: 'input',
-          placeholder: '请输入姓名',
-          span: 6,
-          allowClear: true
-        },
-        {
-          key: 'department',
-          label: '部门',
-          component: 'select',
-          placeholder: '请选择部门',
-          span: 6,
-          options: [
-            { label: '技术部', value: '技术部' },
-            { label: '产品部', value: '产品部' },
-            { label: '设计部', value: '设计部' },
-            { label: '市场部', value: '市场部' }
-          ],
-          allowClear: true
-        },
-        {
-          key: 'status',
-          label: '状态',
-          component: 'select',
-          placeholder: '请选择状态',
-          span: 6,
-          options: [
-            { label: '在职', value: '在职' },
-            { label: '离职', value: '离职' }
-          ],
-          allowClear: true
-        },
-        {
-          key: 'region',
-          label: '地区',
-          component: 'cascader',
-          placeholder: '请选择地区',
-          span: 6,
-          options: [
-            {
-              label: '北京',
-              value: 'beijing',
-              children: [
-                { label: '朝阳区', value: 'chaoyang' },
-                { label: '海淀区', value: 'haidian' }
-              ]
-            },
-            {
-              label: '上海',
-              value: 'shanghai',
-              children: [
-                { label: '浦东新区', value: 'pudong' },
-                { label: '黄浦区', value: 'huangpu' }
-              ]
-            }
-          ],
-          allowClear: true
-        },
-        {
-          key: 'custom',
-          label: '自定义',
-          component: 'custom',
-          span: 6,
-          slotName: 'custom-filter'
-        },
-        {
-          key: 'salary',
-          label: '薪资范围',
-          component: 'input',
-          placeholder: '请输入薪资',
-          span: 6,
-          props: {
-            type: 'number',
-            min: 0
-          }
-        },
-        {
-          key: 'education',
-          label: '学历',
-          component: 'select',
-          placeholder: '请选择学历',
-          span: 6,
-          options: [
-            { label: '高中', value: '高中' },
-            { label: '大专', value: '大专' },
-            { label: '本科', value: '本科' },
-            { label: '硕士', value: '硕士' },
-            { label: '博士', value: '博士' }
-          ],
-          allowClear: true
-        },
-        {
-          key: 'experience',
-          label: '工作经验',
-          component: 'select',
-          placeholder: '请选择经验',
-          span: 6,
-          options: [
-            { label: '1年以下', value: '1年以下' },
-            { label: '1-3年', value: '1-3年' },
-            { label: '3-5年', value: '3-5年' },
-            { label: '5-10年', value: '5-10年' },
-            { label: '10年以上', value: '10年以上' }
-          ],
-          allowClear: true
-        }
-      ],
-      proTablePagination: {
-        current: 1,
-        pageSize: 10,
-        total: 5,
-        showSizeChanger: true,
-        showQuickJumper: true,
-        pageSizeOptions: ['10', '20', '50', '100'],
-        showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条，共 ${total} 条记录`
-      },
-      proTableRowSelection: {
-        selectedRowKeys: ['1'],
-        onChange: (selectedRowKeys, selectedRows) => {
-          console.log('选中的行:', selectedRowKeys, selectedRows)
-          this.addTestResult(
-            'ProTable 行选择',
-            'success',
-            `选中了 ${selectedRowKeys.length} 行数据`
-          )
-        }
-      },
-      proTableConfig: {
-        rowKey: 'id',
-        loading: false,
-        bordered: true,
-        size: 'middle',
-        scroll: { x: 1000, y: 400 },
-        showHeader: true,
-        sticky: true
-      }
+      // ProTable 配置（与 playground 保持一致）
+      proTableColumns: comprehensiveExample.columns,
+      proTableData: comprehensiveExample.dataSource,
+      proTableFilters: comprehensiveExample.filters,
+      proTablePagination: comprehensiveExample.pagination,
+      proTableRowSelection: comprehensiveExample.rowSelection,
+      proTableConfig: comprehensiveExample.tableConfig
     }
   },
+  // 第二个 data 定义会覆盖第一个，导致 selectedComponent/ components 未初始化
+  // 移除该重复 data，改为把 isMockOn/refreshTick 放入上面的 data 中
   methods: {
+    toggleMockSwitch() {
+      this.isMockOn = !this.isMockOn
+      const inst = this.$refs.proTableRef
+      if (inst && typeof inst.toggleMock === 'function') inst.toggleMock(this.isMockOn)
+      this.refreshTick += 1
+    },
+    refreshMockData() {
+      const inst = this.$refs.proTableRef
+      if (inst && typeof inst.loadMockData === 'function') inst.loadMockData()
+      this.refreshTick += 1
+    },
     onComponentChange(component) {
       this.selectedComponent = component
       this.addTestResult('组件切换', 'success', `切换到 ${component} 组件`)

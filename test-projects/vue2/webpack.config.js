@@ -12,9 +12,12 @@ module.exports = {
     clean: true
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json', '.cjs'],
+    // 增加 .ts 支持，便于直接引用仓库根 src 下的 TS 示例
+    extensions: ['.js', '.ts', '.vue', '.json', '.cjs'],
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      // 让 @ 指向仓库根 src，统一引入 example
+      '@': path.resolve(__dirname, '../../src'),
+      '@app': path.resolve(__dirname, 'src'),
       // 优先精确映射 vue2 产物目录
       'micro-components/vue2': path.resolve(__dirname, '../../dist/components/vue2'),
       // 退回到包根以使用 package.json exports
@@ -26,6 +29,19 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader'
+      },
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [require.resolve('@babel/preset-env'), { targets: 'defaults' }],
+              require.resolve('@babel/preset-typescript')
+            ]
+          }
+        }
       },
       {
         test: /\.js$/,

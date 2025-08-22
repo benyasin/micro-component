@@ -1,39 +1,6 @@
 <template>
   <ConfigProvider :locale="zhCN">
     <div class="pro-table-container micro" :class="{ 'rtl': isRtl }">
-      <!-- 标题区域 -->
-      <div v-if="config?.title || config?.description" class="pro-table-title">
-        <div class="pro-table-title-content">
-          <div>
-            <h3 v-if="config?.title" class="pro-table-title-text">
-              {{ config.title }}
-            </h3>
-            <p v-if="config?.description" class="pro-table-description">
-              {{ config.description }}
-            </p>
-          </div>
-          
-          <!-- Mock 控制按钮 -->
-          <div class="pro-table-mock-controls">
-            <button
-              @click="toggleMock(!mockEnabled)"
-              class="mock-toggle-btn"
-              :class="mockEnabled ? 'mock-on' : 'mock-off'"
-            >
-              {{ mockEnabled ? 'Mock ON' : 'Mock OFF' }}
-            </button>
-            <button
-              v-if="mockEnabled"
-              @click="loadMockData"
-              :disabled="mockLoading"
-              class="mock-refresh-btn"
-            >
-              {{ mockLoading ? '加载中...' : '刷新数据' }}
-            </button>
-          </div>
-        </div>
-      </div>
-
       <!-- 筛选区域 -->
       <div v-if="config?.showFilter && config?.filters?.length" class="pro-table-filter">
         <a-form
@@ -1032,7 +999,12 @@ defineExpose<ProTableExpose>({
   reset,
   clearSelection,
   getSelectedRows,
-  updateFilterValue
+  updateFilterValue,
+  // 暴露 Mock 能力给外层演示使用
+  loadMockData,
+  toggleMock,
+  mockEnabled,
+  mockLoading
 })
 </script>
 
@@ -1113,12 +1085,7 @@ defineExpose<ProTableExpose>({
 }
 
 .pro-table-filter {
-  margin-bottom: 16px;
   padding: 16px;
-  background-color: var(--color-card-bg, #f8f9fa);
-  border: 1px solid var(--color-line, #e5e5e5);
-  border-radius: 6px;
-  
   .search-wrap {
     .mc-ant-form-item {
       margin-bottom: 12px;

@@ -50,7 +50,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      // 对齐到仓库根 src，便于直接 import '@/components/ProTable/example'
+      '@': resolve(__dirname, '../../src'),
+      '@app': resolve(__dirname, './src'),
       'micro-components/react': resolve(__dirname, '../../dist/components/react')
     }
   },
