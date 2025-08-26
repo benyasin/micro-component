@@ -41,9 +41,9 @@ function App() {
     return `${Date.now()}-${rand}-${perf}`
   }, [])
 
-  const addTestResult = React.useCallback((name: string, status: 'success' | 'error' | 'pending', message: string) => {
+  const addTestResult = (name: string, status: 'success' | 'error' | 'pending', message: string) => {
     setTestResults(prev => [{ id: createUniqueId(), name, status, message }, ...prev])
-  }, [])
+  }
 
   const components: Component[] = [
     { label: 'Button', value: 'button' },
@@ -70,16 +70,6 @@ function App() {
 
  // 自定义请求参数（用于验证 params 传递）
  const extraParams = React.useMemo(() => ({ from: 'react-test', fixedFlag: true }), [])
- 
- // 使用useRef确保params对象引用稳定
- const proTableParamsRef = React.useRef({ ...extraParams, _tick: refreshTick })
- 
- // 更新params对象的tick值
- React.useEffect(() => {
-   proTableParamsRef.current._tick = refreshTick
- }, [refreshTick])
- 
- const proTableParams = proTableParamsRef.current
 
  // 请求前参数二次处理（验证 beforeRequest）
  const beforeRequestHook = React.useCallback((params: any) => {
@@ -148,16 +138,13 @@ function App() {
   }), [])
 
   const handleCustomFilterRenderChange = React.useCallback((key: string, value: any) => {
-    // 处理自定义筛选变化
-    if (value && typeof value === 'object' && value.type) {
-      if (value.type === 'select') {
-        setCustomFilterType(String(value.value || 'name'))
-      } else if (value.type === 'input') {
-        setCustomFilterValue(String(value.value || ''))
-      }
+    // ProTable 内部已处理 updateFilterValue，这里仅做记录与本地 state 同步
+    if (value?.type === 'select') {
+      setCustomFilterType(String(value.value || 'custom'))
+    } else if (value?.type === 'input') {
+      setCustomFilterValue(String(value.value || ''))
     }
-    // 避免频繁调用addTestResult，只在必要时记录
-    // addTestResult('ProTable 自定义筛选渲染', 'success', JSON.stringify({ key, value }))
+    addTestResult('ProTable 自定义筛选渲染', 'success', JSON.stringify({ key, value }))
   }, [])
 
   const handleProTableSearch = (values: any) => {
@@ -273,17 +260,17 @@ function App() {
                 <p style={{ margin: 0, color: '#666' }}>这是一个全面的 ProTable 示例，展示了所有可用的功能和属性</p>
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <button type="button" onClick={toggleMockSwitch} onMouseDown={(e) => e.stopPropagation()} style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, border: '1px solid #d9d9d9', cursor: 'pointer' }}>
+                <button type="button" onClick={toggleMockSwitch} style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, border: '1px solid #d9d9d9', cursor: 'pointer' }}>
                   {isMockOn ? 'Mock ON' : 'Mock OFF'}
                 </button>
-                <button type="button" onClick={refreshMockData} onMouseDown={(e) => e.stopPropagation()} style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, background: '#1677ff', color: '#fff', border: '1px solid #1677ff', cursor: 'pointer' }}>
+                <button type="button" onClick={refreshMockData} style={{ padding: '4px 12px', fontSize: 12, borderRadius: 4, background: '#1677ff', color: '#fff', border: '1px solid #1677ff', cursor: 'pointer' }}>
                   刷新数据
                 </button>
               </div>
             </div>
             <div className="component-demo">
               <MicroProTable
-                key={`protable-${refreshTick}`}
+                key={`protable-${isMockOn ? 'on' : 'off'}-${refreshTick}`}
                 title="员工管理系统"
                 description="这是一个全面的 ProTable 示例，展示了所有可用的功能和属性"
                 columns={proTableColumns}
@@ -303,7 +290,7 @@ function App() {
                 showColumnConfig={true}
                 rowSelection={proTableRowSelection}
                 tableConfig={proTableConfig}
-                params={proTableParams}
+                params={{ ...extraParams, _tick: refreshTick }}
                 beforeRequest={beforeRequestHook}
                 onSearch={handleProTableSearch}
                 onReset={handleProTableReset}

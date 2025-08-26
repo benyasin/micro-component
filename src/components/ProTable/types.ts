@@ -106,34 +106,21 @@ export interface Config {
   }
 }
 
-// 自定义筛选渲染配置 - 基于Ant Design组件的灵活方案
+// 自定义筛选渲染配置
 export interface CustomFilterRenderConfig {
-  // 组件类型
-  type: 'select' | 'input' | 'cascader' | 'dateRange' | 'inputGroup' | 'custom'
-  
-  // 基础配置
+  type: 'cascader' | 'dateRange' | 'inputGroup'
   placeholder?: string
   style?: Record<string, any>
-  size?: 'small' | 'middle' | 'large'
-  allowClear?: boolean
-  
-  // 选择器配置
   options?: Array<{label: string, value: any, children?: Array<{label: string, value: any}>}>
-  
-  // 输入组合配置
+  allowClear?: boolean
+  size?: 'small' | 'middle' | 'large'
+  // 输入组合配置（用于类型选择 + 输入框的组合）
   inputGroup?: {
-    selectConfig: Omit<CustomFilterRenderConfig, 'inputGroup' | 'type'>
-    inputConfig: Omit<CustomFilterRenderConfig, 'inputGroup' | 'type'>
+    selectConfig: Omit<CustomFilterRenderConfig, 'inputGroup'>
+    inputConfig: Omit<CustomFilterRenderConfig, 'inputGroup'>
     selectWidth?: string
     inputWidth?: string
   }
-  
-  // 自定义渲染函数（高级用法）
-  render?: (props: {
-    filterValues: Record<string, any>
-    updateFilter: (key: string, value: any) => void
-    reset: () => void
-  }) => any
 }
 
 // Props 接口

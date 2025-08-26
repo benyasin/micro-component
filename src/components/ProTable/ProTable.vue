@@ -84,15 +84,7 @@
                     :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
                   />
                   
-                  <!-- 默认输入框 -->
-                  <a-input
-                    v-else-if="item.component !== 'custom'"
-                    v-model:value="filterValues[item.key]"
-                    :placeholder="getPlaceholder(item)"
-                    :allowClear="item.allowClear === undefined ? true : item.allowClear"
-                    v-bind="item.props"
-                    @pressEnter="handleSearch"
-                  />
+
                   <template v-else>
                     <!-- 自定义搜索条件 - 基于Ant Design组件的灵活方案 -->
                     <template v-if="customFilterRender">
@@ -116,8 +108,8 @@
                             :size="customFilterRender.inputGroup.selectConfig?.size || 'middle'"
                             :options="customFilterRender.inputGroup.selectConfig?.options || []"
                             :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
-                            :value="customFilterSelectValue"
-                            @update:value="(val) => handleCustomFilterRenderChange({ type: 'select', value: val })"
+                            :value="getFieldState(item.key).selectValue"
+                            @update:value="(val) => handleCustomFilterRenderChange({ type: 'select', value: val }, item.key)"
                             @click.stop
                             @mousedown.stop
                           />
@@ -126,42 +118,15 @@
                             :placeholder="customFilterRender.inputGroup.inputConfig?.placeholder || '请输入搜索内容'"
                             :size="customFilterRender.inputGroup.inputConfig?.size || 'middle'"
                             :allowClear="customFilterRender.inputGroup.inputConfig?.allowClear !== false"
-                            :value="customFilterInputValue"
-                            @update:value="(val) => handleCustomFilterRenderChange({ type: 'input', value: val })"
+                            :value="getFieldState(item.key).inputValue"
+                            @update:value="(val) => handleCustomFilterRenderChange({ type: 'input', value: val }, item.key)"
                             @pressEnter="handleSearch"
                             @click.stop
                             @mousedown.stop
                           />
                         </a-input-group>
                       </template>
-                      <template v-else-if="customFilterRender.type === 'select'">
-                        <!-- 选择器 -->
-                        <a-select
-                          :placeholder="customFilterRender.placeholder || '请选择'"
-                          :size="customFilterRender.size || 'middle'"
-                          :options="customFilterRender.options || []"
-                          :style="customFilterRender.style"
-                          :allowClear="customFilterRender.allowClear !== false"
-                          :value="customFilterSelectValue"
-                          @update:value="(val) => handleCustomFilterRenderChange({ type: 'select', value: val })"
-                          @click.stop
-                          @mousedown.stop
-                        />
-                      </template>
-                      <template v-else-if="customFilterRender.type === 'input'">
-                        <!-- 输入框 -->
-                        <a-input
-                          :placeholder="customFilterRender.placeholder || '请输入'"
-                          :size="customFilterRender.size || 'middle'"
-                          :style="customFilterRender.style"
-                          :allowClear="customFilterRender.allowClear !== false"
-                          :value="customFilterInputValue"
-                          @update:value="(val) => handleCustomFilterRenderChange({ type: 'input', value: val })"
-                          @pressEnter="handleSearch"
-                          @click.stop
-                          @mousedown.stop
-                        />
-                      </template>
+
                       <template v-else>
                         <!-- 默认内容 -->
                         <a-input placeholder="自定义筛选" disabled />
@@ -947,33 +912,48 @@ const getCustomFilterProps = () => {
   return baseProps
 }
 
-// 记录当前自定义筛选键（用于 inputGroup：select 选择的字段）
-const customFilterKeyRef = ref<string>('custom')
-// 添加自定义筛选组件的响应式状态
-const customFilterSelectValue = ref<string>('name')
-const customFilterInputValue = ref<string>('')
+// 自定义筛选组件的响应式状态 - 支持多个字段
+const customFilterStates = ref<Record<string, { selectValue: string; inputValue: string }>>({})
 
-const handleCustomFilterRenderChange = (raw: any) => {
+// 获取或创建字段状态，默认选择第一个选项
+const getFieldState = (fieldKey: string) => {
+  if (!customFilterStates.value[fieldKey]) {
+    // 获取第一个选项作为默认值
+    let defaultSelectValue = fieldKey
+    if (proTableProps.value.customFilterRender?.type === 'inputGroup' && 
+        proTableProps.value.customFilterRender?.inputGroup?.selectConfig?.options?.length > 0) {
+      defaultSelectValue = proTableProps.value.customFilterRender.inputGroup.selectConfig.options[0].value
+    } else if (proTableProps.value.customFilterRender?.type === 'select' && 
+               proTableProps.value.customFilterRender?.options?.length > 0) {
+      defaultSelectValue = proTableProps.value.customFilterRender.options[0].value
+    }
+    
+    customFilterStates.value[fieldKey] = { selectValue: defaultSelectValue, inputValue: '' }
+  }
+  return customFilterStates.value[fieldKey]
+}
+
+const handleCustomFilterRenderChange = (raw: any, fieldKey: string = 'name') => {
   // inputGroup：传入形如 { type: 'select' | 'input', value: any }
   if (raw && typeof raw === 'object' && 'type' in raw && Object.prototype.hasOwnProperty.call(raw, 'value')) {
     const { type, value } = raw as { type: string; value: any }
+    const fieldState = getFieldState(fieldKey)
 
     if (type === 'select') {
-      // 选择筛选字段，更新选择器显示值和筛选键
+      // 选择筛选字段，更新选择器显示值
       const v = value?.target?.value ?? value?.value ?? value
       if (v !== undefined && v !== null && String(v).trim() !== '') {
-        customFilterKeyRef.value = String(v).trim()
-        customFilterSelectValue.value = String(v).trim()
+        fieldState.selectValue = String(v).trim()
       } else {
-        customFilterKeyRef.value = 'custom'
-        customFilterSelectValue.value = 'name'
+        fieldState.selectValue = fieldKey
       }
     } else if (type === 'input') {
       // 更新输入值到内部筛选状态和显示值
       const v = value?.target?.value ?? value?.value ?? value
-      customFilterInputValue.value = v || ''
+      fieldState.inputValue = v || ''
       const normalized = v !== undefined && v !== null && String(v).trim() !== '' ? String(v).trim() : null
-      updateFilterValue(customFilterKeyRef.value, normalized)
+      // 使用当前选择的字段作为筛选键
+      updateFilterValue(fieldState.selectValue, normalized)
     }
 
     // 对外仍保持原有行为：透传原始对象，key 固定为 'custom'
@@ -986,7 +966,8 @@ const handleCustomFilterRenderChange = (raw: any) => {
   // 单一组件/原生事件：提取值并同步
   const v = raw?.target?.value ?? raw?.value ?? raw
   const nextVal = v !== undefined && v !== null && String(v).trim() !== '' ? v : null
-  updateFilterValue(customFilterKeyRef.value, nextVal)
+  const fieldState = getFieldState(fieldKey)
+  updateFilterValue(fieldState.selectValue, nextVal)
 
   if (proTableProps.value.onCustomFilterChange) {
     proTableProps.value.onCustomFilterChange('custom', v)
@@ -996,9 +977,21 @@ const handleCustomFilterRenderChange = (raw: any) => {
 // 重置时同时清空自定义筛选组件的状态
 const handleResetWithCustomFilter = () => {
   handleReset()
-  customFilterSelectValue.value = 'name'
-  customFilterInputValue.value = ''
-  customFilterKeyRef.value = 'custom'
+  // 重置所有字段状态，选择第一个选项
+  Object.keys(customFilterStates.value).forEach(fieldKey => {
+    let defaultSelectValue = fieldKey
+    if (proTableProps.value.customFilterRender?.type === 'inputGroup' && 
+        proTableProps.value.customFilterRender?.inputGroup?.selectConfig?.options?.length > 0) {
+      defaultSelectValue = proTableProps.value.customFilterRender.inputGroup.selectConfig.options[0].value
+    } else if (proTableProps.value.customFilterRender?.type === 'select' && 
+               proTableProps.value.customFilterRender?.options?.length > 0) {
+      defaultSelectValue = proTableProps.value.customFilterRender.options[0].value
+    }
+    
+    const fieldState = customFilterStates.value[fieldKey]
+    fieldState.selectValue = defaultSelectValue
+    fieldState.inputValue = ''
+  })
 }
 
 // 监听全屏状态变化

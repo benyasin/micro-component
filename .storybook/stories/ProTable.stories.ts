@@ -363,13 +363,6 @@ export const AdvancedFilter: Story = {
             allowClear: true
           },
           {
-            key: 'custom',
-            label: '自定义',
-            component: 'custom',
-            span: 6,
-            slotName: 'custom-filter'
-          },
-          {
             key: 'salary',
             label: '薪资范围',
             component: 'input',
@@ -426,31 +419,6 @@ export const AdvancedFilter: Story = {
           sticky: true
         }"
       >
-        <template #custom-filter="{ filterValues, updateFilter }">
-          <div style="width: 100%;">
-            <a-input-group compact>
-              <a-select 
-                v-model:value="customFilterType" 
-                style="width: 30%"
-                placeholder="类型"
-                size="middle"
-              >
-                <a-select-option value="name">姓名</a-select-option>
-                <a-select-option value="email">邮箱</a-select-option>
-                <a-select-option value="phone">电话</a-select-option>
-              </a-select>
-              <a-input 
-                v-model:value="customFilterValue"
-                style="width: 70%"
-                placeholder="请输入搜索内容" 
-                :allowClear="true"
-                size="middle"
-                @change="handleCustomFilterChange"
-                @pressEnter="handleCustomFilterChange"
-              />
-            </a-input-group>
-          </div>
-        </template>
       </ProTable>
     `
   })
@@ -712,66 +680,6 @@ export const CustomRender: Story = {
   }
 }
 
-// 简单表格
-export const Simple: Story = {
-  args: {
-    title: '简单表格',
-    description: '一个简单的表格示例',
-    columns: [
-      {
-        title: '姓名',
-        dataIndex: 'name',
-        key: 'name',
-        width: 120
-      },
-      {
-        title: '年龄',
-        dataIndex: 'age',
-        key: 'age',
-        width: 80
-      },
-      {
-        title: '部门',
-        dataIndex: 'department',
-        key: 'department',
-        width: 120
-      },
-      {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        width: 100
-      }
-    ],
-    dataSource: [
-      {
-        id: '1',
-        name: '张三',
-        age: 25,
-        department: '技术部',
-        status: '在职'
-      },
-      {
-        id: '2',
-        name: '李四',
-        age: 30,
-        department: '产品部',
-        status: '在职'
-      },
-      {
-        id: '3',
-        name: '王五',
-        age: 28,
-        department: '设计部',
-        status: '离职'
-      }
-    ],
-    showFilter: false,
-    showPagination: true,
-    showSelection: false,
-    showOperation: false
-  }
-}
 
 // 只读模式
 export const ReadOnly: Story = {
@@ -896,4 +804,264 @@ export const Compact: Story = {
       size: 'small'
     }
   }
+}
+
+// 自定义筛选 - 配置方式（inputGroup）
+export const CustomFilterConfig: Story = {
+  render: () => ({
+    components: { ProTable },
+    setup() {
+      const handleCustomFilterChange = (key: string, value: any) => {
+        console.log('[Storybook] 自定义筛选配置变化:', key, value)
+      }
+      
+      return {
+        handleCustomFilterChange
+      }
+    },
+    template: `
+      <ProTable 
+        title="自定义筛选 - 配置方式"
+        description="使用 customFilterRender 配置方式实现自定义筛选，支持多个字段"
+        :columns="[
+          {
+            title: '姓名',
+            dataIndex: 'name',
+            key: 'name',
+            width: 120
+          },
+          {
+            title: '年龄',
+            dataIndex: 'age',
+            key: 'age',
+            width: 80
+          },
+          {
+            title: '部门',
+            dataIndex: 'department',
+            key: 'department',
+            width: 120
+          },
+          {
+            title: '状态',
+            dataIndex: 'status',
+            key: 'status',
+            width: 100
+          },
+          {
+            title: '邮箱',
+            dataIndex: 'email',
+            key: 'email',
+            width: 200
+          },
+          {
+            title: '电话',
+            dataIndex: 'phone',
+            key: 'phone',
+            width: 120
+          }
+        ]"
+        :dataSource="[
+          {
+            id: '1',
+            name: '张三',
+            age: 25,
+            department: '技术部',
+            status: '在职',
+            email: 'zhangsan@example.com',
+            phone: '13800138001'
+          },
+          {
+            id: '2',
+            name: '李四',
+            age: 30,
+            department: '产品部',
+            status: '在职',
+            email: 'lisi@example.com',
+            phone: '13800138002'
+          },
+          {
+            id: '3',
+            name: '王五',
+            age: 28,
+            department: '设计部',
+            status: '离职',
+            email: 'wangwu@example.com',
+            phone: '13800138003'
+          }
+        ]"
+        :showFilter="true"
+        :showPagination="true"
+        :showSelection="false"
+        :showOperation="true"
+        :filters="[
+          {
+            key: 'custom1',
+            label: '自定义筛选1',
+            component: 'custom'
+          },
+        ]"
+        :customFilterRender="{
+          type: 'inputGroup',
+          inputGroup: {
+            selectConfig: {
+              placeholder: '选择筛选字段',
+              size: 'middle',
+              options: [
+                { label: '姓名', value: 'name' },
+                { label: '邮箱', value: 'email' },
+                { label: '电话', value: 'phone' },
+                { label: '部门', value: 'department' },
+                { label: '状态', value: 'status' }
+              ]
+            },
+            inputConfig: {
+              placeholder: '请输入搜索内容',
+              size: 'middle',
+              allowClear: true
+            },
+            selectWidth: '30%',
+            inputWidth: '70%'
+          }
+        }"
+        :onCustomFilterChange="handleCustomFilterChange"
+      />
+    `
+  })
+}
+
+
+
+// 自定义筛选 - 多字段配置
+export const CustomFilterMultiField: Story = {
+  render: () => ({
+    components: { ProTable },
+    setup() {
+      const handleCustomFilterChange = (key: string, value: any) => {
+        console.log('[Storybook] 自定义筛选多字段变化:', key, value)
+      }
+      
+      return {
+        handleCustomFilterChange
+      }
+    },
+    template: `
+      <ProTable 
+        title="自定义筛选 - 多字段配置"
+        description="展示如何为不同的自定义筛选字段配置不同的渲染方式"
+        :columns="[
+          {
+            title: '姓名',
+            dataIndex: 'name',
+            key: 'name',
+            width: 120
+          },
+          {
+            title: '年龄',
+            dataIndex: 'age',
+            key: 'age',
+            width: 80
+          },
+          {
+            title: '部门',
+            dataIndex: 'department',
+            key: 'department',
+            width: 120
+          },
+          {
+            title: '状态',
+            dataIndex: 'status',
+            key: 'status',
+            width: 100
+          },
+          {
+            title: '邮箱',
+            dataIndex: 'email',
+            key: 'email',
+            width: 200
+          },
+          {
+            title: '电话',
+            dataIndex: 'phone',
+            key: 'phone',
+            width: 120
+          }
+        ]"
+        :dataSource="[
+          {
+            id: '1',
+            name: '张三',
+            age: 25,
+            department: '技术部',
+            status: '在职',
+            email: 'zhangsan@example.com',
+            phone: '13800138001'
+          },
+          {
+            id: '2',
+            name: '李四',
+            age: 30,
+            department: '产品部',
+            status: '在职',
+            email: 'lisi@example.com',
+            phone: '13800138002'
+          },
+          {
+            id: '3',
+            name: '王五',
+            age: 28,
+            department: '设计部',
+            status: '离职',
+            email: 'wangwu@example.com',
+            phone: '13800138003'
+          }
+        ]"
+        :showFilter="true"
+        :showPagination="true"
+        :showSelection="false"
+        :showOperation="true"
+        :filters="[
+          {
+            key: 'nameFilter',
+            label: '姓名筛选',
+            component: 'custom'
+          },
+          {
+            key: 'departmentFilter',
+            label: '部门筛选',
+            component: 'custom'
+          },
+          {
+            key: 'statusFilter',
+            label: '状态筛选',
+            component: 'custom'
+          }
+        ]"
+        :customFilterRender="{
+          type: 'inputGroup',
+          inputGroup: {
+            selectConfig: {
+              placeholder: '选择筛选字段',
+              size: 'middle',
+              options: [
+                { label: '姓名', value: 'name' },
+                { label: '邮箱', value: 'email' },
+                { label: '电话', value: 'phone' },
+                { label: '部门', value: 'department' },
+                { label: '状态', value: 'status' }
+              ]
+            },
+            inputConfig: {
+              placeholder: '请输入搜索内容',
+              size: 'middle',
+              allowClear: true
+            },
+            selectWidth: '30%',
+            inputWidth: '70%'
+          }
+        }"
+        :onCustomFilterChange="handleCustomFilterChange"
+      />
+    `
+  })
 }

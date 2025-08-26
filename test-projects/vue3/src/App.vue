@@ -83,17 +83,17 @@
             <p style="margin:0; color:#666; font-size:14px; line-height:22px;">这是一个全面的 ProTable 示例，展示了所有可用的功能和属性</p>
           </div>
           <div style="display:flex; gap:8px; align-items:center;">
-            <button type="button" @click="toggleMockSwitch" @mousedown.stop style="padding:4px 12px; font-size:12px; border-radius:4px; border:1px solid #d9d9d9; cursor:pointer;">
+            <button type="button" @click="toggleMockSwitch" style="padding:4px 12px; font-size:12px; border-radius:4px; border:1px solid #d9d9d9; cursor:pointer;">
               {{ isMockOn ? 'Mock ON' : 'Mock OFF' }}
             </button>
-            <button type="button" @click="refreshMockData" :disabled="isMockLoading" @mousedown.stop style="padding:4px 12px; font-size:12px; border-radius:4px; background:#1677ff; color:#fff; border:1px solid #1677ff; cursor:pointer;">
+            <button type="button" @click="refreshMockData" :disabled="isMockLoading" style="padding:4px 12px; font-size:12px; border-radius:4px; background:#1677ff; color:#fff; border:1px solid #1677ff; cursor:pointer;">
               {{ isMockLoading ? '加载中...' : '刷新数据' }}
             </button>
           </div>
         </div>
         <div class="component-demo">
           <MicroProTable
-            :key="`protable-${refreshTick}`"
+            :key="`protable-${isMockOn ? 'on' : 'off'}-${refreshTick}`"
             ref="proTableRef"
             title="员工管理系统"
             description="这是一个全面的 ProTable 示例，展示了所有可用的功能和属性（使用配置渲染方案）"
@@ -116,7 +116,7 @@
             :tableConfig="proTableConfig"
             :customFilterRender="customFilterRenderConfig"
             :onCustomFilterChange="handleCustomFilterRenderChange"
-            :params="proTableParams"
+            :params="{ ...extraParams, _tick: refreshTick }"
             :beforeRequest="beforeRequestHook"
             @search="handleProTableSearch"
             @reset="handleProTableReset"
@@ -147,7 +147,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, h, computed, shallowRef } from 'vue'
+import { defineComponent, ref, h, computed } from 'vue'
 import { comprehensiveExample } from '@/components/ProTable/example'
 import { Select, SelectOption, Input as AInput, InputGroup as AInputGroup } from 'ant-design-vue'
 // @ts-ignore
@@ -235,12 +235,9 @@ export default defineComponent({
     // 请求参数与 beforeRequest（playground 对齐，避免绑定未定义导致报错）
     const extraParams = { from: 'vue3-test', fixedFlag: true }
     const beforeRequestHook = (params: any) => ({ ...params, envTag: 'dev' })
-    
-    // 使用computed确保params对象引用稳定
-    const proTableParams = computed(() => ({ ...extraParams, _tick: refreshTick.value }))
 
-    // 新的自定义筛选渲染配置 - 使用 shallowRef 确保引用稳定
-    const customFilterRenderConfig = shallowRef({
+    // 新的自定义筛选渲染配置
+    const customFilterRenderConfig = {
       type: 'inputGroup' as const,
       inputGroup: {
         selectConfig: {
@@ -262,7 +259,7 @@ export default defineComponent({
         selectWidth: '30%',
         inputWidth: '70%'
       }
-    })
+    }
 
     function onComponentChange(component: any) {
       selectedComponent.value = component as string
@@ -285,20 +282,40 @@ export default defineComponent({
       addTestResult('Footer 链接点击', 'success', `点击链接: ${link.title}`)
     }
 
-    const handleCustomFilterRenderChange = (key: string, value: any) => {
-      // 处理自定义筛选变化
-      if (value && typeof value === 'object' && value.type) {
-        if (value.type === 'select') {
-          customFilterType.value = value.value
-        } else if (value.type === 'input') {
-          customFilterValue.value = value.value
+    function handleCustomFilterChange(updateFilterFn?: any) {
+      console.log('[Vue3 Test] 自定义筛选变化:', customFilterType.value, customFilterValue.value)
+
+      // 根据选择的类型更新对应的筛选值
+      if (customFilterValue.value && customFilterValue.value.trim()) {
+        // 使用插槽传递的 updateFilter 方法
+        if (typeof updateFilterFn === 'function') {
+          updateFilterFn(customFilterType.value, customFilterValue.value.trim())
+        } else {
+          // 备用方案：直接访问 ProTable 组件实例的方法
+          const proTableInstance = proTableRef.value
+          if (proTableInstance && proTableInstance.updateFilterValue) {
+            proTableInstance.updateFilterValue(
+              customFilterType.value,
+              customFilterValue.value.trim()
+            )
+          }
+        }
+      } else {
+        // 如果值为空，清除对应的筛选值
+        if (typeof updateFilterFn === 'function') {
+          updateFilterFn(customFilterType.value, null)
+        } else {
+          const proTableInstance = proTableRef.value
+          if (proTableInstance && proTableInstance.updateFilterValue) {
+            proTableInstance.updateFilterValue(customFilterType.value, null)
+          }
         }
       }
-      
+
       addTestResult(
-        'ProTable 自定义筛选渲染',
+        'ProTable 自定义筛选',
         'success',
-        JSON.stringify({ key, value })
+        `筛选类型: ${customFilterType.value}, 值: ${customFilterValue.value}`
       )
     }
 
@@ -318,7 +335,30 @@ export default defineComponent({
       addTestResult('ProTable 选择变化', 'success', `选中了 ${selectedRowKeys.length} 行数据`)
     }
 
+    // 新的自定义筛选渲染变化处理
+    function handleCustomFilterRenderChange(key: string, value: any) {
+      console.log('[Vue3 Test] 自定义筛选渲染变化:', key, value)
+      addTestResult(
+        'ProTable 自定义筛选渲染',
+        'success',
+        `筛选键: ${key}, 值: ${JSON.stringify(value)}`
+      )
 
+      // 这里可以处理筛选逻辑
+      if (value && typeof value === 'object' && value.type && value.value) {
+        // inputGroup 类型的值处理
+        if (value.type === 'select') {
+          customFilterType.value = value.value
+        } else if (value.type === 'input') {
+          customFilterValue.value = value.value
+        }
+      } else {
+        // 简单值处理
+        if (key === 'custom') {
+          // 处理自定义筛选
+        }
+      }
+    }
 
     function addTestResult(name: string, status: 'success' | 'error' | 'pending', message: string) {
       testResults.value.push({
@@ -349,7 +389,6 @@ export default defineComponent({
       proTableConfig,
       extraParams,
       beforeRequestHook,
-      proTableParams,
       customFilterRenderConfig,
       onComponentChange,
       handleButtonClick,
@@ -358,6 +397,7 @@ export default defineComponent({
       handleLinkClick,
       toggleMockSwitch,
       refreshMockData,
+      handleCustomFilterChange,
       handleCustomFilterRenderChange,
       handleProTableSearch,
       handleProTableReset,
