@@ -115,36 +115,12 @@
             :tableConfig="proTableConfig"
             :params="{ ...extraParams, _tick: refreshTick }"
             :beforeRequest="beforeRequestHook"
+            :customFilterRender="customFilterRenderConfig"
+            :onCustomFilterChange="handleCustomFilterRenderChange"
             @search="handleProTableSearch"
             @reset="handleProTableReset"
             @selectionChange="handleProTableSelectionChange"
-          >
-            <template v-slot:custom-filter="{ filterValues, updateFilter }">
-              <div style="width: 100%">
-                <a-input-group compact>
-                  <a-select
-                    v-model="customFilterType"
-                    style="width: 30%"
-                    placeholder="类型"
-                    size="middle"
-                  >
-                    <a-select-option value="name">姓名</a-select-option>
-                    <a-select-option value="email">邮箱</a-select-option>
-                    <a-select-option value="phone">电话</a-select-option>
-                  </a-select>
-                  <a-input
-                    v-model="customFilterValue"
-                    style="width: 70%"
-                    placeholder="请输入搜索内容"
-                    :allowClear="true"
-                    size="middle"
-                    @change="() => handleCustomFilterChange(updateFilter)"
-                    @pressEnter="() => handleCustomFilterChange(updateFilter)"
-                  />
-                </a-input-group>
-              </div>
-            </template>
-          </MicroProTable>
+          />
         </div>
       </section>
 
@@ -210,7 +186,29 @@ export default {
       proTableFilters: comprehensiveExample.filters,
       proTablePagination: comprehensiveExample.pagination,
       proTableRowSelection: comprehensiveExample.rowSelection,
-      proTableConfig: comprehensiveExample.tableConfig
+      proTableConfig: comprehensiveExample.tableConfig,
+      // 自定义筛选配置
+      customFilterRenderConfig: {
+        type: 'inputGroup',
+        inputGroup: {
+          selectConfig: {
+            placeholder: '类型',
+            size: 'middle',
+            options: [
+              { label: '姓名', value: 'name' },
+              { label: '邮箱', value: 'email' },
+              { label: '电话', value: 'phone' }
+            ]
+          },
+          inputConfig: {
+            placeholder: '请输入搜索内容',
+            size: 'middle',
+            allowClear: true
+          },
+          selectWidth: '30%',
+          inputWidth: '70%'
+        }
+      }
     }
   },
   // 第二个 data 定义会覆盖第一个，导致 selectedComponent/ components 未初始化
@@ -251,37 +249,20 @@ export default {
     handleButtonClick() {
       this.addTestResult('Button 点击', 'success', '按钮点击事件触发成功')
     },
-    handleCustomFilterChange(updateFilterFn) {
-      console.log('自定义筛选变化:', this.customFilterType, this.customFilterValue)
-
-      // 根据选择的类型更新对应的筛选值
-      if (this.customFilterValue && this.customFilterValue.trim()) {
-        // 使用插槽传递的 updateFilter 方法
-        if (typeof updateFilterFn === 'function') {
-          updateFilterFn(this.customFilterType, this.customFilterValue.trim())
-        } else {
-          // 备用方案：直接访问 ProTable 组件实例的方法
-          const proTableInstance = this.$refs.proTableRef
-          if (proTableInstance && proTableInstance.updateFilterValue) {
-            proTableInstance.updateFilterValue(this.customFilterType, this.customFilterValue.trim())
-          }
-        }
-      } else {
-        // 如果值为空，清除对应的筛选值
-        if (typeof updateFilterFn === 'function') {
-          updateFilterFn(this.customFilterType, null)
-        } else {
-          const proTableInstance = this.$refs.proTableRef
-          if (proTableInstance && proTableInstance.updateFilterValue) {
-            proTableInstance.updateFilterValue(this.customFilterType, null)
-          }
+    handleCustomFilterRenderChange(key, value) {
+      // 处理自定义筛选变化
+      if (value && typeof value === 'object' && value.type) {
+        if (value.type === 'select') {
+          this.customFilterType = value.value
+        } else if (value.type === 'input') {
+          this.customFilterValue = value.value
         }
       }
-
+      
       this.addTestResult(
-        'ProTable 自定义筛选',
+        'ProTable 自定义筛选渲染',
         'success',
-        `筛选类型: ${this.customFilterType}, 值: ${this.customFilterValue}`
+        JSON.stringify({ key, value })
       )
     },
     handleProTableSearch(values) {

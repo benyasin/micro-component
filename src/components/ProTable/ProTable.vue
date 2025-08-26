@@ -94,10 +94,20 @@
                     @pressEnter="handleSearch"
                   />
                   <template v-else>
-                    <!-- 自定义搜索条件插槽 -->
+                    <!-- 自定义搜索条件 - 基于Ant Design组件的灵活方案 -->
                     <template v-if="customFilterRender">
+                      <!-- 自定义渲染函数 -->
+                      <template v-if="customFilterRender.render">
+                        <component 
+                          :is="customFilterRender.render({
+                            filterValues,
+                            updateFilter: updateFilterValue,
+                            reset: handleResetWithCustomFilter
+                          })"
+                        />
+                      </template>
                       <!-- 基于配置的渲染 -->
-                      <template v-if="customFilterRender.type === 'inputGroup' && customFilterRender.inputGroup">
+                      <template v-else-if="customFilterRender.type === 'inputGroup' && customFilterRender.inputGroup">
                         <!-- 输入组合：选择器 + 输入框 -->
                         <a-input-group compact>
                           <a-select
@@ -106,6 +116,7 @@
                             :size="customFilterRender.inputGroup.selectConfig?.size || 'middle'"
                             :options="customFilterRender.inputGroup.selectConfig?.options || []"
                             :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
+                            :value="customFilterSelectValue"
                             @update:value="(val) => handleCustomFilterRenderChange({ type: 'select', value: val })"
                           />
                           <a-input
@@ -113,27 +124,44 @@
                             :placeholder="customFilterRender.inputGroup.inputConfig?.placeholder || '请输入搜索内容'"
                             :size="customFilterRender.inputGroup.inputConfig?.size || 'middle'"
                             :allowClear="customFilterRender.inputGroup.inputConfig?.allowClear !== false"
+                            :value="customFilterInputValue"
                             @update:value="(val) => handleCustomFilterRenderChange({ type: 'input', value: val })"
                             @pressEnter="handleSearch"
                           />
                         </a-input-group>
                       </template>
-                      <template v-else>
-                        <!-- 单一组件渲染 -->
-                        <component 
-                          :is="getCustomFilterComponent()" 
-                          v-bind="getCustomFilterProps()"
-                          @update:value="handleCustomFilterRenderChange"
-                          @change="handleCustomFilterRenderChange"
+                      <template v-else-if="customFilterRender.type === 'select'">
+                        <!-- 选择器 -->
+                        <a-select
+                          :placeholder="customFilterRender.placeholder || '请选择'"
+                          :size="customFilterRender.size || 'middle'"
+                          :options="customFilterRender.options || []"
+                          :style="customFilterRender.style"
+                          :allowClear="customFilterRender.allowClear !== false"
+                          :value="customFilterSelectValue"
+                          @update:value="(val) => handleCustomFilterRenderChange({ type: 'select', value: val })"
                         />
+                      </template>
+                      <template v-else-if="customFilterRender.type === 'input'">
+                        <!-- 输入框 -->
+                        <a-input
+                          :placeholder="customFilterRender.placeholder || '请输入'"
+                          :size="customFilterRender.size || 'middle'"
+                          :style="customFilterRender.style"
+                          :allowClear="customFilterRender.allowClear !== false"
+                          :value="customFilterInputValue"
+                          @update:value="(val) => handleCustomFilterRenderChange({ type: 'input', value: val })"
+                          @pressEnter="handleSearch"
+                        />
+                      </template>
+                      <template v-else>
+                        <!-- 默认内容 -->
+                        <a-input placeholder="自定义筛选" disabled />
                       </template>
                     </template>
                     <template v-else>
-                      <!-- 传统插槽方式 -->
-                      <slot name="custom-filter" :filterValues="filterValues" :updateFilter="updateFilterValue">
-                        <!-- 默认内容 -->
-                        <a-input placeholder="自定义筛选" disabled />
-                      </slot>
+                      <!-- 默认内容 -->
+                      <a-input placeholder="自定义筛选" disabled />
                     </template>
                   </template>
                 </a-form-item>
@@ -153,7 +181,7 @@
                   class="mr-0"
                   :size="config?.formSize || 'middle'"
                   :disabled="loading"
-                  @click="handleReset"
+                  @click="handleResetWithCustomFilter"
                 >
                   重置
                 </a-button>
@@ -913,6 +941,9 @@ const getCustomFilterProps = () => {
 
 // 记录当前自定义筛选键（用于 inputGroup：select 选择的字段）
 const customFilterKeyRef = ref<string>('custom')
+// 添加自定义筛选组件的响应式状态
+const customFilterSelectValue = ref<string>('name')
+const customFilterInputValue = ref<string>('')
 
 const handleCustomFilterRenderChange = (raw: any) => {
   // inputGroup：传入形如 { type: 'select' | 'input', value: any }
@@ -920,16 +951,19 @@ const handleCustomFilterRenderChange = (raw: any) => {
     const { type, value } = raw as { type: string; value: any }
 
     if (type === 'select') {
-      // 选择筛选字段，仅记录当前选择，不直接写入筛选值
+      // 选择筛选字段，更新选择器显示值和筛选键
       const v = value?.target?.value ?? value?.value ?? value
       if (v !== undefined && v !== null && String(v).trim() !== '') {
         customFilterKeyRef.value = String(v).trim()
+        customFilterSelectValue.value = String(v).trim()
       } else {
         customFilterKeyRef.value = 'custom'
+        customFilterSelectValue.value = 'name'
       }
     } else if (type === 'input') {
-      // 更新输入值到内部筛选状态
+      // 更新输入值到内部筛选状态和显示值
       const v = value?.target?.value ?? value?.value ?? value
+      customFilterInputValue.value = v || ''
       const normalized = v !== undefined && v !== null && String(v).trim() !== '' ? String(v).trim() : null
       updateFilterValue(customFilterKeyRef.value, normalized)
     }
@@ -949,6 +983,14 @@ const handleCustomFilterRenderChange = (raw: any) => {
   if (proTableProps.value.onCustomFilterChange) {
     proTableProps.value.onCustomFilterChange('custom', v)
   }
+}
+
+// 重置时同时清空自定义筛选组件的状态
+const handleResetWithCustomFilter = () => {
+  handleReset()
+  customFilterSelectValue.value = 'name'
+  customFilterInputValue.value = ''
+  customFilterKeyRef.value = 'custom'
 }
 
 // 监听全屏状态变化

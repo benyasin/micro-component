@@ -282,40 +282,20 @@ export default defineComponent({
       addTestResult('Footer 链接点击', 'success', `点击链接: ${link.title}`)
     }
 
-    function handleCustomFilterChange(updateFilterFn?: any) {
-      console.log('[Vue3 Test] 自定义筛选变化:', customFilterType.value, customFilterValue.value)
-
-      // 根据选择的类型更新对应的筛选值
-      if (customFilterValue.value && customFilterValue.value.trim()) {
-        // 使用插槽传递的 updateFilter 方法
-        if (typeof updateFilterFn === 'function') {
-          updateFilterFn(customFilterType.value, customFilterValue.value.trim())
-        } else {
-          // 备用方案：直接访问 ProTable 组件实例的方法
-          const proTableInstance = proTableRef.value
-          if (proTableInstance && proTableInstance.updateFilterValue) {
-            proTableInstance.updateFilterValue(
-              customFilterType.value,
-              customFilterValue.value.trim()
-            )
-          }
-        }
-      } else {
-        // 如果值为空，清除对应的筛选值
-        if (typeof updateFilterFn === 'function') {
-          updateFilterFn(customFilterType.value, null)
-        } else {
-          const proTableInstance = proTableRef.value
-          if (proTableInstance && proTableInstance.updateFilterValue) {
-            proTableInstance.updateFilterValue(customFilterType.value, null)
-          }
+    function handleCustomFilterRenderChange(key: string, value: any) {
+      // 处理自定义筛选变化
+      if (value && typeof value === 'object' && value.type) {
+        if (value.type === 'select') {
+          customFilterType.value = value.value
+        } else if (value.type === 'input') {
+          customFilterValue.value = value.value
         }
       }
-
+      
       addTestResult(
-        'ProTable 自定义筛选',
+        'ProTable 自定义筛选渲染',
         'success',
-        `筛选类型: ${customFilterType.value}, 值: ${customFilterValue.value}`
+        JSON.stringify({ key, value })
       )
     }
 
@@ -335,30 +315,7 @@ export default defineComponent({
       addTestResult('ProTable 选择变化', 'success', `选中了 ${selectedRowKeys.length} 行数据`)
     }
 
-    // 新的自定义筛选渲染变化处理
-    function handleCustomFilterRenderChange(key: string, value: any) {
-      console.log('[Vue3 Test] 自定义筛选渲染变化:', key, value)
-      addTestResult(
-        'ProTable 自定义筛选渲染',
-        'success',
-        `筛选键: ${key}, 值: ${JSON.stringify(value)}`
-      )
 
-      // 这里可以处理筛选逻辑
-      if (value && typeof value === 'object' && value.type && value.value) {
-        // inputGroup 类型的值处理
-        if (value.type === 'select') {
-          customFilterType.value = value.value
-        } else if (value.type === 'input') {
-          customFilterValue.value = value.value
-        }
-      } else {
-        // 简单值处理
-        if (key === 'custom') {
-          // 处理自定义筛选
-        }
-      }
-    }
 
     function addTestResult(name: string, status: 'success' | 'error' | 'pending', message: string) {
       testResults.value.push({
@@ -397,7 +354,6 @@ export default defineComponent({
       handleLinkClick,
       toggleMockSwitch,
       refreshMockData,
-      handleCustomFilterChange,
       handleCustomFilterRenderChange,
       handleProTableSearch,
       handleProTableReset,

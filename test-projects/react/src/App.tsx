@@ -138,11 +138,13 @@ function App() {
   }), [])
 
   const handleCustomFilterRenderChange = React.useCallback((key: string, value: any) => {
-    // ProTable 内部已处理 updateFilterValue，这里仅做记录与本地 state 同步
-    if (value?.type === 'select') {
-      setCustomFilterType(String(value.value || 'custom'))
-    } else if (value?.type === 'input') {
-      setCustomFilterValue(String(value.value || ''))
+    // 处理自定义筛选变化
+    if (value && typeof value === 'object' && value.type) {
+      if (value.type === 'select') {
+        setCustomFilterType(String(value.value || 'name'))
+      } else if (value.type === 'input') {
+        setCustomFilterValue(String(value.value || ''))
+      }
     }
     addTestResult('ProTable 自定义筛选渲染', 'success', JSON.stringify({ key, value }))
   }, [])
