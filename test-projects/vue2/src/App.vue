@@ -82,17 +82,17 @@
             <p style="margin:0; color:#666; font-size:14px; line-height:22px;">这是一个全面的 ProTable 示例，展示了所有可用的功能和属性</p>
           </div>
           <div style="display:flex; gap:8px; align-items:center;">
-            <button type="button" @click="toggleMockSwitch" style="padding:4px 12px; font-size:12px; border-radius:4px; border:1px solid #d9d9d9; cursor:pointer;">
+            <button type="button" @click="toggleMockSwitch" @mousedown.stop style="padding:4px 12px; font-size:12px; border-radius:4px; border:1px solid #d9d9d9; cursor:pointer;">
               {{ isMockOn ? 'Mock ON' : 'Mock OFF' }}
             </button>
-            <button type="button" @click="refreshMockData" style="padding:4px 12px; font-size:12px; border-radius:4px; background:#1677ff; color:#fff; border:1px solid #1677ff; cursor:pointer;">
+            <button type="button" @click="refreshMockData" @mousedown.stop style="padding:4px 12px; font-size:12px; border-radius:4px; background:#1677ff; color:#fff; border:1px solid #1677ff; cursor:pointer;">
               刷新数据
             </button>
           </div>
         </div>
         <div class="component-demo">
           <MicroProTable
-            :key="'protable-' + (isMockOn ? 'on' : 'off') + '-' + refreshTick"
+            :key="'protable-' + refreshTick"
             ref="proTableRef"
             title="员工管理系统"
             description="这是一个全面的 ProTable 示例，展示了所有可用的功能和属性"
@@ -113,7 +113,7 @@
             :showColumnConfig="true"
             :rowSelection="proTableRowSelection"
             :tableConfig="proTableConfig"
-            :params="{ ...extraParams, _tick: refreshTick }"
+            :params="proTableParams"
             :beforeRequest="beforeRequestHook"
             :customFilterRender="customFilterRenderConfig"
             :onCustomFilterChange="handleCustomFilterRenderChange"
@@ -180,6 +180,8 @@ export default {
         from: 'vue2-test',
         fixedFlag: true
       },
+      // 使用普通属性确保params对象引用稳定
+      proTableParams: null,
       // ProTable 配置（与 playground 保持一致）
       proTableColumns: comprehensiveExample.columns,
       proTableData: comprehensiveExample.dataSource,
@@ -187,43 +189,54 @@ export default {
       proTablePagination: comprehensiveExample.pagination,
       proTableRowSelection: comprehensiveExample.rowSelection,
       proTableConfig: comprehensiveExample.tableConfig,
-      // 自定义筛选配置
-      customFilterRenderConfig: {
-        type: 'inputGroup',
-        inputGroup: {
-          selectConfig: {
-            placeholder: '类型',
-            size: 'middle',
-            options: [
-              { label: '姓名', value: 'name' },
-              { label: '邮箱', value: 'email' },
-              { label: '电话', value: 'phone' }
-            ]
-          },
-          inputConfig: {
-            placeholder: '请输入搜索内容',
-            size: 'middle',
-            allowClear: true
-          },
-          selectWidth: '30%',
-          inputWidth: '70%'
-        }
-      }
+      // 自定义筛选配置 - 将在created中初始化
+      customFilterRenderConfig: null
     }
   },
   // 第二个 data 定义会覆盖第一个，导致 selectedComponent/ components 未初始化
   // 移除该重复 data，改为把 isMockOn/refreshTick 放入上面的 data 中
+  created() {
+    // 初始化自定义筛选配置，确保引用稳定
+    this.customFilterRenderConfig = {
+      type: 'inputGroup',
+      inputGroup: {
+        selectConfig: {
+          placeholder: '类型',
+          size: 'middle',
+          options: [
+            { label: '姓名', value: 'name' },
+            { label: '邮箱', value: 'email' },
+            { label: '电话', value: 'phone' }
+          ]
+        },
+        inputConfig: {
+          placeholder: '请输入搜索内容',
+          size: 'middle',
+          allowClear: true
+        },
+        selectWidth: '30%',
+        inputWidth: '70%'
+      }
+    }
+    
+    // 初始化params对象，确保引用稳定
+    this.proTableParams = { ...this.extraParams, _tick: this.refreshTick }
+  },
   methods: {
     toggleMockSwitch() {
       this.isMockOn = !this.isMockOn
       const inst = this.$refs.proTableRef
       if (inst && typeof inst.toggleMock === 'function') inst.toggleMock(this.isMockOn)
       this.refreshTick += 1
+      // 更新params对象而不是重新创建
+      this.proTableParams._tick = this.refreshTick
     },
     refreshMockData() {
       const inst = this.$refs.proTableRef
       if (inst && typeof inst.loadMockData === 'function') inst.loadMockData()
       this.refreshTick += 1
+      // 更新params对象而不是重新创建
+      this.proTableParams._tick = this.refreshTick
     },
     onComponentChange(component) {
       this.selectedComponent = component
@@ -249,7 +262,7 @@ export default {
     handleButtonClick() {
       this.addTestResult('Button 点击', 'success', '按钮点击事件触发成功')
     },
-    handleCustomFilterRenderChange(key, value) {
+    handleCustomFilterRenderChange: function(key, value) {
       // 处理自定义筛选变化
       if (value && typeof value === 'object' && value.type) {
         if (value.type === 'select') {

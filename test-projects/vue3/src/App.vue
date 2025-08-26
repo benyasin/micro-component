@@ -83,17 +83,17 @@
             <p style="margin:0; color:#666; font-size:14px; line-height:22px;">这是一个全面的 ProTable 示例，展示了所有可用的功能和属性</p>
           </div>
           <div style="display:flex; gap:8px; align-items:center;">
-            <button type="button" @click="toggleMockSwitch" style="padding:4px 12px; font-size:12px; border-radius:4px; border:1px solid #d9d9d9; cursor:pointer;">
+            <button type="button" @click="toggleMockSwitch" @mousedown.stop style="padding:4px 12px; font-size:12px; border-radius:4px; border:1px solid #d9d9d9; cursor:pointer;">
               {{ isMockOn ? 'Mock ON' : 'Mock OFF' }}
             </button>
-            <button type="button" @click="refreshMockData" :disabled="isMockLoading" style="padding:4px 12px; font-size:12px; border-radius:4px; background:#1677ff; color:#fff; border:1px solid #1677ff; cursor:pointer;">
+            <button type="button" @click="refreshMockData" :disabled="isMockLoading" @mousedown.stop style="padding:4px 12px; font-size:12px; border-radius:4px; background:#1677ff; color:#fff; border:1px solid #1677ff; cursor:pointer;">
               {{ isMockLoading ? '加载中...' : '刷新数据' }}
             </button>
           </div>
         </div>
         <div class="component-demo">
           <MicroProTable
-            :key="`protable-${isMockOn ? 'on' : 'off'}-${refreshTick}`"
+            :key="`protable-${refreshTick}`"
             ref="proTableRef"
             title="员工管理系统"
             description="这是一个全面的 ProTable 示例，展示了所有可用的功能和属性（使用配置渲染方案）"
@@ -116,7 +116,7 @@
             :tableConfig="proTableConfig"
             :customFilterRender="customFilterRenderConfig"
             :onCustomFilterChange="handleCustomFilterRenderChange"
-            :params="{ ...extraParams, _tick: refreshTick }"
+            :params="proTableParams"
             :beforeRequest="beforeRequestHook"
             @search="handleProTableSearch"
             @reset="handleProTableReset"
@@ -147,7 +147,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, h, computed } from 'vue'
+import { defineComponent, ref, h, computed, shallowRef } from 'vue'
 import { comprehensiveExample } from '@/components/ProTable/example'
 import { Select, SelectOption, Input as AInput, InputGroup as AInputGroup } from 'ant-design-vue'
 // @ts-ignore
@@ -235,9 +235,12 @@ export default defineComponent({
     // 请求参数与 beforeRequest（playground 对齐，避免绑定未定义导致报错）
     const extraParams = { from: 'vue3-test', fixedFlag: true }
     const beforeRequestHook = (params: any) => ({ ...params, envTag: 'dev' })
+    
+    // 使用computed确保params对象引用稳定
+    const proTableParams = computed(() => ({ ...extraParams, _tick: refreshTick.value }))
 
-    // 新的自定义筛选渲染配置
-    const customFilterRenderConfig = {
+    // 新的自定义筛选渲染配置 - 使用 shallowRef 确保引用稳定
+    const customFilterRenderConfig = shallowRef({
       type: 'inputGroup' as const,
       inputGroup: {
         selectConfig: {
@@ -259,7 +262,7 @@ export default defineComponent({
         selectWidth: '30%',
         inputWidth: '70%'
       }
-    }
+    })
 
     function onComponentChange(component: any) {
       selectedComponent.value = component as string
@@ -282,7 +285,7 @@ export default defineComponent({
       addTestResult('Footer 链接点击', 'success', `点击链接: ${link.title}`)
     }
 
-    function handleCustomFilterRenderChange(key: string, value: any) {
+    const handleCustomFilterRenderChange = (key: string, value: any) => {
       // 处理自定义筛选变化
       if (value && typeof value === 'object' && value.type) {
         if (value.type === 'select') {
@@ -346,6 +349,7 @@ export default defineComponent({
       proTableConfig,
       extraParams,
       beforeRequestHook,
+      proTableParams,
       customFilterRenderConfig,
       onComponentChange,
       handleButtonClick,

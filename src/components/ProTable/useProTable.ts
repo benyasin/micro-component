@@ -138,9 +138,17 @@ export const useProTable = (defaultProps?: Props) => {
     mergeConfig(defaultProps || {}, proTableProps.value)
   }
 
-  // 监听 props 变化
+  // 监听 props 变化 - 只监听重要的props，避免深度监听
   watch(
-    [() => proTableProps.value],
+    [
+      () => proTableProps.value.title,
+      () => proTableProps.value.description,
+      () => proTableProps.value.columns,
+      () => proTableProps.value.dataSource,
+      () => proTableProps.value.mockEnabled,
+      () => proTableProps.value.params,
+      () => proTableProps.value.customFilterRender
+    ],
     () => {
       if (typeof window !== 'undefined') {
         initConfig()
@@ -158,7 +166,7 @@ export const useProTable = (defaultProps?: Props) => {
         }
       }
     },
-    { immediate: true, deep: true }
+    { immediate: true }
   )
 
 

@@ -109,7 +109,7 @@
                       <!-- 基于配置的渲染 -->
                       <template v-else-if="customFilterRender.type === 'inputGroup' && customFilterRender.inputGroup">
                         <!-- 输入组合：选择器 + 输入框 -->
-                        <a-input-group compact>
+                        <a-input-group compact @click.stop @mousedown.stop>
                           <a-select
                             :style="{ width: customFilterRender.inputGroup.selectWidth || '30%' }"
                             :placeholder="customFilterRender.inputGroup.selectConfig?.placeholder || '类型'"
@@ -118,6 +118,8 @@
                             :getPopupContainer="(triggerNode: any) => triggerNode?.parentNode"
                             :value="customFilterSelectValue"
                             @update:value="(val) => handleCustomFilterRenderChange({ type: 'select', value: val })"
+                            @click.stop
+                            @mousedown.stop
                           />
                           <a-input
                             :style="{ width: customFilterRender.inputGroup.inputWidth || '70%' }"
@@ -127,6 +129,8 @@
                             :value="customFilterInputValue"
                             @update:value="(val) => handleCustomFilterRenderChange({ type: 'input', value: val })"
                             @pressEnter="handleSearch"
+                            @click.stop
+                            @mousedown.stop
                           />
                         </a-input-group>
                       </template>
@@ -140,6 +144,8 @@
                           :allowClear="customFilterRender.allowClear !== false"
                           :value="customFilterSelectValue"
                           @update:value="(val) => handleCustomFilterRenderChange({ type: 'select', value: val })"
+                          @click.stop
+                          @mousedown.stop
                         />
                       </template>
                       <template v-else-if="customFilterRender.type === 'input'">
@@ -152,6 +158,8 @@
                           :value="customFilterInputValue"
                           @update:value="(val) => handleCustomFilterRenderChange({ type: 'input', value: val })"
                           @pressEnter="handleSearch"
+                          @click.stop
+                          @mousedown.stop
                         />
                       </template>
                       <template v-else>
