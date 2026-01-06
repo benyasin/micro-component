@@ -4,6 +4,8 @@
 
 **核心理念**：你可以把它理解为一次开发（Vue3 语法），通过构建生成三端包装器（Vue2/Vue3/React），再由运行时（Runtime）统一完成挂载、通信、状态与样式管理。
 
+<img width="729" height="536" alt="image" src="https://github.com/user-attachments/assets/66380314-40c5-4d69-b122-dc939daf0950" />
+
 ## 目录
 - [特性速览](#特性速览)
 - [项目结构](#项目结构)
